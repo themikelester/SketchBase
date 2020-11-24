@@ -2,14 +2,12 @@ import { Game } from './game';
 import { GITHUB_REVISION_URL, IS_DEVELOPMENT } from './base/version';
 
 // Google Analytics
-declare var gtag: ( command: string, eventName: string, eventParameters: { [key: string]: string } ) => void;
+declare const gtag: ( command: string, eventName: string, eventParameters: { [key: string]: string } ) => void;
 
 // Declare useful objects for easy access.
 declare global {
     interface Window {
-        game: any;
-        debug: any;
-        config: any;
+        game: Game;
     }
 }
 
@@ -17,7 +15,7 @@ declare global {
  * All accepted URL parameters are documented here. 
  * E.g. The URL 'moonduel.io?debug' will show the debug menu
  */
-const kUrlParameters: Record<string, ( game: Game, value: any ) => void> = {
+const kUrlParameters: Record<string, ( game: Game, value: string ) => void> = {
     // 'debug': (game: Game) => game.debugMenu.show(),
 }
 
