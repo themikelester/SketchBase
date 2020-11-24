@@ -12,9 +12,9 @@ const webpack = require('webpack');
 const COMMIT_HASH = gitRevision.commithash();
 const GITHUB_URL = 'Some Github URL';
 const GTAG_ID = 'Some Google Analytics ID';
-const APP_NAME = '';
-const APP_NAME_SHORT = '';
-const APP_DESCRIPTION = '';
+const APP_NAME = 'App Name';
+const APP_NAME_SHORT = 'App Name';
+const APP_DESCRIPTION = 'App Description';
 
 module.exports = {
   entry: {
@@ -59,7 +59,6 @@ module.exports = {
       },
       {
         test: /\.webmanifest$/,
-        include: /assets\//,
         use: [
           {
             loader: 'file-loader',
@@ -109,12 +108,6 @@ module.exports = {
       gtagId: GTAG_ID,
       appName: APP_NAME,
       appDesc: APP_DESCRIPTION,
-    }),
-    new HtmlWebpackPlugin({
-      chunks: ['server'],
-      filename: 'server.html',
-      template: './src/index.html',
-      gtagId: GTAG_ID
     }),
     new SizePlugin(),
     new BundleAnalyzerPlugin({ 

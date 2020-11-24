@@ -1,3 +1,3 @@
 * Install yarn and git
-* Run `yarn install` to download necessary dependencies
-* 
+* `yarn install` to download necessary dependencies
+* To run, `yarn start` and then visit http://localhost:8080
