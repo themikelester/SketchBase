@@ -10,11 +10,11 @@ const webpack = require('webpack');
 
 // @NOTE: These need to be updated per-project
 const COMMIT_HASH = gitRevision.commithash();
-const GITHUB_URL = '<Some Github URL>';
+const GITHUB_URL = 'https://github.com/themikelester/SketchBase';
 const GTAG_ID = '<Some Google Analytics ID>';
-const APP_NAME = '<Some App Name>';
-const APP_NAME_SHORT = '<Some App Name>';
-const APP_DESCRIPTION = '<Some App Description>';
+const APP_NAME = 'Base Sketch';
+const APP_NAME_SHORT = 'Base';
+const APP_DESCRIPTION = 'Sketch boilerplate';
 
 module.exports = {
   entry: {
