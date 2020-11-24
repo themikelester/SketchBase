@@ -1,5 +1,5 @@
 
-export function assert(b: boolean, message: string = ""): void {
+export function assert(b: boolean, message = ""): void {
     if (!b) {
         const error = new Error(`Assert fail: ${message}`);
         console.error(error.stack);
