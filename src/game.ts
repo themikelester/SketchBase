@@ -1,4 +1,5 @@
 import { IS_DEVELOPMENT } from './base/version';
+import { DebugMenu } from './base/DebugMenu';
 import { Renderer } from './base/gfx/GfxTypes';
 import { WebGlRenderer } from './base/gfx/WebGl';
 
@@ -7,6 +8,7 @@ export class Game {
     public canvas: HTMLCanvasElement = document.createElement( 'canvas' );
 
     public gfxDevice: Renderer = new WebGlRenderer();
+    public debugMenu: DebugMenu = new DebugMenu();
 
     public initialize(): void {
         // DOM creation
@@ -18,7 +20,7 @@ export class Game {
         this.gfxDevice.setDebugEnabled( IS_DEVELOPMENT );
         const success = this.gfxDevice.initialize( this.canvas );
         if ( success ) this.gfxDevice.resize( this.canvas.width, this.canvas.height );
-        else return; // @TODO: FatalError funcion. Displays a fullscreen error message a la Ayvri
+        else return; // @TODO: FatalError function. Displays a fullscreen error message a la Ayvri
         this.onResize();
 
         // Events
@@ -26,10 +28,22 @@ export class Game {
         window.onbeforeunload = this.onUnload.bind( this );
         window.onclick = this.onClick.bind( this );
         document.onvisibilitychange = this.onVisibility.bind( this );
+        
+        // Show debug menu by default on development builds
+        if (IS_DEVELOPMENT) {
+            this.debugMenu.show();
+        }
     }
 
+    public update(): void {
+        this.debugMenu.update();
+    }
+
+    /**
+     * Fires when the mouse is clicked within the window (duh)
+     */
     private onClick( e: MouseEvent ) {
-        console.log( "Mouse clicked" );
+        console.log( "Mouse clicked at (" + e.x + ", " + e.y + ")" );
     }
 
     /**
