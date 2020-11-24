@@ -10,11 +10,11 @@ const webpack = require('webpack');
 
 // @NOTE: These need to be updated per-project
 const COMMIT_HASH = gitRevision.commithash();
-const GITHUB_URL = 'Some Github URL';
-const GTAG_ID = 'Some Google Analytics ID';
-const APP_NAME = 'App Name';
-const APP_NAME_SHORT = 'App Name';
-const APP_DESCRIPTION = 'App Description';
+const GITHUB_URL = '<Some Github URL>';
+const GTAG_ID = '<Some Google Analytics ID>';
+const APP_NAME = '<Some App Name>';
+const APP_NAME_SHORT = '<Some App Name>';
+const APP_DESCRIPTION = '<Some App Description>';
 
 module.exports = {
   entry: {
