@@ -28,9 +28,9 @@ export class Game {
         window.onbeforeunload = this.onUnload.bind( this );
         window.onclick = this.onClick.bind( this );
         document.onvisibilitychange = this.onVisibility.bind( this );
-        
+
         // Show debug menu by default on development builds
-        if (IS_DEVELOPMENT) {
+        if ( IS_DEVELOPMENT ) {
             this.debugMenu.show();
         }
     }
