@@ -1,4 +1,4 @@
-import { IS_DEVELOPMENT } from './base/version';
+import { IS_DEVELOPMENT } from './base/Version';
 import { DebugMenu } from './base/DebugMenu';
 import { Renderer } from './base/gfx/GfxTypes';
 import { WebGlRenderer } from './base/gfx/WebGl';

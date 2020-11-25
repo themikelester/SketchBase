@@ -1,5 +1,5 @@
 import { Game } from './game';
-import { GITHUB_REVISION_URL, IS_DEVELOPMENT } from './base/version';
+import { GITHUB_REVISION_URL, IS_DEVELOPMENT } from './base/Version';
 
 // Google Analytics
 declare const gtag: ( command: string, eventName: string, eventParameters: { [key: string]: string } ) => void;
