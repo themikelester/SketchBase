@@ -11,7 +11,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { MetaTable, SetMemVarMetadata } from './Meta';
+import { MetaTable, MetaVar, SetMemVarMetadata } from './Meta';
 import { assert, assertString } from './Util';
 
 const kMetadataIdModuleGroup = "ModuleGroup";
@@ -25,6 +25,9 @@ export enum ModuleDirection {
 // Module Decorator. Place this before any objects that wish to be treated as Modules.
 //----------------------------------------------------------------------------------------------------------------------
 export const Module: PropertyDecorator = ( target, propertyKey: string | symbol ) => {
+    // Automatically meta register this member variable
+    MetaVar( target, propertyKey );
+
     const memVarName = assertString( propertyKey );
     SetMemVarMetadata( target.constructor.name, memVarName, kMetadataIdModuleGroup, "All" )
 };
@@ -33,25 +36,25 @@ export const Module: PropertyDecorator = ( target, propertyKey: string | symbol 
 // Internal Types
 //----------------------------------------------------------------------------------------------------------------------
 interface Module {
-    type: string; 
+    type: string;
     group: string;
     object: ObjectType;
-    funcArgs: Record< string, unknown[] >
+    funcArgs: Record<string, unknown[]>
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 // Helpers
 //----------------------------------------------------------------------------------------------------------------------
 function BuildParamArray( game: ObjectType, paramTypes: string[], funcName: string, className: string ): unknown[] {
-    const memVars = MetaTable[game.constructor.name].vars;
+    const memVars = MetaTable[ game.constructor.name ].vars;
     const memVarNames = Object.keys( memVars );
-    const memVarTypes = memVarNames.map( name => memVars[name].type );
+    const memVarTypes = memVarNames.map( name => memVars[ name ].type );
 
     const paramValues = paramTypes.map( type => {
         const memVarIdx = memVarTypes.indexOf( type );
         assert( memVarIdx != -1, "Game object does not contain a meta-registered variable of type " + type +
             ". Required by the " + funcName + " function of " + className );
-        return game[memVarNames[memVarIdx]];
+        return game[ memVarNames[ memVarIdx ] ];
     } );
 
     return paramValues;
@@ -69,16 +72,17 @@ export class ModuleBarn {
         this.functions = functionList;
 
         // Find all meta-registered modules on the Game object
-        const memVars = MetaTable[game.constructor.name].vars;
-        for( const name of Object.keys( memVars ) )
-        {
-            const moduleGroup = memVars[ name ].metadata[kMetadataIdModuleGroup];
-            if( moduleGroup ) { this.modules.push({
-                type: memVars[ name ].type,
-                group: moduleGroup,
-                object: game[ name ] as ObjectType,
-                funcArgs: {}
-            })}
+        const memVars = MetaTable[ game.constructor.name ].vars;
+        for( const name of Object.keys( memVars ) ) {
+            const moduleGroup = memVars[ name ].metadata[ kMetadataIdModuleGroup ];
+            if( moduleGroup ) {
+                this.modules.push( {
+                    type: memVars[ name ].type,
+                    group: moduleGroup,
+                    object: game[ name ] as ObjectType,
+                    funcArgs: {}
+                } )
+            }
         }
 
         // For each module, pre-cache an array of arguments for each function in the list
@@ -99,10 +103,10 @@ export class ModuleBarn {
         const reverse = direction == ModuleDirection.Reverse;
         const moduleCount = this.modules.length;
 
-        for ( let i = 0; i < moduleCount; i++ ) {
-            const module = this.modules[ reverse ? moduleCount - 1 - i : i];
+        for( let i = 0; i < moduleCount; i++ ) {
+            const module = this.modules[ reverse ? moduleCount - 1 - i : i ];
             const funcArgs = module.funcArgs[ funcName ];
-            if( funcArgs ) { (module.object[ funcName ] as Function)( ...funcArgs ); }
+            if( funcArgs ) { ( module.object[ funcName ] as Function )( ...funcArgs ); }
         }
     }
 }
