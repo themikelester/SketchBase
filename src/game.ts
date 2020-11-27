@@ -2,7 +2,7 @@ import { IS_DEVELOPMENT } from './base/Version';
 import { DebugMenu } from './base/DebugMenu';
 import { MetaVar } from './base/Meta';
 import { WebGlRenderer } from './base/gfx/WebGl';
-import { ModuleBarn } from './base/Module';
+import { ModuleBarn, ModuleDirection } from './base/Module';
 import { Renderer } from './base/gfx/GfxTypes';
 
 export class Game {
@@ -37,15 +37,25 @@ export class Game {
             this.debugMenu.show();
         }
 
+        // Initialize the module barn
         const kModuleFunctions = [
-            "initialize"
+            "initialize",
+            "terminate",
+            "update"
         ];
         this.moduleBarn.initialize( this, kModuleFunctions );
-        this.moduleBarn.callFunction( "initialize" );
+
+        // Call "Initialize()" for all modules
+        this.moduleBarn.callFunction( "initialize", ModuleDirection.Forward );
+    }
+
+    public terminate(): void {
+        this.moduleBarn.callFunction( "terminate", ModuleDirection.Reverse );
     }
 
     public update(): void {
         this.debugMenu.update();
+        this.moduleBarn.callFunction( "update", ModuleDirection.Forward );
     }
 
     /**
@@ -77,5 +87,6 @@ export class Game {
      */
     private onUnload() {
         console.log( "Unloading" );
+        this.terminate();
     }
 }

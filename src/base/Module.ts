@@ -16,6 +16,11 @@ import { assert, assertString } from './Util';
 
 const kMetadataIdModuleGroup = "ModuleGroup";
 
+export enum ModuleDirection {
+    Forward,
+    Reverse
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 // Module Decorator. Place this before any objects that wish to be treated as Modules.
 //----------------------------------------------------------------------------------------------------------------------
@@ -88,12 +93,16 @@ export class ModuleBarn {
         }
     }
 
-    callFunction( funcName: string ): void {
+    callFunction( funcName: string, direction: ModuleDirection = ModuleDirection.Forward ): void {
         assert( this.functions.includes( funcName ) );
 
-        for ( let i = 0; i < this.modules.length; i++ ) {
-            const funcArgs = this.modules[ i ].funcArgs[ funcName ];
-            if( funcArgs ) { (this.modules[ i ].object[ funcName ] as Function)( ...funcArgs ); }
+        const reverse = direction == ModuleDirection.Reverse;
+        const moduleCount = this.modules.length;
+
+        for ( let i = 0; i < moduleCount; i++ ) {
+            const module = this.modules[ reverse ? moduleCount - 1 - i : i];
+            const funcArgs = module.funcArgs[ funcName ];
+            if( funcArgs ) { (module.object[ funcName ] as Function)( ...funcArgs ); }
         }
     }
 }
