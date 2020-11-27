@@ -6,10 +6,12 @@
 // is requested, the dat.gui bundle is downloaded and executed. All the buffered functions are called, and the shim 
 // objects' functions are rebound to the dat.gui functions. 
 // --------------------------------------------------------------------------------------------------------------------
+/* eslint-disable prefer-rest-params */
+/* eslint-disable prefer-spread */
 
 import { defined, assert } from './util';
 
-type ICallback = (value?: any) => void;
+type ICallback = (value?: unknown) => void;
 
 export interface IGUIController {
     onChange(fnc: ICallback): void;
@@ -43,7 +45,7 @@ export class DebugMenu implements IDebugMenu {
     private _folders: { [name: string]: DebugMenu } = {};
     private _saveObject: ObjectType;
 
-    add(target: ObjectType, propName: string, min?: number | boolean | string[] | Object, max?: number, step?: number): IGUIController { 
+    add(): IGUIController { 
         const debugAdd: DebugAdd = { args: arguments };
         this._add.push(debugAdd);
         return {
@@ -53,7 +55,7 @@ export class DebugMenu implements IDebugMenu {
         }
     }
 
-    addColor(target: ObjectType, propName: string) {
+    addColor(): IGUIController {
         const debugAdd: DebugAdd = { args: arguments };
         this._addColor.push(debugAdd);
         return {
@@ -68,7 +70,7 @@ export class DebugMenu implements IDebugMenu {
         return this._folders[propName];
     }
 
-    async show() {
+    async show(): Promise<void> {
         // If we've already showed, but the bundle hasn't yet loaded, ignore
         if (defined(this._gui)) return;
         
@@ -112,9 +114,11 @@ export class DebugMenu implements IDebugMenu {
         this.hide = this._gui.hide.bind(this._gui);
     }
 
-    hide() {}
+    hide(): void {
+        // Do nothing
+    }
 
-    update() {
+    update(): void {
         if (this._gui && !this._gui.closed) {
             for (const i in this._gui.__controllers) {
                 this._gui.__controllers[i].updateDisplay();
@@ -129,8 +133,8 @@ export class DebugMenu implements IDebugMenu {
         }
     }
 
-    toJSON() {
-        return this._gui ? this._gui.getSaveObject() : undefined;
+    toJSON(): ObjectType | undefined {
+        return this._gui ? this._gui.getSaveObject() as ObjectType: undefined;
     }
 
     fromJSON(saveObject: ObjectType): void {
