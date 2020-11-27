@@ -1,15 +1,17 @@
 import { IS_DEVELOPMENT } from './base/Version';
 import { DebugMenu } from './base/DebugMenu';
 import { MetaVar } from './base/Meta';
-import { Renderer } from './base/gfx/GfxTypes';
 import { WebGlRenderer } from './base/gfx/WebGl';
+import { ModuleBarn } from './base/Module';
+import { Renderer } from './base/gfx/GfxTypes';
 
 export class Game {
-    @MetaVar public rootElement: HTMLElement;
-    @MetaVar public canvas: HTMLCanvasElement = document.createElement( 'canvas' );
-    @MetaVar public gfxDevice: Renderer = new WebGlRenderer();
-    
-    @MetaVar public debugMenu: DebugMenu = new DebugMenu();
+    @MetaVar rootElement: HTMLElement;
+    @MetaVar canvas: HTMLCanvasElement = document.createElement( 'canvas' );
+    @MetaVar gfxDevice: Renderer = new WebGlRenderer();
+
+    debugMenu: DebugMenu = new DebugMenu();
+    moduleBarn: ModuleBarn = new ModuleBarn();
 
     public initialize(): void {
         // DOM creation
@@ -34,6 +36,12 @@ export class Game {
         if ( IS_DEVELOPMENT ) {
             this.debugMenu.show();
         }
+
+        const kModuleFunctions = [
+            "initialize"
+        ];
+        this.moduleBarn.initialize( this, kModuleFunctions );
+        this.moduleBarn.callFunction( "initialize" );
     }
 
     public update(): void {

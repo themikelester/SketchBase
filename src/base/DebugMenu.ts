@@ -9,7 +9,7 @@
 /* eslint-disable prefer-rest-params */
 /* eslint-disable prefer-spread */
 
-import { defined, assert } from './util';
+import { defined, assert } from './Util';
 
 type ICallback = (value?: unknown) => void;
 

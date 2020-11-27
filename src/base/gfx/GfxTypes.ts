@@ -319,48 +319,48 @@ export function TranslateTypeToSize(type: Type): number {
   }
 }
 
-export interface Renderer {    
-    initialize(canvas: HTMLCanvasElement): boolean;
+export abstract class Renderer {    
+    abstract initialize(canvas: HTMLCanvasElement): boolean;
     
-    isGfxFeatureSupported(featureId: Feature): boolean;
-    setDebugEnabled(debug: boolean): void;
+    abstract isGfxFeatureSupported(featureId: Feature): boolean;
+    abstract setDebugEnabled(debug: boolean): void;
     
-    resize(width: number, height: number): void;
-    beginFrame(): void;
-    endFrame(): void;
+    abstract resize(width: number, height: number): void;
+    abstract beginFrame(): void;
+    abstract endFrame(): void;
     
-    bindRenderPass(renderPassId: Id): void;
-    bindPipeline(pipelineId: Id): void;
-    bindResources(resourceTableId: Id): void;
-    bindVertices(vertexTable: Id): void;
-    draw(primitiveType: PrimitiveType, indexBufferId: Id, indexType: Type, indexOffset: number, indexCount: number): void;
-    drawInstanced(primitiveType: PrimitiveType, indexBufferId: Id, indexType: Type, indexOffset: number, indexCount: number, instanceCount: number): void;
-    drawNonIndexed(primitiveType: PrimitiveType, vertOffset: number, vertCount: number): void;
-    
-    setDepthStencilState(stateId: Id): void;
-    setCullMode(cullMode: CullMode): void;
-    
-    setVertexBuffer(vertexTable: Id, index: number, view: BufferView): void;
-    setBuffer(resourceTableId: Id, index: number, view: BufferView): void;
-    setTexture(resourceTableId: Id, index: number, textureId: Id): void;
-    setTextures(resourceTableId: Id, index: number, textureIds: Id[]): void;
-    
-    createDepthStencilState(desc: DepthStateDescriptor): number;
-    createResourceTable(resourceLayout: ResourceLayout): Id;
-    createVertexTable(pipelineId: Id): Id;
-    createRenderPipeline(shaderId: Id, renderFormat: RenderFormat, vertexLayout: VertexLayout, resourceLayout: ResourceLayout): Id;
-    createShader(desc: ShaderDescriptor): number;
-    createTexture(name: string, desc: TextureDescriptor, image?: HTMLImageElement | HTMLCanvasElement | ArrayBufferView | ImageBitmap): Id;
-    createBuffer(name: string, type: BufferType, usage: Usage, dataOrSize: (ArrayBuffer | number)): number;
-    removeBuffer(bufferId: Id): void;
-    removeTexture(textureId: Id): void;
-    removeShader(shaderId: Id): void;
-    removeRenderPipeline(pipelineId: Id): void;
-    removeResourceTable(tableId: Id): void;
-    removeVertexTable(tableId: Id): void;
-    
-    writeBufferData(bufferId: Id, dstOffset: number, srcBytes: (ArrayBuffer | ArrayBufferView)): void;
-    writeTextureData(textureId: Id, image: HTMLImageElement | HTMLCanvasElement | ArrayBuffer | ImageBitmap): void;
+    abstract bindRenderPass(renderPassId: Id): void;
+    abstract bindPipeline(pipelineId: Id): void;
+    abstract bindResources(resourceTableId: Id): void;
+    abstract bindVertices(vertexTable: Id): void;
+    abstract draw(primitiveType: PrimitiveType, indexBufferId: Id, indexType: Type, indexOffset: number, indexCount: number): void;
+    abstract drawInstanced(primitiveType: PrimitiveType, indexBufferId: Id, indexType: Type, indexOffset: number, indexCount: number, instanceCount: number): void;
+    abstract drawNonIndexed(primitiveType: PrimitiveType, vertOffset: number, vertCount: number): void;
 
-    readPixels(offsetX: number, offsetY: number, width: number, height: number, result: Uint8Array): void;
+    abstract setDepthStencilState(stateId: Id): void;
+    abstract setCullMode(cullMode: CullMode): void;
+
+    abstract setVertexBuffer(vertexTable: Id, index: number, view: BufferView): void;
+    abstract setBuffer(resourceTableId: Id, index: number, view: BufferView): void;
+    abstract setTexture(resourceTableId: Id, index: number, textureId: Id): void;
+    abstract setTextures(resourceTableId: Id, index: number, textureIds: Id[]): void;
+
+    abstract createDepthStencilState(desc: DepthStateDescriptor): number;
+    abstract createResourceTable(resourceLayout: ResourceLayout): Id;
+    abstract createVertexTable(pipelineId: Id): Id;
+    abstract createRenderPipeline(shaderId: Id, renderFormat: RenderFormat, vertexLayout: VertexLayout, resourceLayout: ResourceLayout): Id;
+    abstract createShader(desc: ShaderDescriptor): number;
+    abstract createTexture(name: string, desc: TextureDescriptor, image?: HTMLImageElement | HTMLCanvasElement | ArrayBufferView | ImageBitmap): Id;
+    abstract createBuffer(name: string, type: BufferType, usage: Usage, dataOrSize: (ArrayBuffer | number)): number;
+    abstract removeBuffer(bufferId: Id): void;
+    abstract removeTexture(textureId: Id): void;
+    abstract removeShader(shaderId: Id): void;
+    abstract removeRenderPipeline(pipelineId: Id): void;
+    abstract removeResourceTable(tableId: Id): void;
+    abstract removeVertexTable(tableId: Id): void;
+
+    abstract writeBufferData(bufferId: Id, dstOffset: number, srcBytes: (ArrayBuffer | ArrayBufferView)): void;
+    abstract writeTextureData(textureId: Id, image: HTMLImageElement | HTMLCanvasElement | ArrayBuffer | ImageBitmap): void;
+
+    abstract readPixels(offsetX: number, offsetY: number, width: number, height: number, result: Uint8Array): void;
 }

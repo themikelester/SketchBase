@@ -8,10 +8,13 @@
 //         package (but actually we use a smaller subset of that package). This metadata Reflection extension is a 
 //         proposal for ES7, at which point the dependency could be removed.
 //
+//         Member variables can also store arbitrary metadata in the form of key value pairs.
+//
 // Author: Mike Lester
 // Date C: 2020/11/27
 //----------------------------------------------------------------------------------------------------------------------
 import { Reflection as Reflect } from '@abraham/reflection';
+import { assert, assertDefined, assertString } from './Util';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Internal Types
@@ -26,6 +29,7 @@ type TypeName = string;
 export interface MemVar
 {
     type: TypeName;
+    metadata: Record< string, string >;
 }
 
 export interface MemFunc
@@ -46,27 +50,46 @@ export const MetaTable: Record<string, Class> = {};
 // Decorators. Use these to meta-register methods and member variables.
 //----------------------------------------------------------------------------------------------------------------------
 export const MetaVar: PropertyDecorator = ( target, propertyKey: string | symbol ) => {
+    const className = target.constructor.name;
+
     // Create the table entry for this class if it does not already exist
-    if( !MetaTable[target.constructor.name] ) { MetaTable[target.constructor.name] = new Class(); }
+    if( !MetaTable[className] ) { MetaTable[className] = new Class(); }
 
     // Add this property to the class
     const type = Reflect.getMetadata( 'design:type', target, propertyKey ) as ReflectType;
-    if ( typeof propertyKey === 'string' ) {
-        MetaTable[target.constructor.name].vars[propertyKey] = { type: type.name };
-    }
+    assert( type.name !== "Object", "Unable to determine the type of " + propertyKey.toString()
+        + " for object " + className + ". Try explicitly setting the type." );
+
+    MetaTable[className].vars[ assertString( propertyKey ) ] = { type: type.name, metadata: {} };
 };
 
 export const MetaFunc: MethodDecorator = ( target, propertyKey: string | symbol ) => {
+    const className = target.constructor.name;
+
     // Create the table entry for this class if it does not already exist
-    if( !MetaTable[target.constructor.name] ) { MetaTable[target.constructor.name] = new Class(); }
+    if( !MetaTable[className] ) { MetaTable[className] = new Class(); }
 
     // Add this method and the types of each of its parameters to the class
     const paramTypes = Reflect.getMetadata( 'design:paramtypes', target, propertyKey ) as ReflectType[];
     const returnType = Reflect.getMetadata( 'design:returntype', target, propertyKey ) as ReflectType;
-    if ( typeof propertyKey === 'string' ) {
-        MetaTable[target.constructor.name].funcs[propertyKey] = { 
-            paramTypes: paramTypes.map(p => p.name),
-            returnType: returnType ? returnType.name : "null"
-        };
-    }
+
+    MetaTable[className].funcs[ assertString( propertyKey ) ] = { 
+        paramTypes: paramTypes.map(p => p.name),
+        returnType: returnType ? returnType.name : "null"
+    };
 };
+
+//----------------------------------------------------------------------------------------------------------------------
+// Functions
+//----------------------------------------------------------------------------------------------------------------------
+export function SetMemVarMetadata( className: string, memVarName: string, key: string, value: string ): void {
+    const metaClass = assertDefined(  MetaTable[className] );
+    const memVar = assertDefined( metaClass.vars[ memVarName ] );
+    memVar.metadata[ key ] = value;
+}
+
+export function GetMemVarMetadata( className: string, memVarName: string, metaDataKey: string ): string {
+    const metaClass = assertDefined(  MetaTable[className] );
+    const memVar = assertDefined( metaClass.vars[ memVarName ] );
+    return memVar.metadata[ metaDataKey ];
+}

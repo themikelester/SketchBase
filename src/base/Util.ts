@@ -14,6 +14,13 @@ export function assertDefined<T>(v: T | null | undefined, msg?: string): NonNull
         throw new Error(defaultValue(msg, "Missing object"));
 }
 
+export function assertString<T>(v: T, msg?: string): NonNullable<string> {
+    if (typeof v == "string")
+        return v;
+    else
+        throw new Error(defaultValue(msg, "Expected Object to be a non-null string"));
+}
+
 export function defined<T>(v: T): v is NonNullable<T> {
     return v !== undefined && v !== null;
 }
