@@ -1,14 +1,15 @@
 import { IS_DEVELOPMENT } from './base/Version';
 import { DebugMenu } from './base/DebugMenu';
+import { MetaVar } from './base/Meta';
 import { Renderer } from './base/gfx/GfxTypes';
 import { WebGlRenderer } from './base/gfx/WebGl';
 
 export class Game {
-    public rootElement: HTMLElement;
-    public canvas: HTMLCanvasElement = document.createElement( 'canvas' );
-
-    public gfxDevice: Renderer = new WebGlRenderer();
-    public debugMenu: DebugMenu = new DebugMenu();
+    @MetaVar public rootElement: HTMLElement;
+    @MetaVar public canvas: HTMLCanvasElement = document.createElement( 'canvas' );
+    @MetaVar public gfxDevice: Renderer = new WebGlRenderer();
+    
+    @MetaVar public debugMenu: DebugMenu = new DebugMenu();
 
     public initialize(): void {
         // DOM creation
