@@ -7,6 +7,7 @@ import { Renderer } from './base/gfx/GfxTypes';
 
 import { Compositor } from './base/Compositor';
 import { Scene } from './scene';
+import { GlobalUniforms } from './base/GlobalUniforms';
 
 export class Game {
     @MetaVar rootElement: HTMLElement;
@@ -17,6 +18,7 @@ export class Game {
     moduleBarn: ModuleBarn = new ModuleBarn();
     @Module scene: Scene = new Scene();
     @Module compositor: Compositor = new Compositor();
+    @Module globalUniforms: GlobalUniforms = new GlobalUniforms();
 
     public initialize(): void {
         // DOM creation
