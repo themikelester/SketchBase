@@ -37,8 +37,7 @@ interface DebugAdd {
 }
 
 export class DebugMenu implements IDebugMenu {
-    private _gui: unknown;
-    private _guiPromise: Promise<unknown>;
+    private _gui: import('dat.gui').GUI;
     private _add: DebugAdd[] = [];
     private _addColor: DebugAdd[] = [];
     private _folders: { [name: string]: DebugMenu } = {};
@@ -74,12 +73,11 @@ export class DebugMenu implements IDebugMenu {
 
     async show() {
         // If we've already showed, but the bundle hasn't yet loaded, ignore
-        if (defined(this._guiPromise)) return;
+        if (defined(this._gui)) return;
         
         // The first time we show the menu, dynamically download and execute the dat.gui bundle
         if (this._gui === undefined) {
-            this._guiPromise = import(/* webpackChunkName: "dat-gui" */ 'dat.gui'); 
-            const dat = await this._guiPromise;
+            const dat = await import(/* webpackChunkName: "dat-gui" */ 'dat.gui');
             this._gui = new dat.GUI({ load: this._saveObject });
         }
 
