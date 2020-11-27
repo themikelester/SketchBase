@@ -12,7 +12,6 @@ import { Scene } from './scene';
 import { GlobalUniforms } from './base/GlobalUniforms';
 
 import { mat4, vec3 } from 'gl-matrix';
-import { ZeroVec3 } from './base/MathHelpers';
 
 export class Game {
     @MetaVar rootElement: HTMLElement;
@@ -41,7 +40,7 @@ export class Game {
         else return; // @TODO: FatalError function. Displays a fullscreen error message a la Ayvri
         this.onResize();
 
-        // Events
+        // Register for Events
         window.onresize = this.onResize.bind( this );
         window.onbeforeunload = this.onUnload.bind( this );
         window.onclick = this.onClick.bind( this );
