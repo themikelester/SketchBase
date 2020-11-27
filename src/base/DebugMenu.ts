@@ -16,12 +16,12 @@ export interface IGUIController {
 }
 
 export interface IDebugMenu {
-    add(target: Object, propName:string, min?: number, max?: number, step?: number): IGUIController;
-    add(target: Object, propName:string, status: boolean): IGUIController;
-    add(target: Object, propName:string, items:string[]): IGUIController;
-    add(target: Object, propName:string, items:number[]): IGUIController;
-    add(target: Object, propName:string, items:Object): IGUIController;
-    addColor(target: Object, propName:string): IGUIController;
+    add(target: unknown, propName:string, min?: number, max?: number, step?: number): IGUIController;
+    add(target: unknown, propName:string, status: boolean): IGUIController;
+    add(target: unknown, propName:string, items:string[]): IGUIController;
+    add(target: unknown, propName:string, items:number[]): IGUIController;
+    add(target: unknown, propName:string, items:ObjectType): IGUIController;
+    addColor(target: unknown, propName:string): IGUIController;
 
     addFolder(propName:string): IDebugMenu;
 
@@ -41,12 +41,9 @@ export class DebugMenu implements IDebugMenu {
     private _add: DebugAdd[] = [];
     private _addColor: DebugAdd[] = [];
     private _folders: { [name: string]: DebugMenu } = {};
-    private _saveObject: any;
+    private _saveObject: ObjectType;
 
-    constructor() {
-    }
-
-    add(target: Object, propName: string, min?: number | boolean | string[] | Object, max?: number, step?: number): IGUIController { 
+    add(target: ObjectType, propName: string, min?: number | boolean | string[] | Object, max?: number, step?: number): IGUIController { 
         const debugAdd: DebugAdd = { args: arguments };
         this._add.push(debugAdd);
         return {
@@ -56,7 +53,7 @@ export class DebugMenu implements IDebugMenu {
         }
     }
 
-    addColor(target: Object, propName: string) {
+    addColor(target: ObjectType, propName: string) {
         const debugAdd: DebugAdd = { args: arguments };
         this._addColor.push(debugAdd);
         return {
@@ -106,7 +103,7 @@ export class DebugMenu implements IDebugMenu {
         for (const folderName in this._folders) { 
             this._folders[folderName]._gui = this._gui.addFolder(folderName);
             this._folders[folderName].show() 
-        };
+        }
 
         // Replace this shim with a real dat.gui object
         this.add = this._gui.add.bind(this._gui);
@@ -119,7 +116,7 @@ export class DebugMenu implements IDebugMenu {
 
     update() {
         if (this._gui && !this._gui.closed) {
-            for (var i in this._gui.__controllers) {
+            for (const i in this._gui.__controllers) {
                 this._gui.__controllers[i].updateDisplay();
             }
 
@@ -136,7 +133,7 @@ export class DebugMenu implements IDebugMenu {
         return this._gui ? this._gui.getSaveObject() : undefined;
     }
 
-    fromJSON(saveObject: any) {
+    fromJSON(saveObject: ObjectType): void {
         assert(!defined(this._gui), 'State must be loaded before the DebugMenu is shown');
         this._saveObject = saveObject;
     }

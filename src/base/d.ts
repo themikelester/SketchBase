@@ -11,3 +11,4 @@ declare module "*.frag" {
     export default content;
 }
 declare type Nullable<T> = T | null;
+declare type ObjectType = Record< string, unknown >;
