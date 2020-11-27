@@ -37,7 +37,7 @@
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "deploy": "gh-pages -d dist/ -t --remove bundleSizeReport.html",
+    "deploy": "webpack --config webpack.prod.js && gh-pages -d dist/ -t --remove bundleSizeReport.html",
     "typecheck": "tsc -w --noEmit"
   },
   "browserslist": [
