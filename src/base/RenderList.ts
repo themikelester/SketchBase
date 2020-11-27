@@ -6,11 +6,11 @@
 // Author: Mike Lester
 // Date C: 2020/11/27
 //----------------------------------------------------------------------------------------------------------------------
-import { IRenderPrimitive } from './RenderPrimitive';
+import { RenderPrimitive } from './RenderPrimitive';
 import { Id, CullMode, DepthStateDescriptor, RenderFormat } from './gfx/GfxTypes';
 
 export class RenderList {
-    primitives: IRenderPrimitive[] = [];
+    primitives: RenderPrimitive[] = [];
     defaultDepthStateId: Id;
 
     constructor(
@@ -18,7 +18,7 @@ export class RenderList {
         public defaultDepthState: DepthStateDescriptor,
         public renderFormat: RenderFormat ) {}
 
-    push( primitive: IRenderPrimitive ): void {
+    push( primitive: RenderPrimitive ): void {
         // @TODO: Validate primitive
         this.primitives.push( primitive );
     }
