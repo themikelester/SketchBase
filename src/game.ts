@@ -1,3 +1,5 @@
+import { Camera } from './base/Camera';
+import { DebugGrid } from './base/DebugGrid';
 import { IS_DEVELOPMENT } from './base/Version';
 import { DebugMenu } from './base/DebugMenu';
 import { MetaVar } from './base/Meta';
@@ -9,9 +11,13 @@ import { Compositor } from './base/Compositor';
 import { Scene } from './scene';
 import { GlobalUniforms } from './base/GlobalUniforms';
 
+import { mat4, vec3 } from 'gl-matrix';
+import { ZeroVec3 } from './base/MathHelpers';
+
 export class Game {
     @MetaVar rootElement: HTMLElement;
     @MetaVar canvas: HTMLCanvasElement = document.createElement( 'canvas' );
+    @MetaVar camera: Camera = new Camera();
     @MetaVar gfxDevice: Renderer = new WebGlRenderer();
     @MetaVar debugMenu: DebugMenu = new DebugMenu();
 
@@ -19,12 +25,14 @@ export class Game {
     @Module scene: Scene = new Scene();
     @Module compositor: Compositor = new Compositor();
     @Module globalUniforms: GlobalUniforms = new GlobalUniforms();
+    @Module debugGrid: DebugGrid = new DebugGrid();
 
     public initialize(): void {
         // DOM creation
         this.rootElement = document.createElement( 'div' );
         document.body.appendChild( this.rootElement );
         this.rootElement.appendChild( this.canvas );
+        this.canvas.width 
 
         // Graphics initialization
         this.gfxDevice.setDebugEnabled( IS_DEVELOPMENT );
@@ -55,6 +63,11 @@ export class Game {
 
         // Call "Initialize()" for all modules
         this.moduleBarn.callFunction( "initialize", ModuleDirection.Forward );
+        
+        // @HACK:
+        mat4.lookAt( this.camera.viewMatrix, vec3.fromValues( 0, 100, 500 ), vec3.fromValues( 0, 0, 0 ), vec3.fromValues( 0, 1, 0 ) );
+        this.camera.viewMatrixUpdated();
+        this.globalUniforms.buffer.setMat4( "g_viewProj", this.camera.viewProjMatrix );
     }
 
     public terminate(): void {
@@ -79,8 +92,12 @@ export class Game {
      */
     private onResize() {
         console.log( "Window resized to (" + window.innerWidth + ", " + window.innerHeight + ")" );
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+
+        this.canvas.style.width = `${window.innerWidth}px`; 
+        this.canvas.style.height = `${window.innerHeight}px`;
+        this.canvas.style.position = 'absolute';
+
+        this.camera.setPerspective( 60.0 / 180 * Math.PI, this.canvas.width / this.canvas.height, 1.0, 10000.0 );
     }
 
     /**

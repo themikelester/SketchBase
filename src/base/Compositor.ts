@@ -27,8 +27,8 @@ export class Compositor {
 
     @MetaFunc render( canvas: HTMLCanvasElement, gfxDevice: Gfx.Renderer, scene: Scene ): void {
         // Resize the back buffer if either the canvas size of resolution scale has changed
-        this.width = canvas.clientWidth * devicePixelRatio / this.resolutionScale;
-        this.height = canvas.clientHeight * devicePixelRatio / this.resolutionScale;
+        this.width = Math.round( canvas.clientWidth * devicePixelRatio / this.resolutionScale );
+        this.height = Math.round( canvas.clientHeight * devicePixelRatio / this.resolutionScale );
         if ( this.width !== canvas.width || this.height !== canvas.height ) {
             canvas.width = this.width;
             canvas.height = this.height;
