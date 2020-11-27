@@ -2,16 +2,21 @@ import { IS_DEVELOPMENT } from './base/Version';
 import { DebugMenu } from './base/DebugMenu';
 import { MetaVar } from './base/Meta';
 import { WebGlRenderer } from './base/gfx/WebGl';
-import { ModuleBarn, ModuleDirection } from './base/Module';
+import { Module, ModuleBarn, ModuleDirection } from './base/Module';
 import { Renderer } from './base/gfx/GfxTypes';
+
+import { Compositor } from './base/Compositor';
+import { Scene } from './scene';
 
 export class Game {
     @MetaVar rootElement: HTMLElement;
     @MetaVar canvas: HTMLCanvasElement = document.createElement( 'canvas' );
     @MetaVar gfxDevice: Renderer = new WebGlRenderer();
+    @MetaVar debugMenu: DebugMenu = new DebugMenu();
 
-    debugMenu: DebugMenu = new DebugMenu();
     moduleBarn: ModuleBarn = new ModuleBarn();
+    @Module scene: Scene = new Scene();
+    @Module compositor: Compositor = new Compositor();
 
     public initialize(): void {
         // DOM creation
@@ -41,7 +46,8 @@ export class Game {
         const kModuleFunctions = [
             "initialize",
             "terminate",
-            "update"
+            "update",
+            "render",
         ];
         this.moduleBarn.initialize( this, kModuleFunctions );
 
@@ -56,6 +62,7 @@ export class Game {
     public update(): void {
         this.debugMenu.update();
         this.moduleBarn.callFunction( "update", ModuleDirection.Forward );
+        this.moduleBarn.callFunction( "render", ModuleDirection.Forward );
     }
 
     /**
