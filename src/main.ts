@@ -53,6 +53,7 @@ if( module.hot )
 {
     module.hot.accept(["./game"], () => {
         console.log( "Hotloaded" );
+        window.game.hotload();
     });
 }
 

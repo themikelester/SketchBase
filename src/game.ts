@@ -55,6 +55,7 @@ export class Game {
         const kModuleFunctions = [
             "initialize",
             "terminate",
+            "hotload",
             "update",
             "render",
         ];
@@ -71,6 +72,10 @@ export class Game {
 
     public terminate(): void {
         this.moduleBarn.callFunction( "terminate", ModuleDirection.Reverse );
+    }
+    
+    public hotload(): void {
+        this.moduleBarn.callFunction( "hotload", ModuleDirection.Forward );
     }
 
     public update(): void {
