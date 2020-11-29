@@ -22,6 +22,7 @@ import { assert, assertDefined, assertString } from './Util';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ReflectType = any;
 type TypeName = string;
+type Constructor = Function;
 
 //----------------------------------------------------------------------------------------------------------------------
 // Exported Types
@@ -40,6 +41,7 @@ export interface MemFunc
 
 export class Class 
 {
+    cons: Constructor;
     vars: Record< string, MemVar > = {};
     funcs: Record< string, MemFunc > = {};
 }
@@ -49,11 +51,27 @@ export const MetaTable: Record<string, Class> = {};
 //----------------------------------------------------------------------------------------------------------------------
 // Decorators. Use these to meta-register methods and member variables.
 //----------------------------------------------------------------------------------------------------------------------
+export const MetaClass: ClassDecorator = target => {
+    if( !MetaTable[ target.name ] ) {
+        MetaTable[ target.name ] = new Class();
+        MetaTable[ target.name ].cons = target;
+    }
+    else {
+        // In the event of a Hotload, the new constructor will have the updated prototype. Exisiting objects still use 
+        // the old prototype. Copy all the properties to the new prototype, which essentially updates all functions.
+        const currentPrototype = MetaTable[ target.name ].cons.prototype;
+        const newPrototype = target.prototype;
+        if( currentPrototype != newPrototype) { 
+            updateObjectMembers( currentPrototype, newPrototype ); 
+        }
+    }
+}
+
 export const MetaVar: PropertyDecorator = ( target, propertyKey: string | symbol ) => {
     const className = target.constructor.name;
 
     // Create the table entry for this class if it does not already exist
-    if( !MetaTable[className] ) { MetaTable[className] = new Class(); }
+    MetaClass( target.constructor );
 
     // Add this property to the class
     const type = Reflect.getMetadata( 'design:type', target, propertyKey ) as ReflectType;
@@ -67,7 +85,7 @@ export const MetaFunc: MethodDecorator = ( target, propertyKey: string | symbol 
     const className = target.constructor.name;
 
     // Create the table entry for this class if it does not already exist
-    if( !MetaTable[className] ) { MetaTable[className] = new Class(); }
+    MetaClass( target.constructor );
 
     // Add this method and the types of each of its parameters to the class
     const paramTypes = Reflect.getMetadata( 'design:paramtypes', target, propertyKey ) as ReflectType[];
@@ -93,3 +111,30 @@ export function GetMemVarMetadata( className: string, memVarName: string, metaDa
     const memVar = assertDefined( metaClass.vars[ memVarName ] );
     return memVar.metadata[ metaDataKey ];
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Helpers
+//----------------------------------------------------------------------------------------------------------------------
+function updateObjectMembers(dst: ObjectType, src: ObjectType) {
+    const currentProperties = new Set(Object.getOwnPropertyNames(dst));
+    const newProperties = new Set(Object.getOwnPropertyNames(src));
+  
+    // add new and overwrite existing properties/methods
+    for (const prop of Object.getOwnPropertyNames(src)) {
+      const descriptor = Object.getOwnPropertyDescriptor(src, prop);
+      if (descriptor && descriptor.configurable) {
+        Object.defineProperty(dst, prop, descriptor);
+      }
+    }
+  
+    // delete removed properties
+    for (const existingProp of currentProperties) {
+      if (!newProperties.has(existingProp)) {
+        try {
+          delete dst[existingProp];
+        } catch {
+            // Do nothing
+        }
+      }
+    }
+  }

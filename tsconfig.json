@@ -20,7 +20,7 @@
         "sourceMap": true,
         "moduleResolution": "node",
         "module": "esnext",
-        "types": []
+        "types": [ "webpack-env" ]
     },
     "include": [
         "./src/"

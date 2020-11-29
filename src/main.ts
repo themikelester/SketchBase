@@ -1,5 +1,6 @@
 import { Game } from './game';
 import { GITHUB_REVISION_URL, IS_DEVELOPMENT } from './base/Version';
+import { MetaTable } from './base/Meta';
 
 // Google Analytics
 declare const gtag: ( command: string, eventName: string, eventParameters: { [key: string]: string } ) => void;
@@ -46,6 +47,13 @@ function Main() {
 function Update() {
     window.game.update();
     window.requestAnimationFrame( Update );
+}
+
+if( module.hot )
+{
+    module.hot.accept(["./game"], () => {
+        console.log( "Hotloaded" );
+    });
 }
 
 Main();
