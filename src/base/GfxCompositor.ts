@@ -35,7 +35,7 @@ export class Compositor {
             if( gfxDevice ) { gfxDevice.resize( canvas.width, canvas.height ); }
         }
 
-        const outline = scene.GetRenderOutline();
+        const outline = scene.getRenderOutline();
 
         // All the drawing work goes here
         gfxDevice.beginFrame();
@@ -48,7 +48,7 @@ export class Compositor {
         gfxDevice.endFrame();
 
         // Clear render lists
-        scene.ClearRenderLists();
+        scene.clearRenderLists();
     }
 }
 
@@ -68,14 +68,15 @@ function executeRenderList( gfxDevice: Gfx.Renderer, list: RenderList ) {
             const indexSize = prim.indexType === Gfx.Type.Ushort ? 2 : 4;
             const indexOffset = defaultValue( prim.indexBuffer.byteOffset, 0 ) / indexSize;
             if( defined( prim.instanceCount ) ) {
-                gfxDevice.drawInstanced( prim.type, prim.indexBuffer.buffer, assertDefined( prim.indexType ), indexOffset,
-                    prim.elementCount, prim.instanceCount )
+                gfxDevice.drawInstanced( prim.type, prim.indexBuffer.buffer, assertDefined( prim.indexType ),
+                    indexOffset, prim.elementCount, prim.instanceCount )
             }
- else {
-                gfxDevice.draw( prim.type, prim.indexBuffer.buffer, assertDefined( prim.indexType ), indexOffset, prim.elementCount );
+            else {
+                gfxDevice.draw( prim.type, prim.indexBuffer.buffer, assertDefined( prim.indexType ),
+                    indexOffset, prim.elementCount );
             }
         }
- else {
+        else {
             gfxDevice.drawNonIndexed( prim.type, 0, prim.elementCount );
         }
     }

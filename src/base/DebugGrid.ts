@@ -70,8 +70,10 @@ export class DebugGrid {
 
         const pipeline = gfxDevice.createRenderPipeline( shader, renderFormat, vertexLayout, resourceLayout );
 
-        const vertexBuffer = gfxDevice.createBuffer( 'GridVertices', Gfx.BufferType.Vertex, Gfx.Usage.Static, new Int8Array([ -1, -1, 1, -1, -1, 1, 1, 1 ]) );
-        const indexBuffer = gfxDevice.createBuffer( 'GridIndices', Gfx.BufferType.Index, Gfx.Usage.Static, new Uint16Array([ 0, 2, 1, 1, 2, 3 ]) );
+        const vtxData = new Int8Array([ -1, -1, 1, -1, -1, 1, 1, 1 ]);
+        const idxData = new Uint16Array([ 0, 2, 1, 1, 2, 3 ]);
+        const vertexBuffer = gfxDevice.createBuffer( 'GridVertices', Gfx.BufferType.Vertex, Gfx.Usage.Static, vtxData );
+        const indexBuffer = gfxDevice.createBuffer( 'GridIndices', Gfx.BufferType.Index, Gfx.Usage.Static, idxData );
 
         const resources = gfxDevice.createResourceTable( resourceLayout );
         this.uniforms = new UniformBuffer( 'GridUniforms', gfxDevice, GridShader.UniformLayout );
@@ -100,7 +102,7 @@ export class DebugGrid {
             this.uniforms.setFloat( 'u_gridRadius', this.gridRadius );
             this.uniforms.write( gfxDevice );
 
-            scene.GetRenderList( "opaque" ).push( this.primitive );
+            scene.getRenderList( "opaque" ).push( this.primitive );
         }
     }
 }
