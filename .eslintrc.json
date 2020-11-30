@@ -29,13 +29,13 @@
             "while": { "after": false }
           } }],
         "max-len": ["warn", {"code": 120}],
-        "new-cap": ["error"],
+        "new-cap": ["warn"],
         "new-parens": ["warn"],
         "no-trailing-spaces": ["warn"],
         "object-curly-spacing": ["warn", "always", { "arraysInObjects": false, "objectsInObjects": false }],
         "space-before-blocks": ["warn", "always"],
         "space-in-parens": ["warn", "always", { "exceptions": ["{}", "[]"]} ],
         "spaced-comment": ["warn", "always", { "exceptions": ["-"] }],
-        "curly": ["error"]
+        "curly": ["warn"]
     }
   }
