@@ -10,7 +10,7 @@ declare global {
 
 /**
  * All accepted URL parameters are documented here.
- * E.g. The URL 'moonduel.io?debug' will show the debug menu
+ * E.g. The URL 'http://myPublishUrl.io?debug' will show the debug menu
  */
 const kUrlParameters: Record<string, ( game: Game, value: string ) => void> = {
     'debug': ( game: Game ) => game.debugMenu.show(),
