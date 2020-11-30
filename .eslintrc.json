@@ -9,6 +9,9 @@
         "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
+        // Default overrides
+        "no-empty-function": "off",
+
         // Style rules
         "array-bracket-spacing": ["warn", "always", { "arraysInArrays": false, "objectsInArrays": false }],
         "block-spacing": ["warn", "always"],

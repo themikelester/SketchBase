@@ -1,3 +1,5 @@
+/* eslint-disable no-cond-assign */
+/* eslint-disable max-len */
 // -------------------------------------------------------------------------------
 // Notes: WebGL renderer that conforms to a generic Renderer interface
 //
@@ -5,22 +7,23 @@
 // Date C: 03-23-2019
 // --------------------------------------------------------------------------------
 import * as Gfx from './GfxApiTypes'
+import { assertDefined } from './Util';
 
 // --------------------------------------------------------------------------------
 // Globals
 // -------------------------------------------------------------------------------*/
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let gl: any; // @NOTE: Keep the WebGL context global for easy type translation
 
 // --------------------------------------------------------------------------------
 // GL Types
 // -------------------------------------------------------------------------------*/
 type GLInt = number;
-type GLUniformLocation = any;
 
 // --------------------------------------------------------------------------------
 // Translation Functions (Gfx -> WebGL)
 // -------------------------------------------------------------------------------*/
-function TranslateGfxBufferType( bufferType: Gfx.BufferType ): GLInt {
+function translateGfxBufferType( bufferType: Gfx.BufferType ): GLInt {
   switch ( bufferType ) {
     case Gfx.BufferType.Undefined: return 0;
     case Gfx.BufferType.Uniform: return gl.UNIFORM_BUFFER;
@@ -30,7 +33,7 @@ function TranslateGfxBufferType( bufferType: Gfx.BufferType ): GLInt {
   }
 }
 
-function TranslateGlType( glType: GLInt ): Gfx.Type {
+function translateGlType( glType: GLInt ): Gfx.Type {
   switch ( glType ) {
     // WebGL 1
     case gl.FLOAT: return Gfx.Type.Float;
@@ -58,7 +61,7 @@ function TranslateGlType( glType: GLInt ): Gfx.Type {
   }
 }
 
-function TranslateTypeToComponentCount( type: Gfx.Type ): GLInt {
+function translateTypeToComponentCount( type: Gfx.Type ): GLInt {
   const rootType = type & 0xFF;
   switch ( rootType ) {
     case Gfx.Type.Float:   return 1;
@@ -97,7 +100,7 @@ function TranslateTypeToComponentCount( type: Gfx.Type ): GLInt {
   }
 }
 
-function TranslateTypeToBaseGlType( type: Gfx.Type ): GLInt {
+function translateTypeToBaseGlType( type: Gfx.Type ): GLInt {
   const rootType = type & 0xFF;
   switch ( rootType ) {
     case Gfx.Type.Float:   return gl.FLOAT;
@@ -136,7 +139,7 @@ function TranslateTypeToBaseGlType( type: Gfx.Type ): GLInt {
   }
 }
 
-function TranslatePrimitiveType( primType: Gfx.PrimitiveType ) {
+function translatePrimitiveType( primType: Gfx.PrimitiveType ) {
   switch ( primType ) {
     case Gfx.PrimitiveType.Points: return gl.POINTS;
     case Gfx.PrimitiveType.Lines: return gl.LINES;
@@ -146,45 +149,6 @@ function TranslatePrimitiveType( primType: Gfx.PrimitiveType ) {
     case Gfx.PrimitiveType.TriangleStrip: return gl.TRIANGLE_STRIP;
     case Gfx.PrimitiveType.TriangleFan: return gl.TRIANGLE_FAN
     default: return error( `Unsupported primitive type: ${primType}` );
-  }
-}
-
-function TranslateTypeToGlType( type: Gfx.Type ): GLInt {
-  const rootType = type & 0xFF;
-  switch ( type ) {
-    case Gfx.Type.Float:   return gl.FLOAT;
-    case Gfx.Type.Float2:  return gl.FLOAT_VEC2;
-    case Gfx.Type.Float3:  return gl.FLOAT_VEC3;
-    case Gfx.Type.Float4:  return gl.FLOAT_VEC4;
-    case Gfx.Type.Int:     return gl.INT;
-    case Gfx.Type.Int2:    return gl.INT_VEC2;
-    case Gfx.Type.Int3:    return gl.INT_VEC3;
-    case Gfx.Type.Int4:    return gl.INT_VEC4;
-    case Gfx.Type.Uint:    return gl.UNSIGNED_INT;
-    case Gfx.Type.Uint2:   return gl.UNSIGNED_INT_VEC2;
-    case Gfx.Type.Uint3:   return gl.UNSIGNED_INT_VEC3;
-    case Gfx.Type.Uint4:   return gl.UNSIGNED_INT_VEC4;
-    case Gfx.Type.Short:   return gl.SHORT;
-    case Gfx.Type.Short2:  return gl.SHORT_VEC2;
-    case Gfx.Type.Short3:  return gl.SHORT_VEC3;
-    case Gfx.Type.Short4:  return gl.SHORT_VEC4;
-    case Gfx.Type.Ushort:  return gl.UNSIGNED_SHORT;
-    case Gfx.Type.Ushort2: return gl.UNSIGNED_SHORT_VEC2;
-    case Gfx.Type.Ushort3: return gl.UNSIGNED_SHORT_VEC3;
-    case Gfx.Type.Ushort4: return gl.UNSIGNED_SHORT_VEC4;
-    case Gfx.Type.Char:    return gl.BYTE;
-    case Gfx.Type.Char2:   return gl.BYTE_VEC2;
-    case Gfx.Type.Char3:   return gl.BYTE_VEC3;
-    case Gfx.Type.Char4:   return gl.BYTE_VEC4;
-    case Gfx.Type.Uchar:   return gl.UNSIGNED_BYTE;
-    case Gfx.Type.Uchar2:  return gl.UNSIGNED_BYTE_VEC2;
-    case Gfx.Type.Uchar3:  return gl.UNSIGNED_BYTE_VEC3;
-    case Gfx.Type.Uchar4:  return gl.UNSIGNED_BYTE_VEC4;
-    case Gfx.Type.Half:    return gl.HALF_FLOAT;
-    case Gfx.Type.Half2:   return gl.HALF_FLOAT_VEC2;
-    case Gfx.Type.Half3:   return gl.HALF_FLOAT_VEC3;
-    case Gfx.Type.Half4:   return gl.HALF_FLOAT_VEC4;
-    default: return error( `Unsupported type: ${type}` );
   }
 }
 
@@ -210,7 +174,7 @@ function isTypeNormalized( type: Gfx.Type ): boolean {
   }
 }
 
-function TranslateIndexTypeToGlType( type: Gfx.Type ): GLInt {
+function translateIndexTypeToGlType( type: Gfx.Type ): GLInt {
   switch ( type ) {
     case Gfx.Type.Uchar:   return gl.UNSIGNED_BYTE;
     case Gfx.Type.Uint:    return gl.UNSIGNED_INT;
@@ -219,7 +183,7 @@ function TranslateIndexTypeToGlType( type: Gfx.Type ): GLInt {
   }
 }
 
-function TranslateCompareFunc( func: Gfx.CompareFunc ): GLInt {
+function translateCompareFunc( func: Gfx.CompareFunc ): GLInt {
   switch ( func ) {
     case Gfx.CompareFunc.Never: return gl.NEVER;
     case Gfx.CompareFunc.Less: return gl.LESS;
@@ -233,7 +197,7 @@ function TranslateCompareFunc( func: Gfx.CompareFunc ): GLInt {
   }
 }
 
-function TranslateGfxTextureType( gfxType: Gfx.TextureType ): GLInt {
+function translateGfxTextureType( gfxType: Gfx.TextureType ): GLInt {
   switch ( gfxType ) {
     case Gfx.TextureType.Texture2D: return gl.TEXTURE_2D;
     case Gfx.TextureType.Texture3D: return gl.TEXTURE_3D;
@@ -242,7 +206,7 @@ function TranslateGfxTextureType( gfxType: Gfx.TextureType ): GLInt {
   }
 }
 
-function TranslateGfxTexelFormatWebGl1( format: Gfx.TexelFormat ) {
+function translateGfxTexelFormatWebGl1( format: Gfx.TexelFormat ) {
   switch ( format ) {
     case Gfx.TexelFormat.U565: return gl.RGB;
     case Gfx.TexelFormat.U8: return gl.ALPHA;
@@ -259,7 +223,7 @@ function TranslateGfxTexelFormatWebGl1( format: Gfx.TexelFormat ) {
   }
 }
 
-function TranslateGfxTexelFormat( format: Gfx.TexelFormat ) {
+function translateGfxTexelFormat( format: Gfx.TexelFormat ) {
   switch ( format ) {
     case Gfx.TexelFormat.U565: return gl.RGB;
     case Gfx.TexelFormat.U8: return gl.RED;
@@ -283,7 +247,7 @@ function TranslateGfxTexelFormat( format: Gfx.TexelFormat ) {
   }
 }
 
-function TranslateGfxTexelFormatToInternalFormat( format: Gfx.TexelFormat ) {
+function translateGfxTexelFormatToInternalFormat( format: Gfx.TexelFormat ) {
   switch ( format ) {
     case Gfx.TexelFormat.U565: return gl.RGB565;
     case Gfx.TexelFormat.U8: return gl.R8;
@@ -308,7 +272,7 @@ function TranslateGfxTexelFormatToInternalFormat( format: Gfx.TexelFormat ) {
   }
 }
 
-function TranslateGfxTexelFormatToType( format: Gfx.TexelFormat ): GLInt {
+function translateGfxTexelFormatToType( format: Gfx.TexelFormat ): GLInt {
   switch ( format ) {
     case Gfx.TexelFormat.Undefined: return 0;
     case Gfx.TexelFormat.U565: return gl.UNSIGNED_SHORT_5_6_5;
@@ -333,7 +297,7 @@ function TranslateGfxTexelFormatToType( format: Gfx.TexelFormat ): GLInt {
   }
 }
 
-function TranslateGfxTextureFilter( filter: Gfx.TextureFilter ) {
+function translateGfxTextureFilter( filter: Gfx.TextureFilter ) {
   switch ( filter ) {
     case Gfx.TextureFilter.Nearest: return gl.NEAREST;
     case Gfx.TextureFilter.Linear: return gl.LINEAR;
@@ -341,7 +305,7 @@ function TranslateGfxTextureFilter( filter: Gfx.TextureFilter ) {
   }
 }
 
-function TranslateGfxTextureWrap( wrap: Gfx.TextureWrap ) {
+function translateGfxTextureWrap( wrap: Gfx.TextureWrap ) {
   switch ( wrap ) {
     case Gfx.TextureWrap.Clamp: return gl.CLAMP_TO_EDGE;
     case Gfx.TextureWrap.Repeat: return gl.REPEAT;
@@ -349,7 +313,7 @@ function TranslateGfxTextureWrap( wrap: Gfx.TextureWrap ) {
   }
 }
 
-function TranslateGfxCullMode( cullMode: Gfx.CullMode ): GLInt {
+function translateGfxCullMode( cullMode: Gfx.CullMode ): GLInt {
   switch ( cullMode ) {
     case Gfx.CullMode.None: return gl.NONE;
     case Gfx.CullMode.Back: return gl.BACK;
@@ -358,7 +322,7 @@ function TranslateGfxCullMode( cullMode: Gfx.CullMode ): GLInt {
   }
 }
 
-function TranslateBlendFactor( blendFactor: Gfx.BlendFactor ): GLInt {
+function translateBlendFactor( blendFactor: Gfx.BlendFactor ): GLInt {
   switch ( blendFactor ) {
     case Gfx.BlendFactor.Zero: return gl.ZERO;
     case Gfx.BlendFactor.One: return gl.ONE;
@@ -387,7 +351,7 @@ interface ShaderReflection {
     count: number,
     size: number,
     type: Gfx.Type,
-    location: GLUniformLocation,
+    location: WebGLUniformLocation,
   }>
 
   textures: {
@@ -396,7 +360,7 @@ interface ShaderReflection {
       count: number,
       type: Gfx.Type,
       location: number,
-      locationGl: GLUniformLocation,
+      locationGl: WebGLUniformLocation,
     }
   }
   textureArray: Array<ShaderReflection['textures'][0]>,
@@ -500,12 +464,8 @@ function defined<T>( x: ( T | undefined | null ) ): x is T {
   return x !== undefined && x !== null;
 }
 
-function isImage( v: any ): v is ( HTMLImageElement | HTMLCanvasElement | ImageBitmap ) {
-  return v.height !== undefined;
-}
-
-function checkErrors() {
-  // Do something
+function isImage( v: unknown ): v is ( HTMLImageElement | HTMLCanvasElement | ImageBitmap ) {
+  return ( v as ( HTMLImageElement | HTMLCanvasElement | ImageBitmap ) ).height !== undefined;
 }
 
 function reflectShader( program: GLInt ): ShaderReflection {
@@ -521,12 +481,12 @@ function reflectShader( program: GLInt ): ShaderReflection {
   assert( attributeCount < Gfx.kMaxShaderAttributes );
   for( let i = 0; i < attributeCount; i++ ) {
     const info = gl.getActiveAttrib( program, i );
-    const type = TranslateGlType( info.type );
+    const type = translateGlType( info.type );
     attributes[ info.name ] = {
       location: i,
       count: info.size,
-      components: TranslateTypeToComponentCount( type ),
-      glType: TranslateTypeToBaseGlType( type ),
+      components: translateTypeToComponentCount( type ),
+      glType: translateTypeToBaseGlType( type ),
       type,
     }
   }
@@ -536,7 +496,7 @@ function reflectShader( program: GLInt ): ShaderReflection {
   assert( uniformCount < Gfx.kMaxShaderUniforms );
   for( let i = 0; i < uniformCount; i++ ) {
     const info = gl.getActiveUniform( program, i );
-    const type = TranslateGlType( info.type );
+    const type = translateGlType( info.type );
 
     // For array uniforms, WebGL will suffix the name with "[0]". Remove it for easier parsing
     const name = info.name.replace( '[0]', '' );
@@ -630,7 +590,7 @@ function bindBufferVertexAttributes( pipeline: RenderPipeline, bufferWithOffset:
     if( !bufferWithOffset.buffer ) {
       gl.disableVertexAttribArray( shaderAttrib.location );
     } else {
-      const type = TranslateTypeToBaseGlType( bufferAttrib.type );
+      const type = translateTypeToBaseGlType( bufferAttrib.type );
       const normalized = isTypeNormalized( bufferAttrib.type );
 
       gl.enableVertexAttribArray( shaderAttrib.location );
@@ -646,6 +606,7 @@ function bindBufferVertexAttributes( pipeline: RenderPipeline, bufferWithOffset:
 
 function detectSupportedFeatures( webGlVersion: number ) {
   let featureFlags = 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let ext: any;
 
   // Detect supported features by attempting to enable each GL extension
@@ -716,8 +677,8 @@ class Pool<ObjectType> {
 
   create( obj: ObjectType ): Gfx.Id {
     ++this.count;
-    if( this.freeList.length > 0 ) {
-      const id = this.freeList.pop()!;
+    const id = this.freeList.pop();
+    if( id !== undefined ) {
       this.objects[ id ] = obj;
       return id;
     } else {
@@ -786,7 +747,7 @@ export class WebGlRenderer implements Gfx.Renderer {
     assert( this.defaultRenderPass === Gfx.kDefaultRenderPass );
 
     // Shadow GL state to avoid unnecessary API calls
-    this.current = {}!
+    this.current = {};
 
     // Set a default clear color
     gl.clearColor( 0, 0, 0, 1 );
@@ -820,20 +781,22 @@ export class WebGlRenderer implements Gfx.Renderer {
     return !!( this.featureFlags & featureId );
   }
 
-  setDebugEnabled( enabled: boolean ) {
+  setDebugEnabled( enabled: boolean ): void {
     this.debugEnabled = enabled;
   }
 
-  resize( width: number, height: number ) {
+  resize( width: number, height: number ): void {
     const renderPass = this.renderPasses.get( this.defaultRenderPass );
     renderPass.width = width;
     renderPass.height = height;
   }
 
   beginFrame(): void {
+    // Do nothing
   }
 
   endFrame(): void {
+      // Do nothing
   }
 
   bindRenderPass( renderPassId: Gfx.Id ): void {
@@ -877,7 +840,7 @@ export class WebGlRenderer implements Gfx.Renderer {
     {
       this.current.srcBlendFactor = defaultValue( pipeline.renderFormat.srcBlendFactor, Gfx.BlendFactor.One );
       this.current.dstBlendFactor = defaultValue( pipeline.renderFormat.dstBlendFactor, Gfx.BlendFactor.OneMinusSource );
-      gl.blendFunc( TranslateBlendFactor( this.current.srcBlendFactor ), TranslateBlendFactor( this.current.dstBlendFactor ) );
+      gl.blendFunc( translateBlendFactor( this.current.srcBlendFactor ), translateBlendFactor( this.current.dstBlendFactor ) );
     }
 
     // @TODO: Support more Blending properties and Color Writes
@@ -885,9 +848,9 @@ export class WebGlRenderer implements Gfx.Renderer {
     // setBlendEquation(&m_currentPipelineState, pipeline.state.blendModeRGB, pipeline.state.blendModeAlpha);
   }
 
-  draw( primitiveType: Gfx.PrimitiveType, indexBufferId: Gfx.Id, indexType: Gfx.Type, indexOffset: number, indexCount: number ) {
-    const glPrimType = TranslatePrimitiveType( primitiveType );
-    const glIndexType = TranslateIndexTypeToGlType( indexType );
+  draw( primitiveType: Gfx.PrimitiveType, indexBufferId: Gfx.Id, indexType: Gfx.Type, indexOffset: number, indexCount: number ): void {
+    const glPrimType = translatePrimitiveType( primitiveType );
+    const glIndexType = translateIndexTypeToGlType( indexType );
     const glIndexSize = Gfx.translateTypeToSize( indexType );
 
     const indexBuf = this.buffers.get( indexBufferId );
@@ -895,9 +858,9 @@ export class WebGlRenderer implements Gfx.Renderer {
     gl.drawElements( glPrimType, indexCount, glIndexType, indexOffset * glIndexSize );
   }
 
-  drawInstanced( primitiveType: Gfx.PrimitiveType, indexBufferId: Gfx.Id, indexType: Gfx.Type, indexOffset: number, indexCount: number, instanceCount: number ) {
-    const glPrimType = TranslatePrimitiveType( primitiveType );
-    const glIndexType = TranslateIndexTypeToGlType( indexType );
+  drawInstanced( primitiveType: Gfx.PrimitiveType, indexBufferId: Gfx.Id, indexType: Gfx.Type, indexOffset: number, indexCount: number, instanceCount: number ): void {
+    const glPrimType = translatePrimitiveType( primitiveType );
+    const glIndexType = translateIndexTypeToGlType( indexType );
     const glIndexSize = Gfx.translateTypeToSize( indexType );
 
     const indexBuf = this.buffers.get( indexBufferId );
@@ -906,8 +869,8 @@ export class WebGlRenderer implements Gfx.Renderer {
     else { gl.drawElementsInstanced( glPrimType, indexCount, glIndexType, indexOffset * glIndexSize, instanceCount ); }
   }
 
-  drawNonIndexed( primitiveType: Gfx.PrimitiveType, vertOffset: number, vertCount: number ) {
-    const glPrimType = TranslatePrimitiveType( primitiveType );
+  drawNonIndexed( primitiveType: Gfx.PrimitiveType, vertOffset: number, vertCount: number ): void {
+    const glPrimType = translatePrimitiveType( primitiveType );
     gl.drawArrays( glPrimType, vertOffset, vertCount );
   }
 
@@ -924,17 +887,17 @@ export class WebGlRenderer implements Gfx.Renderer {
     this.current.depthStencil = newState;
   }
 
-  setCullMode( cullMode: Gfx.CullMode ) {
+  setCullMode( cullMode: Gfx.CullMode ): void {
     if( this.current.cullMode != cullMode ) {
       this.current.cullMode = cullMode;
       if( cullMode == Gfx.CullMode.None ) { gl.disable( gl.CULL_FACE ); }
-      else { gl.enable( gl.CULL_FACE ); gl.cullFace( TranslateGfxCullMode( cullMode ) ); }
+      else { gl.enable( gl.CULL_FACE ); gl.cullFace( translateGfxCullMode( cullMode ) ); }
     }
   }
 
-  createDepthStencilState( desc: Gfx.DepthStateDescriptor ) {
+  createDepthStencilState( desc: Gfx.DepthStateDescriptor ): Gfx.Id {
     // @TODO: Support stencil state
-    const glCompareFunc = TranslateCompareFunc( defaultValue( desc.depthCompareFunc, Gfx.CompareFunc.Less ) );
+    const glCompareFunc = translateCompareFunc( defaultValue( desc.depthCompareFunc, Gfx.CompareFunc.Less ) );
     return this.depthStencilStates.create({
       depthTestEnabled: desc.depthTestEnabled,
       depthWriteEnabled: desc.depthWriteEnabled,
@@ -1003,10 +966,8 @@ export class WebGlRenderer implements Gfx.Renderer {
     for( let i = 0; i < shaderRefl.uniforms.length; i++ ) {
       const def = shaderRefl.uniforms[ i ];
       const layout = uniLayout[ def.name ];
-      const cpuBuf = table.buffers[ layout.index ].buffer.cpuBuffer;
-      assert( defined( cpuBuf ) );
-
-      const value = new Float32Array( cpuBuf!.buffer, layout.offset, def.size / 4 );
+      const cpuBuf = assertDefined( table.buffers[ layout.index ].buffer.cpuBuffer );
+      const value = new Float32Array( cpuBuf.buffer, layout.offset, def.size / 4 );
 
       // GL Uniform calls are very expensive, but uniforms are saved per shader program.
       const oldVal = this.pipeline.shader.uniformVals[ def.name ];
@@ -1063,19 +1024,19 @@ export class WebGlRenderer implements Gfx.Renderer {
     }
   }
 
-  setBuffer( resourceTableId: Gfx.Id, index: number, view: Gfx.BufferView ) {
+  setBuffer( resourceTableId: Gfx.Id, index: number, view: Gfx.BufferView ): void {
     const table = this.resourceTables.get( resourceTableId ) as ResourceTable;
     const buffer = this.buffers.get( view.buffer );
     table.buffers[ index ] = { buffer, offset: view.byteOffset || 0 };
   }
 
-  setTexture( resourceTableId: Gfx.Id, index: number, textureId: Gfx.Id ) {
+  setTexture( resourceTableId: Gfx.Id, index: number, textureId: Gfx.Id ): void {
     const table = this.resourceTables.get( resourceTableId ) as ResourceTable;
     const texture = textureId ? this.textures.get( textureId ) : null;
     table.textures[ index ] = texture;
   }
 
-  setTextures( resourceTableId: Gfx.Id, index: number, textureIds: Gfx.Id[]) {
+  setTextures( resourceTableId: Gfx.Id, index: number, textureIds: Gfx.Id[]): void {
     const table = this.resourceTables.get( resourceTableId ) as ResourceTable;
     for( let i = 0; i < textureIds.length; i++ ) {
       const texture = textureIds[ i ] ? this.textures.get( textureIds[ i ]) : null;
@@ -1084,7 +1045,7 @@ export class WebGlRenderer implements Gfx.Renderer {
   }
 
 
-  writeBufferData( bufferId: Gfx.Id, dstOffset: number, srcData: ( ArrayBuffer | ArrayBufferView ) ) {
+  writeBufferData( bufferId: Gfx.Id, dstOffset: number, srcData: ( ArrayBuffer | ArrayBufferView ) ): void {
     const buffer = this.buffers.get( bufferId );
 
     if( buffer.type === Gfx.BufferType.Uniform ) {
@@ -1126,9 +1087,8 @@ export class WebGlRenderer implements Gfx.Renderer {
         const type = binding.layout[ uniform.name ].type;
         assert( type === uniform.type, `Shader '${shader.name}' expects uniform '${uniform.name}' to be type ${uniform.type} but the ShaderResourceLayout specifies type ${type}` );
         if( uniform.count > 1 ) {
-          const count = binding.layout[ uniform.name ].count;
-          assert( count !== undefined, `Shader '${shader.name}' expects uniform '${uniform.name}' to be an array but the ShaderResourceLayout specifies a scalar value` );
-          assert( count! >= uniform.count, `Shader '${shader.name}' expects uniform '${uniform.name}' to be an array of length ${uniform.count} but the ShaderResourceLayout specifies a length of ${count}` );
+          const count = assertDefined( binding.layout[ uniform.name ].count, `Shader '${shader.name}' expects uniform '${uniform.name}' to be an array but the ShaderResourceLayout specifies a scalar value` );
+          assert( count >= uniform.count, `Shader '${shader.name}' expects uniform '${uniform.name}' to be an array of length ${uniform.count} but the ShaderResourceLayout specifies a length of ${count}` );
         }
       }
 
@@ -1175,7 +1135,7 @@ export class WebGlRenderer implements Gfx.Renderer {
     this.renderPipelines.delete( pipelineId );
   }
 
-  createShader( desc: Gfx.ShaderDescriptor ) {
+  createShader( desc: Gfx.ShaderDescriptor ): Gfx.Id {
     return this._createShader( desc.name, desc.vertSource, desc.fragSource );
   }
 
@@ -1218,21 +1178,21 @@ export class WebGlRenderer implements Gfx.Renderer {
 
   createTexture( name: string, desc: Gfx.TextureDescriptor, image?: HTMLImageElement | HTMLCanvasElement | ArrayBufferView | ImageBitmap ): Gfx.Id {
     const isArrayBuffer = !image || ( image as ArrayBufferView ).buffer instanceof ArrayBuffer && ( image as ArrayBufferView ).byteLength !== undefined;
-    const translateFormat = this.webGlVersion === 1 ? TranslateGfxTexelFormatWebGl1 : TranslateGfxTexelFormat;
+    const translateFormat = this.webGlVersion === 1 ? translateGfxTexelFormatWebGl1 : translateGfxTexelFormat;
 
     const tex = {
-      target: TranslateGfxTextureType( desc.type ),
+      target: translateGfxTextureType( desc.type ),
       format: translateFormat( desc.format ),
-      internalFormat: this.webGlVersion > 1 ? TranslateGfxTexelFormatToInternalFormat( desc.format ) : translateFormat( desc.format ),
-      type: TranslateGfxTexelFormatToType( desc.format ),
+      internalFormat: this.webGlVersion > 1 ? translateGfxTexelFormatToInternalFormat( desc.format ) : translateFormat( desc.format ),
+      type: translateGfxTexelFormatToType( desc.format ),
       usage: desc.usage,
       width: isArrayBuffer ? defaultValue( desc.width, 1 ) : ( image as HTMLImageElement ).width,
       height: isArrayBuffer ? defaultValue( desc.height, 1 ) : ( image as HTMLImageElement ).height,
       depth: desc.depth || 1,
-      minFilter: TranslateGfxTextureFilter( ( desc.defaultMinFilter !== undefined ) ? desc.defaultMinFilter : Gfx.TextureFilter.Linear ),
-      magFilter: TranslateGfxTextureFilter( ( desc.defaultMagFilter !== undefined ) ? desc.defaultMagFilter : Gfx.TextureFilter.Linear ),
-      wrapS: TranslateGfxTextureWrap( ( desc.defaultWrapS !== undefined ) ? desc.defaultWrapS : Gfx.TextureWrap.Repeat ),
-      wrapT: TranslateGfxTextureWrap( ( desc.defaultWrapT !== undefined ) ? desc.defaultWrapT : Gfx.TextureWrap.Repeat ),
+      minFilter: translateGfxTextureFilter( ( desc.defaultMinFilter !== undefined ) ? desc.defaultMinFilter : Gfx.TextureFilter.Linear ),
+      magFilter: translateGfxTextureFilter( ( desc.defaultMagFilter !== undefined ) ? desc.defaultMagFilter : Gfx.TextureFilter.Linear ),
+      wrapS: translateGfxTextureWrap( ( desc.defaultWrapS !== undefined ) ? desc.defaultWrapS : Gfx.TextureWrap.Repeat ),
+      wrapT: translateGfxTextureWrap( ( desc.defaultWrapT !== undefined ) ? desc.defaultWrapT : Gfx.TextureWrap.Repeat ),
       glId: gl.createTexture(),
     }
 
@@ -1300,16 +1260,16 @@ export class WebGlRenderer implements Gfx.Renderer {
     this.textures.delete( textureId );
   }
 
-  createBuffer( name: string, type: Gfx.BufferType, usage: Gfx.Usage, dataOrSize: ( ArrayBuffer | ArrayBufferView | number ) ) {
+  createBuffer( name: string, type: Gfx.BufferType, usage: Gfx.Usage, dataOrSize: ( ArrayBuffer | ArrayBufferView | number ) ): Gfx.Id {
     assert( usage != Gfx.Usage.None );
 
     let cpuBuffer;
     let glId;
-    const target = TranslateGfxBufferType( type );
+    const target = translateGfxBufferType( type );
 
     // Typescript type guards
-    const isSize = ( dataOrSize: any ): dataOrSize is number => Number.isInteger( dataOrSize as number );
-    const isArrayBuffer = ( dataOrSize: any ): dataOrSize is ArrayBuffer => dataOrSize instanceof ArrayBuffer;
+    const isSize = ( dataOrSize: unknown ): dataOrSize is number => Number.isInteger( dataOrSize as number );
+    const isArrayBuffer = ( dataOrSize: unknown ): dataOrSize is ArrayBuffer => dataOrSize instanceof ArrayBuffer;
 
     const data = isSize( dataOrSize ) ? null : dataOrSize;
     const size = isSize( dataOrSize ) ? dataOrSize : dataOrSize.byteLength;

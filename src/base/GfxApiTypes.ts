@@ -349,7 +349,7 @@ export abstract class Renderer {
     abstract setTexture( resourceTableId: Id, index: number, textureId: Id ): void;
     abstract setTextures( resourceTableId: Id, index: number, textureIds: Id[]): void;
 
-    abstract createDepthStencilState( desc: DepthStateDescriptor ): number;
+    abstract createDepthStencilState( desc: DepthStateDescriptor ): Id;
     abstract createResourceTable( resourceLayout: ResourceLayout ): Id;
     abstract createVertexTable( pipelineId: Id ): Id;
     abstract createRenderPipeline( shaderId: Id, renderFormat: RenderFormat,
