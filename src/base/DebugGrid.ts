@@ -7,9 +7,9 @@
 import * as Gfx from './gfx/GfxTypes';
 import vertShaderSource from './shaders/grid.vert';
 import fragShaderSource from './shaders/grid.frag';
-import { GlobalUniforms } from './GlobalUniforms';
-import { RenderPrimitive } from './RenderPrimitive';
-import { computePackedBufferLayout, UniformBuffer } from './UniformBuffer';
+import { GlobalUniforms } from './GfxGlobalUniforms';
+import { RenderPrimitive } from './GfxRenderPrimitive';
+import { computePackedBufferLayout, UniformBuffer } from './GfxUniformBuffer';
 import { DebugMenu } from './DebugMenu';
 import { vec4 } from 'gl-matrix';
 import { MetaFunc } from './Meta';

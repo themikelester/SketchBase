@@ -6,7 +6,7 @@
 // Author: Mike Lester
 // Date C: 2020/11/27
 //----------------------------------------------------------------------------------------------------------------------
-import { RenderPrimitive } from './RenderPrimitive';
+import { RenderPrimitive } from './GfxRenderPrimitive';
 import { Id, CullMode, DepthStateDescriptor, RenderFormat } from './gfx/GfxTypes';
 
 export class RenderList {

@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------------------------------------------------------
-// Notes:  All of the rendering for the frame is performed here. Compositor's job is to process a RenderOutline into 
+// Notes:  All of the rendering for the frame is performed here. Compositor's job is to process a RenderOutline into
 //         graphics API calls. It also creates the graphics API objects that are described by the RenderOutline, such as
 //         render passes, state objects, and command lists.
 //
@@ -7,7 +7,7 @@
 // Date C: 2020/11/27
 //----------------------------------------------------------------------------------------------------------------------
 import * as Gfx from './gfx/GfxTypes';
-import { RenderList } from './RenderList';
+import { RenderList } from './GfxRenderList';
 import { assertDefined, defined, defaultValue } from './Util';
 import { DebugMenu } from './DebugMenu';
 import { MetaFunc } from './Meta';
@@ -29,20 +29,19 @@ export class Compositor {
         // Resize the back buffer if either the canvas size of resolution scale has changed
         this.width = Math.round( canvas.clientWidth * devicePixelRatio / this.resolutionScale );
         this.height = Math.round( canvas.clientHeight * devicePixelRatio / this.resolutionScale );
-        if ( this.width !== canvas.width || this.height !== canvas.height ) {
+        if( this.width !== canvas.width || this.height !== canvas.height ) {
             canvas.width = this.width;
             canvas.height = this.height;
-            if ( gfxDevice ) gfxDevice.resize( canvas.width, canvas.height );
+            if( gfxDevice ) { gfxDevice.resize( canvas.width, canvas.height ); }
         }
-        
+
         const outline = scene.GetRenderOutline();
 
         // All the drawing work goes here
         gfxDevice.beginFrame();
         gfxDevice.bindRenderPass( Gfx.kDefaultRenderPass );
         {
-            for( const cmd of outline )
-            {
+            for( const cmd of outline ) {
                 if( cmd instanceof RenderList ) { executeRenderList( gfxDevice, cmd ); }
             }
         }
@@ -55,8 +54,8 @@ export class Compositor {
 
 function executeRenderList( gfxDevice: Gfx.Renderer, list: RenderList ) {
     const primCount = list.primitives.length;
-    for ( let i = 0; i < primCount; i++ ) {
-        const prim = list.primitives[i];
+    for( let i = 0; i < primCount; i++ ) {
+        const prim = list.primitives[ i ];
 
         gfxDevice.bindPipeline( prim.renderPipeline );
         gfxDevice.bindVertices( prim.vertexTable );
@@ -65,16 +64,18 @@ function executeRenderList( gfxDevice: Gfx.Renderer, list: RenderList ) {
         gfxDevice.setCullMode( list.defaultCullMode );
         gfxDevice.setDepthStencilState( list.defaultDepthStateId );
 
-        if ( defined( prim.indexBuffer ) ) {
+        if( defined( prim.indexBuffer ) ) {
             const indexSize = prim.indexType === Gfx.Type.Ushort ? 2 : 4;
             const indexOffset = defaultValue( prim.indexBuffer.byteOffset, 0 ) / indexSize;
-            if ( defined( prim.instanceCount ) ) {
+            if( defined( prim.instanceCount ) ) {
                 gfxDevice.drawInstanced( prim.type, prim.indexBuffer.buffer, assertDefined( prim.indexType ), indexOffset,
                     prim.elementCount, prim.instanceCount )
-            } else {
+            }
+ else {
                 gfxDevice.draw( prim.type, prim.indexBuffer.buffer, assertDefined( prim.indexType ), indexOffset, prim.elementCount );
             }
-        } else {
+        }
+ else {
             gfxDevice.drawNonIndexed( prim.type, 0, prim.elementCount );
         }
     }

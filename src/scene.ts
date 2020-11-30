@@ -1,4 +1,4 @@
-import { RenderList } from './base/RenderList';
+import { RenderList } from './base/GfxRenderList';
 import { CullMode, Renderer } from './base/gfx/GfxTypes';
 import { assertDefined } from './base/Util';
 import { MetaFunc } from './base/Meta';
@@ -8,8 +8,8 @@ type RenderPassDescriptor = number;
 type RenderOutline = Array<RenderList | RenderPassDescriptor>
 
 const renderLists: Record<string, RenderList> = {
-    opaque: new RenderList( CullMode.Back, { depthWriteEnabled: true, depthTestEnabled: true }, { blendingEnabled: false } ),
-    ui: new RenderList( CullMode.None, { depthWriteEnabled: false, depthTestEnabled: false }, { blendingEnabled: true } ),
+    opaque: new RenderList( CullMode.Back, { depthWriteEnabled: true, depthTestEnabled: true }, { blendingEnabled: false }),
+    ui: new RenderList( CullMode.None, { depthWriteEnabled: false, depthTestEnabled: false }, { blendingEnabled: true }),
 }
 
 const renderOutline: RenderOutline = [
@@ -18,12 +18,11 @@ const renderOutline: RenderOutline = [
 ];
 
 export class Scene {
-    @MetaFunc initialize( gfxDevice: Renderer ): void
-    {
+    @MetaFunc initialize( gfxDevice: Renderer ): void {
         // Parse RenderLists and allocate any GFX resources they may need
-        for ( const list in renderLists ) {
-            renderLists[list].defaultDepthStateId = gfxDevice.createDepthStencilState( renderLists[list].defaultDepthState );
-        }        
+        for( const list in renderLists ) {
+            renderLists[ list ].defaultDepthStateId = gfxDevice.createDepthStencilState( renderLists[ list ].defaultDepthState );
+        }
     }
 
     GetRenderList( name: string ): RenderList {

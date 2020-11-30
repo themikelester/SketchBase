@@ -7,9 +7,9 @@ import { WebGlRenderer } from './base/gfx/WebGl';
 import { Module, ModuleBarn, ModuleDirection } from './base/Module';
 import { Renderer } from './base/gfx/GfxTypes';
 
-import { Compositor } from './base/Compositor';
+import { Compositor } from './base/GfxCompositor';
 import { Scene } from './scene';
-import { GlobalUniforms } from './base/GlobalUniforms';
+import { GlobalUniforms } from './base/GfxGlobalUniforms';
 
 import { mat4, vec3 } from 'gl-matrix';
 
