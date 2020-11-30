@@ -13,7 +13,7 @@
         "array-bracket-spacing": ["warn", "always", { "arraysInArrays": false, "objectsInArrays": false }],
         "block-spacing": ["warn", "always"],
         "brace-style": ["warn", "stroustrup", { "allowSingleLine": true }],
-        "capitalized-comments": ["warn", "always"],
+        "capitalized-comments": ["warn", "always", { "ignoreConsecutiveComments": true }],
         "comma-dangle": "off",
         "computed-property-spacing": ["warn", "always"],
         "func-call-spacing": ["warn", "never"],
