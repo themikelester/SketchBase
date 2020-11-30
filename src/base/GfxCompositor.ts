@@ -70,8 +70,7 @@ function executeRenderList( gfxDevice: Gfx.Renderer, list: RenderList ) {
             if( defined( prim.instanceCount ) ) {
                 gfxDevice.drawInstanced( prim.type, prim.indexBuffer.buffer, assertDefined( prim.indexType ),
                     indexOffset, prim.elementCount, prim.instanceCount )
-            }
-            else {
+            } else {
                 gfxDevice.draw( prim.type, prim.indexBuffer.buffer, assertDefined( prim.indexType ),
                     indexOffset, prim.elementCount );
             }
