@@ -33,8 +33,7 @@ module.exports = merge( common, {
           {
             loader: 'ts-loader',
             options: {
-              // Disable type checker - we will use it in fork plugin
-              transpileOnly: true,
+              // Only do transpilation into JS, error checking is performed by ForkTsChecker
               happyPackMode: true,
             },
           },
@@ -48,10 +47,16 @@ module.exports = merge( common, {
     }),
     // Run ts checker asynchronously
     new ForkTsCheckerWebpackPlugin({
+      async: false,
       eslint: {
-        enabled: true,
         files: "./src/**/*.{ts,tsx,js,jsx}"
-      }
+      },
+      typescript: {
+        diagnosticOptions: {
+          semantic: true,
+          syntactic: true,
+        },
+      },
     }),
   ],
 });
