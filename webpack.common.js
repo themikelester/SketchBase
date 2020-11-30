@@ -1,15 +1,17 @@
-const GitRevisionPlugin = require('git-revision-webpack-plugin');
-const gitRevision = new GitRevisionPlugin();
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
-const SizePlugin = require('size-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const path = require('path');
-const webpack = require('webpack');
+/* eslint-env node */
+/* eslint-disable @typescript-eslint/no-var-requires */
+
+const GitRevisionPlugin = require( 'git-revision-webpack-plugin' );
+const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
+const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
+const CopyPlugin = require( 'copy-webpack-plugin' );
+const SizePlugin = require( 'size-plugin' );
+const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin;
+const path = require( 'path' );
+const webpack = require( 'webpack' );
 
 // @NOTE: These need to be updated per-project
-const COMMIT_HASH = gitRevision.commithash();
+const COMMIT_HASH = new GitRevisionPlugin().commithash();
 const GITHUB_URL = 'https://github.com/themikelester/SketchBase';
 const GTAG_ID = '<Some Google Analytics ID>';
 const APP_NAME = 'Base Sketch';
@@ -21,15 +23,15 @@ module.exports = {
     main: './src/main.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve( __dirname, 'dist' ),
     filename: '[name].js',
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: [ '.ts', '.js' ],
   },
   module: {
     rules: [
-      // ts-loader defined in dev and prod separately
+      // The primary ts-loader rule is defined in dev and prod separately
       {
         test: /\.(png|woff2)$/,
         loader: 'file-loader',
@@ -53,7 +55,7 @@ module.exports = {
         test: /\.worker\.ts$/,
         loader: 'worker-loader',
         exclude: /node_modules/,
-        options: { 
+        options: {
           name: '[name].[hash].js',
         }
       },
@@ -81,9 +83,9 @@ module.exports = {
   stats: 'minimal',
   plugins: [
     new webpack.DefinePlugin({
-      '__COMMIT_HASH': JSON.stringify(COMMIT_HASH),
-      '__GITHUB_URL': JSON.stringify(GITHUB_URL),
-      'ENV.PARANOID': JSON.stringify(true),
+      '__COMMIT_HASH': JSON.stringify( COMMIT_HASH ),
+      '__GITHUB_URL': JSON.stringify( GITHUB_URL ),
+      'ENV.PARANOID': JSON.stringify( true ),
     }),
     new webpack.IgnorePlugin({
       // Workaround for broken libraries
@@ -102,7 +104,7 @@ module.exports = {
       { from: 'data', to: 'data' },
     ]),
     new HtmlWebpackPlugin({
-      chunks: ['main'],
+      chunks: [ 'main' ],
       filename: 'index.html',
       template: './src/index.html',
       gtagId: GTAG_ID,
@@ -110,8 +112,8 @@ module.exports = {
       appDesc: APP_DESCRIPTION,
     }),
     new SizePlugin(),
-    new BundleAnalyzerPlugin({ 
-      analyzerMode: 'static', 
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
       openAnalyzer: false,
       reportFilename: 'bundleSizeReport.html',
     }),

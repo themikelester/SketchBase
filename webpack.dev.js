@@ -1,9 +1,13 @@
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const common = require('./webpack.common.js');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+/* eslint-env node */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-module.exports = merge(common, {
+const webpack = require( 'webpack' );
+const merge = require( 'webpack-merge' );
+const common = require( './webpack.common.js' );
+const cpus = require( 'os' ).cpus;
+const ForkTsCheckerWebpackPlugin = require( 'fork-ts-checker-webpack-plugin' );
+
+module.exports = merge( common, {
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
   devServer: {
@@ -17,18 +21,20 @@ module.exports = merge(common, {
         exclude: /node_modules/,
         use: [
           // Cache intermediate results
-          {loader: 'cache-loader'},
+          { loader: 'cache-loader' },
           // Run ts-loader in parallel, leaving one CPU for checker
           {
             loader: 'thread-loader',
             options: {
-              workers: require('os').cpus().length - 1,
-              poolTimeout: Infinity, // set to Infinity in watch mode
+              workers: cpus().length - 1,
+              poolTimeout: Infinity, // Set to Infinity in watch mode
             },
           },
           {
             loader: 'ts-loader',
             options: {
+              // Disable type checker - we will use it in fork plugin
+              transpileOnly: true,
               happyPackMode: true,
             },
           },
@@ -38,11 +44,14 @@ module.exports = merge(common, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('development'),
+      'process.env.NODE_ENV': JSON.stringify( 'development' ),
     }),
     // Run ts checker asynchronously
     new ForkTsCheckerWebpackPlugin({
-      checkSyntacticErrors: true,
+      eslint: {
+        enabled: true,
+        files: "./src/**/*.{ts,tsx,js,jsx}"
+      }
     }),
   ],
 });

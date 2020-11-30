@@ -1,8 +1,11 @@
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const common = require('./webpack.common.js');
+/* eslint-env node */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-module.exports = merge(common, {
+const webpack = require( 'webpack' );
+const merge = require( 'webpack-merge' );
+const common = require( './webpack.common.js' );
+
+module.exports = merge( common, {
   mode: 'production',
   devtool: false,
   module: {
@@ -16,7 +19,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.NODE_ENV': JSON.stringify( 'production' ),
     }),
   ],
 });
