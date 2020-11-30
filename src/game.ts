@@ -2,9 +2,9 @@ import { Camera } from './base/Camera';
 import { DebugGrid } from './base/DebugGrid';
 import { IS_DEVELOPMENT } from './base/Version';
 import { DebugMenu } from './base/DebugMenu';
-import { MetaVar } from './base/Meta';
+import { metaVar } from './base/Meta';
 import { WebGlRenderer } from './base/GfxApiWebGl';
-import { Module, ModuleBarn, ModuleDirection } from './base/Module';
+import { module, ModuleBarn, ModuleDirection } from './base/Module';
 import { Renderer } from './base/GfxApiTypes';
 
 import { Compositor } from './base/GfxCompositor';
@@ -14,17 +14,17 @@ import { GlobalUniforms } from './base/GfxGlobalUniforms';
 import { mat4, vec3 } from 'gl-matrix';
 
 export class Game {
-    @MetaVar rootElement: HTMLElement;
-    @MetaVar canvas: HTMLCanvasElement = document.createElement( 'canvas' );
-    @MetaVar camera: Camera = new Camera();
-    @MetaVar gfxDevice: Renderer = new WebGlRenderer();
-    @MetaVar debugMenu: DebugMenu = new DebugMenu();
+    @metaVar rootElement: HTMLElement;
+    @metaVar canvas: HTMLCanvasElement = document.createElement( 'canvas' );
+    @metaVar camera: Camera = new Camera();
+    @metaVar gfxDevice: Renderer = new WebGlRenderer();
+    @metaVar debugMenu: DebugMenu = new DebugMenu();
 
     moduleBarn: ModuleBarn = new ModuleBarn();
-    @Module scene: Scene = new Scene();
-    @Module compositor: Compositor = new Compositor();
-    @Module globalUniforms: GlobalUniforms = new GlobalUniforms();
-    @Module debugGrid: DebugGrid = new DebugGrid();
+    @module scene: Scene = new Scene();
+    @module compositor: Compositor = new Compositor();
+    @module globalUniforms: GlobalUniforms = new GlobalUniforms();
+    @module debugGrid: DebugGrid = new DebugGrid();
 
     public initialize(): void {
         // DOM creation

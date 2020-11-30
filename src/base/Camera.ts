@@ -25,7 +25,7 @@ export class Camera {
   far: number;
   aspect: number;
 
-  constructor(fovY?: number, aspectRatio?: number, near = 1.0, far = 20000) {
+  constructor( fovY?: number, aspectRatio?: number, near = 1.0, far = 20000 ) {
     this.cameraMatrix = mat4.create();
     this.viewMatrix = mat4.create();
     this.projectionMatrix = mat4.create();
@@ -38,61 +38,61 @@ export class Camera {
     this.up = vec3.create();
     this.right = vec3.create();
 
-    fovY = defaultValue(fovY, 60.0 / 180 * Math.PI);
-    near = defaultValue(near, 1.0);
-    far = defaultValue(far, 2000);
-    aspectRatio = defaultValue(aspectRatio, 1);
-    this.setPerspective(fovY, aspectRatio, near, far);
+    fovY = defaultValue( fovY, 60.0 / 180 * Math.PI );
+    near = defaultValue( near, 1.0 );
+    far = defaultValue( far, 2000 );
+    aspectRatio = defaultValue( aspectRatio, 1 );
+    this.setPerspective( fovY, aspectRatio, near, far );
   }
 
   getFovX(): number {
-    const fovx = Math.atan(Math.tan(this.fov * 0.5) * this.aspect) * 2;
+    const fovx = Math.atan( Math.tan( this.fov * 0.5 ) * this.aspect ) * 2;
     return fovx;
   }
 
-  copy(src: Camera): void {
+  copy( src: Camera ): void {
     this.fov = src.fov;
     this.near = src.near;
     this.far = src.far;
     this.aspect = src.aspect;
 
-    mat4.copy(this.cameraMatrix, src.cameraMatrix);
-    mat4.copy(this.viewMatrix, src.viewMatrix);
-    mat4.copy(this.projectionMatrix, src.projectionMatrix);
-    mat4.copy(this.projectionMatrixInverse, src.projectionMatrixInverse);
-    mat4.copy(this.viewProjMatrix, src.viewProjMatrix);
-    mat4.copy(this.viewProjMatrixInverse, src.viewProjMatrixInverse);
+    mat4.copy( this.cameraMatrix, src.cameraMatrix );
+    mat4.copy( this.viewMatrix, src.viewMatrix );
+    mat4.copy( this.projectionMatrix, src.projectionMatrix );
+    mat4.copy( this.projectionMatrixInverse, src.projectionMatrixInverse );
+    mat4.copy( this.viewProjMatrix, src.viewProjMatrix );
+    mat4.copy( this.viewProjMatrixInverse, src.viewProjMatrixInverse );
 
-    vec3.copy(this.forward, src.forward);
-    vec3.copy(this.up, src.up);
-    vec3.copy(this.right, src.right);
+    vec3.copy( this.forward, src.forward );
+    vec3.copy( this.up, src.up );
+    vec3.copy( this.right, src.right );
   }
 
-  getPos(out: vec3): vec3 {
-    return mat4.getTranslation(out, this.cameraMatrix);
+  getPos( out: vec3 ): vec3 {
+    return mat4.getTranslation( out, this.cameraMatrix );
   }
 
   viewMatrixUpdated(): void {
-    mat4.invert(this.cameraMatrix, this.viewMatrix);
+    mat4.invert( this.cameraMatrix, this.viewMatrix );
 
-    vec3.set(this.right, this.cameraMatrix[0], this.cameraMatrix[1], this.cameraMatrix[2]);
-    vec3.set(this.up, this.cameraMatrix[4], this.cameraMatrix[5], this.cameraMatrix[6]);
-    vec3.set(this.forward, -this.cameraMatrix[8], -this.cameraMatrix[9], -this.cameraMatrix[10]);
+    vec3.set( this.right, this.cameraMatrix[ 0 ], this.cameraMatrix[ 1 ], this.cameraMatrix[ 2 ]);
+    vec3.set( this.up, this.cameraMatrix[ 4 ], this.cameraMatrix[ 5 ], this.cameraMatrix[ 6 ]);
+    vec3.set( this.forward, -this.cameraMatrix[ 8 ], -this.cameraMatrix[ 9 ], -this.cameraMatrix[ 10 ]);
 
-    mat4.multiply(this.viewProjMatrix, this.projectionMatrix, this.viewMatrix);
-    mat4.multiply(this.viewProjMatrixInverse, this.cameraMatrix, this.projectionMatrixInverse);
+    mat4.multiply( this.viewProjMatrix, this.projectionMatrix, this.viewMatrix );
+    mat4.multiply( this.viewProjMatrixInverse, this.cameraMatrix, this.projectionMatrixInverse );
   }
 
-  setPerspective(fovY: number, aspect: number, near: number, far: number ): void {
+  setPerspective( fovY: number, aspect: number, near: number, far: number ): void {
     this.fov = fovY;
     this.aspect = aspect;
     this.near = near;
     this.far = far;
 
-    mat4.perspective(this.projectionMatrix, fovY, aspect, near, far);
-    mat4.invert(this.projectionMatrixInverse, this.projectionMatrix);
+    mat4.perspective( this.projectionMatrix, fovY, aspect, near, far );
+    mat4.invert( this.projectionMatrixInverse, this.projectionMatrix );
 
-    mat4.multiply(this.viewProjMatrix, this.projectionMatrix, this.viewMatrix);
-    mat4.multiply(this.viewProjMatrixInverse, this.cameraMatrix, this.projectionMatrixInverse);
+    mat4.multiply( this.viewProjMatrix, this.projectionMatrix, this.viewMatrix );
+    mat4.multiply( this.viewProjMatrixInverse, this.cameraMatrix, this.projectionMatrixInverse );
   }
 }

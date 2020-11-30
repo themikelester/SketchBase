@@ -8,7 +8,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 import * as Gfx from './GfxApiTypes';
 import { computePackedBufferLayout, UniformBuffer } from './GfxUniformBuffer';
-import { MetaFunc } from './Meta'
+import { metaFunc } from './Meta'
 
 // --------------------------------------------------------------------------------
 //
@@ -25,14 +25,14 @@ export class GlobalUniforms {
     public bufferView: Gfx.BufferView;
     private renderer: Gfx.Renderer;
 
-    @MetaFunc
+    @metaFunc
     initialize( gfxDevice: Gfx.Renderer ): void {
         this.renderer = gfxDevice;
         this.buffer = new UniformBuffer( 'GlobalUniforms', this.renderer, GlobalUniforms.bufferLayout );
         this.bufferView = this.buffer.getBufferView();
     }
 
-    @MetaFunc
+    @metaFunc
     update(): void {
         this.buffer.write( this.renderer );
     }

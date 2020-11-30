@@ -10,7 +10,7 @@ import * as Gfx from './GfxApiTypes';
 import { RenderList } from './GfxRenderList';
 import { assertDefined, defined, defaultValue } from './Util';
 import { DebugMenu } from './DebugMenu';
-import { MetaFunc } from './Meta';
+import { metaFunc } from './Meta';
 import { Scene } from '../scene';
 
 export class Compositor {
@@ -19,13 +19,13 @@ export class Compositor {
 
     public resolutionScale = 1.0;
 
-    @MetaFunc initialize( debugMenu: DebugMenu ): void {
+    @metaFunc initialize( debugMenu: DebugMenu ): void {
         // Debug
         const folder = debugMenu.addFolder( 'Compositor' );
         folder.add( this, 'resolutionScale', 1, 16, 1 );
     }
 
-    @MetaFunc render( canvas: HTMLCanvasElement, gfxDevice: Gfx.Renderer, scene: Scene ): void {
+    @metaFunc render( canvas: HTMLCanvasElement, gfxDevice: Gfx.Renderer, scene: Scene ): void {
         // Resize the back buffer if either the canvas size of resolution scale has changed
         this.width = Math.round( canvas.clientWidth * devicePixelRatio / this.resolutionScale );
         this.height = Math.round( canvas.clientHeight * devicePixelRatio / this.resolutionScale );

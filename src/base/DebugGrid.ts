@@ -12,7 +12,7 @@ import { RenderPrimitive } from './GfxRenderPrimitive';
 import { computePackedBufferLayout, UniformBuffer } from './GfxUniformBuffer';
 import { DebugMenu } from './DebugMenu';
 import { vec4 } from 'gl-matrix';
-import { MetaFunc } from './Meta';
+import { metaFunc } from './Meta';
 import { Scene } from '../scene';
 
 class GridShader implements Gfx.ShaderDescriptor {
@@ -47,7 +47,7 @@ export class DebugGrid {
     private primitive: RenderPrimitive;
     private uniforms: UniformBuffer;
 
-    @MetaFunc initialize( gfxDevice: Gfx.Renderer, globalUniforms: GlobalUniforms, debugMenu: DebugMenu ): void {
+    @metaFunc initialize( gfxDevice: Gfx.Renderer, globalUniforms: GlobalUniforms, debugMenu: DebugMenu ): void {
         // Safari does not support WebGL2, so no version 300 GLSL which we use for derivatives
         // This could be written as a 100 shader with an extension, but its just a debug feature
         if( !gfxDevice.isGfxFeatureSupported( Gfx.Feature.ShaderGlsl300 ) ) {
@@ -94,7 +94,7 @@ export class DebugGrid {
         menu.add( this, 'gridRadius' );
     }
 
-    @MetaFunc render( gfxDevice: Gfx.Renderer, scene: Scene ): void {
+    @metaFunc render( gfxDevice: Gfx.Renderer, scene: Scene ): void {
         if( this.enabled ) {
             this.uniforms.setVec4( 'u_baseColor', this.baseColor );
             this.uniforms.setVec4( 'u_lineColor', this.lineColor );

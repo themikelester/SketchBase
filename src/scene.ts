@@ -1,7 +1,7 @@
 import { RenderList } from './base/GfxRenderList';
 import { CullMode, Renderer } from './base/GfxApiTypes';
 import { assertDefined } from './base/Util';
-import { MetaFunc } from './base/Meta';
+import { metaFunc } from './base/Meta';
 
 // @TODO: Better outline
 type RenderPassDescriptor = number;
@@ -21,7 +21,7 @@ const renderOutline: RenderOutline = [
 ];
 
 export class Scene {
-    @MetaFunc initialize( gfxDevice: Renderer ): void {
+    @metaFunc initialize( gfxDevice: Renderer ): void {
         // Parse RenderLists and allocate any GFX resources they may need
         for( const listName in renderLists ) {
             const list = renderLists[ listName ];
