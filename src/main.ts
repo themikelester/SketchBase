@@ -2,7 +2,7 @@ import { Game } from './game';
 import { GITHUB_REVISION_URL, IS_DEVELOPMENT } from './base/Version';
 
 // Google Analytics
-declare const gtag: ( command: string, eventName: string, eventParameters: { [key: string]: string } ) => void;
+declare const gtag: ( command: string, eventName: string, eventParameters: { [key: string]: string }) => void;
 
 // Declare useful objects for easy access.
 declare global {
@@ -12,17 +12,17 @@ declare global {
 }
 
 /**
- * All accepted URL parameters are documented here. 
+ * All accepted URL parameters are documented here.
  * E.g. The URL 'moonduel.io?debug' will show the debug menu
  */
 const kUrlParameters: Record<string, ( game: Game, value: string ) => void> = {
-    'debug': (game: Game) => game.debugMenu.show(),
+    'debug': ( game: Game ) => game.debugMenu.show(),
 }
 
-function Main() {
+function main() {
     console.log( `Source for this build available at ${GITHUB_REVISION_URL}` );
 
-    if ( !IS_DEVELOPMENT ) {
+    if( !IS_DEVELOPMENT ) {
         // Initialize Rollbar/Sentry for error reporting
     }
 
@@ -31,14 +31,14 @@ function Main() {
     window.game = game;
 
     game.initialize();
-    
+
     // Parse and apply URL parameters
     // See kUrlParameters for potential values
     const urlParams = new URLSearchParams( window.location.search );
     urlParams.forEach( ( value: string, key: string ) => {
-        const func = kUrlParameters[key];
-        if ( func ) func( game, value );
-    } );
+        const func = kUrlParameters[ key ];
+        if( func ) { func( game, value ); }
+    });
 
     window.requestAnimationFrame( Update );
 }
@@ -48,12 +48,11 @@ function Update() {
     window.requestAnimationFrame( Update );
 }
 
-if( module.hot )
-{
-    module.hot.accept(["./game"], () => {
+if( module.hot ) {
+    module.hot.accept([ "./game" ], () => {
         console.log( "Hotloaded" );
         window.game.hotload();
     });
 }
 
-Main();
+main();

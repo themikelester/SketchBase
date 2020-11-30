@@ -31,13 +31,13 @@ export class Game {
         this.rootElement = document.createElement( 'div' );
         document.body.appendChild( this.rootElement );
         this.rootElement.appendChild( this.canvas );
-        this.canvas.width 
+        this.canvas.width
 
         // Graphics initialization
         this.gfxDevice.setDebugEnabled( IS_DEVELOPMENT );
         const success = this.gfxDevice.initialize( this.canvas );
-        if ( success ) this.gfxDevice.resize( this.canvas.width, this.canvas.height );
-        else return; // @TODO: FatalError function. Displays a fullscreen error message a la Ayvri
+        if( success ) { this.gfxDevice.resize( this.canvas.width, this.canvas.height ); }
+        else { return; } // @TODO: FatalError function. Displays a fullscreen error message a la Ayvri
         this.onResize();
 
         // Register for Events
@@ -47,7 +47,7 @@ export class Game {
         document.onvisibilitychange = this.onVisibility.bind( this );
 
         // Show debug menu by default on development builds
-        if ( IS_DEVELOPMENT ) {
+        if( IS_DEVELOPMENT ) {
             this.debugMenu.show();
         }
 
@@ -63,9 +63,10 @@ export class Game {
 
         // Call "Initialize()" for all modules
         this.moduleBarn.callFunction( "initialize", ModuleDirection.Forward );
-        
+
         // @HACK:
-        mat4.lookAt( this.camera.viewMatrix, vec3.fromValues( 0, 100, 500 ), vec3.fromValues( 0, 0, 0 ), vec3.fromValues( 0, 1, 0 ) );
+        mat4.lookAt( this.camera.viewMatrix, vec3.fromValues( 0, 100, 500 ),
+            vec3.fromValues( 0, 0, 0 ), vec3.fromValues( 0, 1, 0 ) );
         this.camera.viewMatrixUpdated();
         this.globalUniforms.buffer.setMat4( "g_viewProj", this.camera.viewProjMatrix );
     }
@@ -73,7 +74,7 @@ export class Game {
     public terminate(): void {
         this.moduleBarn.callFunction( "terminate", ModuleDirection.Reverse );
     }
-    
+
     public hotload(): void {
         this.moduleBarn.callFunction( "hotload", ModuleDirection.Forward );
     }
@@ -97,7 +98,7 @@ export class Game {
     private onResize() {
         console.log( "Window resized to (" + window.innerWidth + ", " + window.innerHeight + ")" );
 
-        this.canvas.style.width = `${window.innerWidth}px`; 
+        this.canvas.style.width = `${window.innerWidth}px`;
         this.canvas.style.height = `${window.innerHeight}px`;
         this.canvas.style.position = 'absolute';
 

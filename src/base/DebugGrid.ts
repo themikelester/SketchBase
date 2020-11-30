@@ -38,8 +38,8 @@ class GridShader implements Gfx.ShaderDescriptor {
 }
 
 export class DebugGrid {
-    baseColor = vec4.fromValues(0.3, 0.3, 0.3, 1.0);
-    lineColor = vec4.fromValues(1.0, 1.0, 1.0, 1.0);
+    baseColor = vec4.fromValues( 0.3, 0.3, 0.3, 1.0 );
+    lineColor = vec4.fromValues( 1.0, 1.0, 1.0, 1.0 );
     gridUnit = 100.0;
     gridRadius = 5000.0;
     enabled = true;
@@ -50,13 +50,13 @@ export class DebugGrid {
     @MetaFunc initialize( gfxDevice: Gfx.Renderer, globalUniforms: GlobalUniforms, debugMenu: DebugMenu ): void {
         // Safari does not support WebGL2, so no version 300 GLSL which we use for derivatives
         // This could be written as a 100 shader with an extension, but its just a debug feature
-        if (!gfxDevice.isGfxFeatureSupported(Gfx.Feature.ShaderGlsl300)) {
-            console.warn('GLSL version 300 not supported, disabling DebugGrid');
+        if( !gfxDevice.isGfxFeatureSupported( Gfx.Feature.ShaderGlsl300 ) ) {
+            console.warn( 'GLSL version 300 not supported, disabling DebugGrid' );
             this.enabled = false;
             return;
         }
 
-        const shader = gfxDevice.createShader(new GridShader());
+        const shader = gfxDevice.createShader( new GridShader() );
         const renderFormat: Gfx.RenderFormat = { blendingEnabled: false };
         const resourceLayout = GridShader.resourceLayout;
         const vertexLayout: Gfx.VertexLayout = {
@@ -68,39 +68,39 @@ export class DebugGrid {
             }]
         }
 
-        const pipeline = gfxDevice.createRenderPipeline(shader, renderFormat, vertexLayout, resourceLayout);
-        
-        const vertexBuffer = gfxDevice.createBuffer('GridVertices', Gfx.BufferType.Vertex, Gfx.Usage.Static, new Int8Array([-1, -1, 1, -1, -1, 1, 1, 1]));
-        const indexBuffer = gfxDevice.createBuffer('GridIndices', Gfx.BufferType.Index, Gfx.Usage.Static, new Uint16Array([0, 2, 1, 1, 2, 3]));
+        const pipeline = gfxDevice.createRenderPipeline( shader, renderFormat, vertexLayout, resourceLayout );
 
-        const resources = gfxDevice.createResourceTable(resourceLayout);
-        this.uniforms = new UniformBuffer('GridUniforms', gfxDevice, GridShader.UniformLayout);
-        gfxDevice.setBuffer(resources, 0, globalUniforms.bufferView);
-        gfxDevice.setBuffer(resources, 1, this.uniforms.getBufferView());
+        const vertexBuffer = gfxDevice.createBuffer( 'GridVertices', Gfx.BufferType.Vertex, Gfx.Usage.Static, new Int8Array([ -1, -1, 1, -1, -1, 1, 1, 1 ]) );
+        const indexBuffer = gfxDevice.createBuffer( 'GridIndices', Gfx.BufferType.Index, Gfx.Usage.Static, new Uint16Array([ 0, 2, 1, 1, 2, 3 ]) );
 
-        const vertexTable = gfxDevice.createVertexTable(pipeline);
-        gfxDevice.setVertexBuffer(vertexTable, 0, { buffer: vertexBuffer });
+        const resources = gfxDevice.createResourceTable( resourceLayout );
+        this.uniforms = new UniformBuffer( 'GridUniforms', gfxDevice, GridShader.UniformLayout );
+        gfxDevice.setBuffer( resources, 0, globalUniforms.bufferView );
+        gfxDevice.setBuffer( resources, 1, this.uniforms.getBufferView() );
 
-        this.primitive = new RenderPrimitive(pipeline, vertexTable, resources);
+        const vertexTable = gfxDevice.createVertexTable( pipeline );
+        gfxDevice.setVertexBuffer( vertexTable, 0, { buffer: vertexBuffer });
+
+        this.primitive = new RenderPrimitive( pipeline, vertexTable, resources );
         this.primitive.indexBuffer = { buffer: indexBuffer };
         this.primitive.indexType = Gfx.Type.Ushort;
         this.primitive.elementCount = 6;
 
-        const menu = debugMenu.addFolder('DebugGrid');
-        menu.add(this, 'enabled');
-        menu.add(this, 'gridUnit', 1, 100, 10);
-        menu.add(this, 'gridRadius');
+        const menu = debugMenu.addFolder( 'DebugGrid' );
+        menu.add( this, 'enabled' );
+        menu.add( this, 'gridUnit', 1, 100, 10 );
+        menu.add( this, 'gridRadius' );
     }
 
     @MetaFunc render( gfxDevice: Gfx.Renderer, scene: Scene ): void {
-        if (this.enabled) {
-            this.uniforms.setVec4('u_baseColor', this.baseColor);
-            this.uniforms.setVec4('u_lineColor', this.lineColor);
-            this.uniforms.setFloat('u_gridUnit', this.gridUnit);
-            this.uniforms.setFloat('u_gridRadius', this.gridRadius);
-            this.uniforms.write(gfxDevice);
-    
-            scene.GetRenderList( "opaque" ).push(this.primitive);
+        if( this.enabled ) {
+            this.uniforms.setVec4( 'u_baseColor', this.baseColor );
+            this.uniforms.setVec4( 'u_lineColor', this.lineColor );
+            this.uniforms.setFloat( 'u_gridUnit', this.gridUnit );
+            this.uniforms.setFloat( 'u_gridRadius', this.gridRadius );
+            this.uniforms.write( gfxDevice );
+
+            scene.GetRenderList( "opaque" ).push( this.primitive );
         }
     }
 }

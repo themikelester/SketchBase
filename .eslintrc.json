@@ -7,5 +7,33 @@
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended"
-    ]
+    ],
+    "rules": {
+        // Style rules
+        "array-bracket-spacing": ["warn", "always", { "arraysInArrays": false, "objectsInArrays": false }],
+        "block-spacing": ["warn", "always"],
+        "brace-style": ["warn", "stroustrup", { "allowSingleLine": true }],
+        "capitalized-comments": ["warn", "always"],
+        "comma-dangle": "off",
+        "computed-property-spacing": ["warn", "always"],
+        "func-call-spacing": ["warn", "never"],
+        "func-name-matching": ["error"],
+        "func-names": ["error", "as-needed"],
+        "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
+        "key-spacing": ["warn" ],
+        "keyword-spacing": ["warn", { "overrides": {
+            "if": { "after": false },
+            "for": { "after": false },
+            "while": { "after": false }
+          } }],
+        "max-len": ["warn", {"code": 120}],
+        "new-cap": ["error"],
+        "new-parens": ["warn"],
+        "no-trailing-spaces": ["warn"],
+        "object-curly-spacing": ["warn", "always", { "arraysInObjects": false, "objectsInObjects": false }],
+        "space-before-blocks": ["warn", "always"],
+        "space-in-parens": ["warn", "always", { "exceptions": ["{}", "[]"]} ],
+        "spaced-comment": ["warn", "always", { "exceptions": ["-"] }],
+        "curly": ["error"]
+    }
   }
