@@ -6,7 +6,7 @@
 // Author: Mike Lester
 // Date C: 2020/11/27
 //----------------------------------------------------------------------------------------------------------------------
-import * as Gfx from './gfx/GfxTypes';
+import * as Gfx from './GfxApiTypes';
 import { RenderList } from './GfxRenderList';
 import { assertDefined, defined, defaultValue } from './Util';
 import { DebugMenu } from './DebugMenu';

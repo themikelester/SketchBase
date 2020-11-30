@@ -7,7 +7,7 @@
 // Date C: 2020/11/27
 //----------------------------------------------------------------------------------------------------------------------
 import { RenderPrimitive } from './GfxRenderPrimitive';
-import { Id, CullMode, DepthStateDescriptor, RenderFormat } from './gfx/GfxTypes';
+import { Id, CullMode, DepthStateDescriptor, RenderFormat } from './GfxApiTypes';
 
 export class RenderList {
     primitives: RenderPrimitive[] = [];

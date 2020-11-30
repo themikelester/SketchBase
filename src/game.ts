@@ -3,9 +3,9 @@ import { DebugGrid } from './base/DebugGrid';
 import { IS_DEVELOPMENT } from './base/Version';
 import { DebugMenu } from './base/DebugMenu';
 import { MetaVar } from './base/Meta';
-import { WebGlRenderer } from './base/gfx/WebGl';
+import { WebGlRenderer } from './base/GfxApiWebGl';
 import { Module, ModuleBarn, ModuleDirection } from './base/Module';
-import { Renderer } from './base/gfx/GfxTypes';
+import { Renderer } from './base/GfxApiTypes';
 
 import { Compositor } from './base/GfxCompositor';
 import { Scene } from './scene';

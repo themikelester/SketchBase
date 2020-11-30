@@ -4,7 +4,7 @@
 // Author: Mike Lester
 // Date C: 2020/11/27
 //----------------------------------------------------------------------------------------------------------------------
-import * as Gfx from './gfx/GfxTypes';
+import * as Gfx from './GfxApiTypes';
 import vertShaderSource from './shaders/grid.vert';
 import fragShaderSource from './shaders/grid.frag';
 import { GlobalUniforms } from './GfxGlobalUniforms';

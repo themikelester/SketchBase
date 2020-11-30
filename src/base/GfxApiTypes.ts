@@ -1,5 +1,5 @@
 // -------------------------------------------------------------------------------
-// Notes: Custom constants that are graphics API agnostic. All rendering is done 
+// Notes: Custom constants that are graphics API agnostic. All rendering is done
 //        using these, and they are converted to the correspoinding API-specific
 //        constants in the renderer implementation (e.g. WebGL). These need to be
 //        kept in sync with their C counterparts.
@@ -87,7 +87,7 @@ export interface ShaderDescriptor {
 // --------------------------------------------------------------------------------------------------
 // ShaderResourceLayout
 // Note: For backends that do not support defining resource layouts within the shader (WebGL1), the
-//       resource locations may be specified at shader-creation time.      
+//       resource locations may be specified at shader-creation time.
 // ------------------------------------------------------------------------------------------------*/
 export interface TextureResourceBinding extends ResourceBinding {
   count?: number,
@@ -98,7 +98,9 @@ export interface UniformBufferResourceBinding extends ResourceBinding {
 }
 
 // @NOTE: This is a superset of ResourceBinding. It may be passed to createRenderPipeline directly
-export type ShaderResourceLayout = { [resourceName: string]: (TextureResourceBinding | UniformBufferResourceBinding) };
+export type ShaderResourceLayout = {
+    [resourceName: string]: ( TextureResourceBinding | UniformBufferResourceBinding )
+};
 
 // --------------------------------------------------------------------------------
 // Enums
@@ -125,85 +127,85 @@ export enum Type {
   Float4,
   Int,
   Int2,
-  Int3,       
-  Int4,       
-  Uint,       
-  Uint2,      
-  Uint3,      
-  Uint4,      
-  Short,      
-  Short2,     
-  Short3,     
-  Short4,     
-  Ushort,    
-  Ushort2,    
-  Ushort3,    
-  Ushort4,    
-  Char,     
-  Char2,      
-  Char3,      
-  Char4,      
-  Uchar,      
-  Uchar2,     
-  Uchar3,     
-  Uchar4,     
-  Half,       
-  Half2,      
-  Half3,      
-  Half4,      
-  Float3x3,   
-  Float3x4,   
+  Int3,
+  Int4,
+  Uint,
+  Uint2,
+  Uint3,
+  Uint4,
+  Short,
+  Short2,
+  Short3,
+  Short4,
+  Ushort,
+  Ushort2,
+  Ushort3,
+  Ushort4,
+  Char,
+  Char2,
+  Char3,
+  Char4,
+  Uchar,
+  Uchar2,
+  Uchar3,
+  Uchar4,
+  Half,
+  Half2,
+  Half3,
+  Half4,
+  Float3x3,
+  Float3x4,
   Float4x4,
 
-  Texture2D = 0xF0,  
-  Texture3D = 0xF1,  
+  Texture2D = 0xF0,
+  Texture3D = 0xF1,
   TextureCube = 0xF2,
 
-  Short_Norm = 0x100,      
-  Short2_Norm,     
-  Short3_Norm,     
-  Short4_Norm,     
-  Ushort_Norm,    
-  Ushort2_Norm,    
-  Ushort3_Norm,    
-  Ushort4_Norm,    
-  Char_Norm,     
-  Char2_Norm,      
-  Char3_Norm,      
-  Char4_Norm,      
-  Uchar_Norm,      
-  Uchar2_Norm,     
-  Uchar3_Norm,     
-  Uchar4_Norm,    
+  Short_Norm = 0x100,
+  Short2_Norm,
+  Short3_Norm,
+  Short4_Norm,
+  Ushort_Norm,
+  Ushort2_Norm,
+  Ushort3_Norm,
+  Ushort4_Norm,
+  Char_Norm,
+  Char2_Norm,
+  Char3_Norm,
+  Char4_Norm,
+  Uchar_Norm,
+  Uchar2_Norm,
+  Uchar3_Norm,
+  Uchar4_Norm,
 }
 
 export enum TextureType {
-  Texture2D = 0xF0,  
-  Texture3D = 0xF1,  
+  Texture2D = 0xF0,
+  Texture3D = 0xF1,
   TextureCube = 0xF2,
 }
 
 export enum TexelFormat {
-  Undefined = 0,      
-  U565,           
-  U8,             
-  U8_sRGB,        
-  U8x2,           
-  U8x2_sRGB,      
-  U8x3,           
-  U8x3_sRGB,      
-  U8x4,           
-  U8x4_sRGB,      
-  U10_10_10_2,    
-  F11_11_10,      
-  F16,            
-  F16x2,         
-  F16x3,        
-  F16x4,          
+  Undefined = 0,
+  U565,
+  U8,
+  U8_sRGB,
+  U8x2,
+  U8x2_sRGB,
+  U8x3,
+  U8x3_sRGB,
+  U8x4,
+  U8x4_sRGB,
+  U10_10_10_2,
+  F11_11_10,
+  F16,
+  F16x2,
+  F16x3,
+  F16x4,
   F32x2,
-  F32x3,          
-  F32x4,          
-  Depth32,        
+  F32x3,
+  F32x4,
+  Depth32,
   Depth24Stencil8,
 }
 
@@ -218,24 +220,24 @@ export enum TextureWrap {
 }
 
 export enum CompareFunc {
-  Never = 0,       
-  Less,        
-  Equal,       
-  LessEqual,   
-  Greater,     
-  NotEqual,    
+  Never = 0,
+  Less,
+  Equal,
+  LessEqual,
+  Greater,
+  NotEqual,
   GreaterEqual,
-  Always,      
+  Always,
 }
 
 export enum PrimitiveType {
-  Points,       
-  Lines,        
-  LineLoop,     
-  LineStrip,    
-  Triangles,    
+  Points,
+  Lines,
+  LineLoop,
+  LineStrip,
+  Triangles,
   TriangleStrip,
-  TriangleFan,  
+  TriangleFan,
 }
 
 export enum BufferType {
@@ -279,8 +281,8 @@ export enum StepMode {
 // --------------------------------------------------------------------------------
 // Translations
 // -------------------------------------------------------------------------------*/
-export function TranslateTypeToSize(type: Type): number {
-  switch (type) {
+export function translateTypeToSize( type: Type ): number {
+  switch ( type ) {
     case Type.Float:   return 4;
     case Type.Float2:  return 8;
     case Type.Float3:  return 12;
@@ -315,52 +317,57 @@ export function TranslateTypeToSize(type: Type): number {
     case Type.Half4:   return 8;
     case Type.Float3x3: return 36;
     case Type.Float4x4: return 64;
-    default: throw new Error(`Unsupported type: ${type}`);
+    default: throw new Error( `Unsupported type: ${type}` );
   }
 }
 
-export abstract class Renderer {    
-    abstract initialize(canvas: HTMLCanvasElement): boolean;
-    
-    abstract isGfxFeatureSupported(featureId: Feature): boolean;
-    abstract setDebugEnabled(debug: boolean): void;
-    
-    abstract resize(width: number, height: number): void;
+export abstract class Renderer {
+    abstract initialize( canvas: HTMLCanvasElement ): boolean;
+
+    abstract isGfxFeatureSupported( featureId: Feature ): boolean;
+    abstract setDebugEnabled( debug: boolean ): void;
+
+    abstract resize( width: number, height: number ): void;
     abstract beginFrame(): void;
     abstract endFrame(): void;
-    
-    abstract bindRenderPass(renderPassId: Id): void;
-    abstract bindPipeline(pipelineId: Id): void;
-    abstract bindResources(resourceTableId: Id): void;
-    abstract bindVertices(vertexTable: Id): void;
-    abstract draw(primitiveType: PrimitiveType, indexBufferId: Id, indexType: Type, indexOffset: number, indexCount: number): void;
-    abstract drawInstanced(primitiveType: PrimitiveType, indexBufferId: Id, indexType: Type, indexOffset: number, indexCount: number, instanceCount: number): void;
-    abstract drawNonIndexed(primitiveType: PrimitiveType, vertOffset: number, vertCount: number): void;
 
-    abstract setDepthStencilState(stateId: Id): void;
-    abstract setCullMode(cullMode: CullMode): void;
+    abstract bindRenderPass( renderPassId: Id ): void;
+    abstract bindPipeline( pipelineId: Id ): void;
+    abstract bindResources( resourceTableId: Id ): void;
+    abstract bindVertices( vertexTable: Id ): void;
+    abstract draw( primitiveType: PrimitiveType, indexBufferId: Id, indexType: Type,
+        indexOffset: number, indexCount: number ): void;
+    abstract drawInstanced( primitiveType: PrimitiveType, indexBufferId: Id, indexType: Type,
+        indexOffset: number, indexCount: number, instanceCount: number ): void;
+    abstract drawNonIndexed( primitiveType: PrimitiveType, vertOffset: number, vertCount: number ): void;
 
-    abstract setVertexBuffer(vertexTable: Id, index: number, view: BufferView): void;
-    abstract setBuffer(resourceTableId: Id, index: number, view: BufferView): void;
-    abstract setTexture(resourceTableId: Id, index: number, textureId: Id): void;
-    abstract setTextures(resourceTableId: Id, index: number, textureIds: Id[]): void;
+    abstract setDepthStencilState( stateId: Id ): void;
+    abstract setCullMode( cullMode: CullMode ): void;
 
-    abstract createDepthStencilState(desc: DepthStateDescriptor): number;
-    abstract createResourceTable(resourceLayout: ResourceLayout): Id;
-    abstract createVertexTable(pipelineId: Id): Id;
-    abstract createRenderPipeline(shaderId: Id, renderFormat: RenderFormat, vertexLayout: VertexLayout, resourceLayout: ResourceLayout): Id;
-    abstract createShader(desc: ShaderDescriptor): number;
-    abstract createTexture(name: string, desc: TextureDescriptor, image?: HTMLImageElement | HTMLCanvasElement | ArrayBufferView | ImageBitmap): Id;
-    abstract createBuffer(name: string, type: BufferType, usage: Usage, dataOrSize: (ArrayBuffer | number)): number;
-    abstract removeBuffer(bufferId: Id): void;
-    abstract removeTexture(textureId: Id): void;
-    abstract removeShader(shaderId: Id): void;
-    abstract removeRenderPipeline(pipelineId: Id): void;
-    abstract removeResourceTable(tableId: Id): void;
-    abstract removeVertexTable(tableId: Id): void;
+    abstract setVertexBuffer( vertexTable: Id, index: number, view: BufferView ): void;
+    abstract setBuffer( resourceTableId: Id, index: number, view: BufferView ): void;
+    abstract setTexture( resourceTableId: Id, index: number, textureId: Id ): void;
+    abstract setTextures( resourceTableId: Id, index: number, textureIds: Id[]): void;
 
-    abstract writeBufferData(bufferId: Id, dstOffset: number, srcBytes: (ArrayBuffer | ArrayBufferView)): void;
-    abstract writeTextureData(textureId: Id, image: HTMLImageElement | HTMLCanvasElement | ArrayBuffer | ImageBitmap): void;
+    abstract createDepthStencilState( desc: DepthStateDescriptor ): number;
+    abstract createResourceTable( resourceLayout: ResourceLayout ): Id;
+    abstract createVertexTable( pipelineId: Id ): Id;
+    abstract createRenderPipeline( shaderId: Id, renderFormat: RenderFormat,
+        vertexLayout: VertexLayout, resourceLayout: ResourceLayout ): Id;
+    abstract createShader( desc: ShaderDescriptor ): number;
+    abstract createTexture( name: string, desc: TextureDescriptor,
+        image?: HTMLImageElement | HTMLCanvasElement | ArrayBufferView | ImageBitmap ): Id;
+    abstract createBuffer( name: string, type: BufferType, usage: Usage, dataOrSize: ( ArrayBuffer | number ) ): number;
+    abstract removeBuffer( bufferId: Id ): void;
+    abstract removeTexture( textureId: Id ): void;
+    abstract removeShader( shaderId: Id ): void;
+    abstract removeRenderPipeline( pipelineId: Id ): void;
+    abstract removeResourceTable( tableId: Id ): void;
+    abstract removeVertexTable( tableId: Id ): void;
 
-    abstract readPixels(offsetX: number, offsetY: number, width: number, height: number, result: Uint8Array): void;
+    abstract writeBufferData( bufferId: Id, dstOffset: number, srcBytes: ( ArrayBuffer | ArrayBufferView ) ): void;
+    abstract writeTextureData( textureId: Id,
+        image: HTMLImageElement | HTMLCanvasElement | ArrayBuffer | ImageBitmap ): void;
+
+    abstract readPixels( offsetX: number, offsetY: number, width: number, height: number, result: Uint8Array ): void;
 }

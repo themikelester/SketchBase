@@ -1,5 +1,5 @@
 import { RenderList } from './base/GfxRenderList';
-import { CullMode, Renderer } from './base/gfx/GfxTypes';
+import { CullMode, Renderer } from './base/GfxApiTypes';
 import { assertDefined } from './base/Util';
 import { MetaFunc } from './base/Meta';
 

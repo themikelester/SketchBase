@@ -6,7 +6,7 @@
 // Date C: 2020/11/27
 //----------------------------------------------------------------------------------------------------------------------
 
-import { Id, BufferView, PrimitiveType, Type, CullMode } from './gfx/GfxTypes';
+import { Id, BufferView, PrimitiveType, Type, CullMode } from './GfxApiTypes';
 
 export class RenderPrimitive {
     resourceTable: Id;
@@ -23,9 +23,9 @@ export class RenderPrimitive {
 
     instanceCount?: number;
 
-    constructor(renderPipeline: Id, vertexTable: Id, resourceTable: Id) {
+    constructor( renderPipeline: Id, vertexTable: Id, resourceTable: Id ) {
         this.resourceTable = resourceTable;
-        this.vertexTable = vertexTable; 
+        this.vertexTable = vertexTable;
         this.renderPipeline = renderPipeline;
 
         this.elementCount = 0;
