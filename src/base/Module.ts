@@ -55,7 +55,7 @@ function buildParamArray( game: ObjectType, paramTypes: string[], funcName: stri
         assert( memVarIdx != -1, "Game object does not contain a meta-registered variable of type " + type +
             ". Required by the " + funcName + " function of " + className );
         return game[ memVarNames[ memVarIdx ] ];
-    });
+    } );
 
     return paramValues;
 }
@@ -68,7 +68,7 @@ export class ModuleBarn {
     private functions: string[];
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
-    initialize( game: any, functionList: string[]): void {
+    initialize( game: any, functionList: string[] ): void {
         this.functions = functionList;
 
         // Find all meta-registered modules on the Game object
@@ -76,12 +76,12 @@ export class ModuleBarn {
         for( const name of Object.keys( memVars ) ) {
             const moduleGroup = memVars[ name ].metadata[ kMetadataIdModuleGroup ];
             if( moduleGroup ) {
-                this.modules.push({
+                this.modules.push( {
                     type: memVars[ name ].type,
                     group: moduleGroup,
                     object: game[ name ] as ObjectType,
                     funcArgs: {}
-                })
+                } )
             }
         }
 
@@ -99,6 +99,7 @@ export class ModuleBarn {
 
     callFunction( funcName: string, direction: ModuleDirection = ModuleDirection.Forward ): void {
         assert( this.functions.includes( funcName ) );
+        performance.mark( 'callStart' );
 
         const reverse = direction == ModuleDirection.Reverse;
         const moduleCount = this.modules.length;
@@ -106,7 +107,13 @@ export class ModuleBarn {
         for( let i = 0; i < moduleCount; i++ ) {
             const module = this.modules[ reverse ? moduleCount - 1 - i : i ];
             const funcArgs = module.funcArgs[ funcName ];
-            if( funcArgs ) { ( module.object[ funcName ] as Function )( ...funcArgs ); }
+            if( funcArgs ) {
+                performance.mark( "moduleCall" );
+                ( module.object[ funcName ] as Function )( ...funcArgs );
+                performance.measure( module.type, "moduleCall" );
+            }
         }
+
+        performance.measure( 'Module: ' + funcName, 'callStart' );
     }
 }
