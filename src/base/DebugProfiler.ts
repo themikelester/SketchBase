@@ -25,6 +25,14 @@ type ProfileEntry = {
     aveEnd: number;
 };
 
+// @NOTE: Performance.memory is non-standard, and doesn't have typings
+declare global {
+    interface Performance {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        memory: any;
+    }
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 // Helper functions
 //----------------------------------------------------------------------------------------------------------------------
@@ -116,22 +124,25 @@ export class ProfileHud {
             }
         }
 
+        const profilesHeight = kPad + entries.length * ( kPad + kBarHeight );
+        const statsHeight = kPad + kBarHeight;
+        const totalHeight = profilesHeight + statsHeight;
+
         // Resize if necessary
-        const height = kPad + entries.length * ( kPad + kBarHeight );
-        if( height != this.ctx.canvas.clientHeight )
+        if( totalHeight != this.ctx.canvas.clientHeight )
         {
             this.ctx.canvas.width = kWidth * devicePixelRatio;
-            this.ctx.canvas.height = height * devicePixelRatio;
+            this.ctx.canvas.height = totalHeight * devicePixelRatio;
             this.ctx.font = 9 + 'px Helvetica,Arial,sans-serif';
             this.ctx.textBaseline = 'middle';
             this.ctx.scale( devicePixelRatio, devicePixelRatio );
             this.ctx.canvas.style.width = kWidth + "px";
-            this.ctx.canvas.style.height = height + "px";
+            this.ctx.canvas.style.height = totalHeight + "px";
         }
 
         // Clear the graph
         this.ctx.fillStyle = kBackgroundColor;
-        this.ctx.fillRect( 0, 0, this.ctx.canvas.width, this.ctx.canvas.height );
+        this.ctx.fillRect( 0, 0, this.ctx.canvas.width, profilesHeight );
 
         // Draw profile bars
         for( let i = 0; i < entries.length; i++ ) {
@@ -159,5 +170,15 @@ export class ProfileHud {
             const barText = entryName + ": " + duration.toFixed( 2 ) + " ms";
             this.ctx.fillText( barText, kPad, startY + kBarHeight * 0.5 );
         }
+
+        // Draw the stats box
+        const statsYPos = profilesHeight;
+        this.ctx.fillStyle = kBackgroundColor;
+        this.ctx.fillRect( 0, statsYPos + kPad, this.ctx.canvas.width, statsHeight );
+        this.ctx.fillStyle = 'white';
+
+        const usedMB = ( performance.memory.usedJSHeapSize / ( 1024 * 1024 ) ).toFixed( 3 );
+        const maxMB = ( performance.memory.jsHeapSizeLimit / ( 1024 * 1024 ) ).toFixed( 3 );
+        this.ctx.fillText( "Memory: " + usedMB + " MB / " + maxMB + " MB", kPad, statsYPos + kPad + kBarHeight * 0.5 );
     }
 }
