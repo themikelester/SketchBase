@@ -44,3 +44,16 @@ export function nArray<T>( n: number, c: () => T ): T[] {
         { d[ i ] = c(); }
     return d;
 }
+
+/**
+ * Hash a string into a 32-bit integer
+ * @param str The string to hash
+ */
+export function hashString32( str: string ): number {
+    let hash = 0;
+    for( let i = 0; i < str.length; i++ ) {
+        { hash = Math.imul( 31, hash ) + str.charCodeAt( i ) | 0; }
+    }
+
+    return hash;
+}

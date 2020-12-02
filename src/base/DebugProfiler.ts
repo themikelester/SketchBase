@@ -4,9 +4,10 @@
 // Author: Mike Lester
 // Date C: 2020/12/01
 //----------------------------------------------------------------------------------------------------------------------
+import { lerp } from "../Math";
 import { DebugMenu } from "./DebugMenu";
 import { metaClass } from "./Meta";
-import { assertDefined } from "./Util";
+import { assertDefined, hashString32 } from "./Util";
 
 //----------------------------------------------------------------------------------------------------------------------
 // Constants
@@ -25,6 +26,15 @@ type ProfileEntry = {
 };
 
 //----------------------------------------------------------------------------------------------------------------------
+// Helper functions
+//----------------------------------------------------------------------------------------------------------------------
+function stringToColor( str: string ): string {
+    const hash = hashString32( str ) & 0xFFFFFF00 | 0x000000FF;
+    const color = "#" + ( hash >>> 0 ).toString( 16 );
+    return color;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 // Functions
 //----------------------------------------------------------------------------------------------------------------------
 export abstract class Profile {
@@ -37,12 +47,11 @@ export abstract class Profile {
     }
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // ProfileHud
 //----------------------------------------------------------------------------------------------------------------------
 @metaClass
-export class DebugProfiler {
+export class ProfileHud {
     parent: HTMLElement;
     dom: HTMLElement;
     ctx: CanvasRenderingContext2D;
@@ -103,9 +112,17 @@ export class DebugProfiler {
         }
 
         // Resize if necessary
-        this.ctx.canvas.height = kPad + entries.length * ( kPad + kBarHeight );
-        this.ctx.font = 9 + 'px Helvetica,Arial,sans-serif';
-        this.ctx.textBaseline = 'middle';
+        const height = kPad + entries.length * ( kPad + kBarHeight );
+        if( height != this.ctx.canvas.clientHeight )
+        {
+            this.ctx.canvas.width = kWidth * devicePixelRatio;
+            this.ctx.canvas.height = height * devicePixelRatio;
+            this.ctx.font = 9 + 'px Helvetica,Arial,sans-serif';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.scale( devicePixelRatio, devicePixelRatio );
+            this.ctx.canvas.style.width = kWidth + "px";
+            this.ctx.canvas.style.height = height + "px";
+        }
 
         // Clear the graph
         this.ctx.fillStyle = kBackgroundColor;
@@ -113,13 +130,14 @@ export class DebugProfiler {
 
         // Draw profile bars
         let i = 0;
-        this.ctx.fillStyle = 'red';
-        for( const [ _, entry ] of this.profiles.entries() ) {
+        for( const [ name, entry ] of this.profiles.entries() ) {
             const startTime = entry.aveBegin;
             const duration = entry.aveEnd - entry.aveBegin;
             const startX = kPad + startTime / frameDuration * kWidth
             const startY = kPad + ( i++ ) * ( kPad + kBarHeight );
             const barWidth = duration / frameDuration * kWidth;
+
+            this.ctx.fillStyle = stringToColor( name );
             this.ctx.fillRect( startX, startY, barWidth, kBarHeight );
         }
 
@@ -134,7 +152,3 @@ export class DebugProfiler {
         }
     }
 }
-
-export function lerp( p: number, q: number, t: number ): number {
-    return ( 1.0 - t ) * p + t * q;
-  }

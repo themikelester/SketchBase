@@ -12,7 +12,7 @@ import { Scene } from './scene';
 import { GlobalUniforms } from './base/GfxGlobalUniforms';
 
 import { mat4, vec3 } from 'gl-matrix';
-import { DebugProfiler, Profile } from './base/DebugProfiler';
+import { ProfileHud, Profile } from './base/DebugProfiler';
 
 export class Game {
     @metaVar rootElement: HTMLElement;
@@ -21,7 +21,7 @@ export class Game {
     @metaVar gfxDevice: Renderer = new WebGlRenderer();
     @metaVar debugMenu: DebugMenu = new DebugMenu();
 
-    profiler: DebugProfiler = new DebugProfiler();
+    profileHud: ProfileHud = new ProfileHud();
     moduleBarn: ModuleBarn = new ModuleBarn();
 
     // Modules. The order here determines the function call order (e.g. Update)
@@ -38,7 +38,7 @@ export class Game {
 
         // Debug initialization
         // @TODO: Only in Dev builds
-        this.profiler.initialize( this.rootElement, this.debugMenu );
+        this.profileHud.initialize( this.rootElement, this.debugMenu );
 
         // Graphics initialization
         this.gfxDevice.setDebugEnabled( IS_DEVELOPMENT );
@@ -95,7 +95,7 @@ export class Game {
         this.moduleBarn.callFunction( "render", ModuleDirection.Forward );
 
         Profile.end( 'GameUpdate' );
-        this.profiler.update();
+        this.profileHud.update();
     }
 
     /**
