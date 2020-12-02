@@ -19,12 +19,12 @@ class GridShader implements Gfx.ShaderDescriptor {
     private static vert = vertShaderSource;
     private static frag = fragShaderSource;
 
-    public static UniformLayout = computePackedBufferLayout({
+    public static UniformLayout = computePackedBufferLayout( {
         u_baseColor: { type: Gfx.Type.Float4 },
         u_lineColor: { type: Gfx.Type.Float4 },
         u_gridUnit: { type: Gfx.Type.Float },
         u_gridRadius: { type: Gfx.Type.Float },
-    });
+    } );
 
     public static resourceLayout = {
         globalUniforms: { index: 0, type: Gfx.BindingType.UniformBuffer, layout: GlobalUniforms.bufferLayout },
@@ -70,8 +70,8 @@ export class DebugGrid {
 
         const pipeline = gfxDevice.createRenderPipeline( shader, renderFormat, vertexLayout, resourceLayout );
 
-        const vtxData = new Int8Array([ -1, -1, 1, -1, -1, 1, 1, 1 ]);
-        const idxData = new Uint16Array([ 0, 2, 1, 1, 2, 3 ]);
+        const vtxData = new Int8Array( [ -1, -1, 1, -1, -1, 1, 1, 1 ] );
+        const idxData = new Uint16Array( [ 0, 2, 1, 1, 2, 3 ] );
         const vertexBuffer = gfxDevice.createBuffer( 'GridVertices', Gfx.BufferType.Vertex, Gfx.Usage.Static, vtxData );
         const indexBuffer = gfxDevice.createBuffer( 'GridIndices', Gfx.BufferType.Index, Gfx.Usage.Static, idxData );
 
@@ -81,7 +81,7 @@ export class DebugGrid {
         gfxDevice.setBuffer( resources, 1, this.uniforms.getBufferView() );
 
         const vertexTable = gfxDevice.createVertexTable( pipeline );
-        gfxDevice.setVertexBuffer( vertexTable, 0, { buffer: vertexBuffer });
+        gfxDevice.setVertexBuffer( vertexTable, 0, { buffer: vertexBuffer } );
 
         this.primitive = new RenderPrimitive( pipeline, vertexTable, resources );
         this.primitive.indexBuffer = { buffer: indexBuffer };

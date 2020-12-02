@@ -82,16 +82,16 @@ module.exports = {
   },
   stats: 'minimal',
   plugins: [
-    new webpack.DefinePlugin({
+    new webpack.DefinePlugin( {
       '__COMMIT_HASH': JSON.stringify( COMMIT_HASH ),
       '__GITHUB_URL': JSON.stringify( GITHUB_URL ),
       'ENV.PARANOID': JSON.stringify( true ),
-    }),
-    new webpack.IgnorePlugin({
+    } ),
+    new webpack.IgnorePlugin( {
       // Workaround for broken libraries
       resourceRegExp: /^(fs|path)$/,
-    }),
-    new CleanWebpackPlugin({
+    } ),
+    new CleanWebpackPlugin( {
       cleanOnceBeforeBuildPatterns: [
         '**/*',
         '!data',
@@ -99,23 +99,23 @@ module.exports = {
         '!.htaccess',
         '!.nojekyll',
       ],
-    }),
-    new CopyPlugin([
+    } ),
+    new CopyPlugin( [
       { from: 'data', to: 'data' },
-    ]),
-    new HtmlWebpackPlugin({
+    ] ),
+    new HtmlWebpackPlugin( {
       chunks: [ 'main' ],
       filename: 'index.html',
       template: './src/index.html',
       gtagId: GTAG_ID,
       appName: APP_NAME,
       appDesc: APP_DESCRIPTION,
-    }),
+    } ),
     new SizePlugin(),
-    new BundleAnalyzerPlugin({
+    new BundleAnalyzerPlugin( {
       analyzerMode: 'static',
       openAnalyzer: false,
       reportFilename: 'bundleSizeReport.html',
-    }),
+    } ),
   ],
 };

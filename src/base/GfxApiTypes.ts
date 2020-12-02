@@ -347,7 +347,7 @@ export abstract class Renderer {
     abstract setVertexBuffer( vertexTable: Id, index: number, view: BufferView ): void;
     abstract setBuffer( resourceTableId: Id, index: number, view: BufferView ): void;
     abstract setTexture( resourceTableId: Id, index: number, textureId: Id ): void;
-    abstract setTextures( resourceTableId: Id, index: number, textureIds: Id[]): void;
+    abstract setTextures( resourceTableId: Id, index: number, textureIds: Id[] ): void;
 
     abstract createDepthStencilState( desc: DepthStateDescriptor ): Id;
     abstract createResourceTable( resourceLayout: ResourceLayout ): Id;

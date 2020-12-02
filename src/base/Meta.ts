@@ -54,7 +54,7 @@ export const MetaTable: Record<string, Class> = {};
 // Decorators. Use these to meta-register methods and member variables.
 //----------------------------------------------------------------------------------------------------------------------
 export const metaClass: ClassDecorator = target => {
-    if( !MetaTable[ target.name ]) {
+    if( !MetaTable[ target.name ] ) {
         MetaTable[ target.name ] = new Class();
         MetaTable[ target.name ].cons = target;
     }
@@ -103,14 +103,14 @@ export const metaFunc: MethodDecorator = ( target, propertyKey: string | symbol 
 // Functions
 //----------------------------------------------------------------------------------------------------------------------
 export function setMemVarMetadata( className: string, memVarName: string, key: string, value: string ): void {
-    const metaClass = assertDefined(  MetaTable[ className ]);
-    const memVar = assertDefined( metaClass.vars[ memVarName ]);
+    const metaClass = assertDefined(  MetaTable[ className ] );
+    const memVar = assertDefined( metaClass.vars[ memVarName ] );
     memVar.metadata[ key ] = value;
 }
 
 export function getMemVarMetadata( className: string, memVarName: string, metaDataKey: string ): string {
-    const metaClass = assertDefined(  MetaTable[ className ]);
-    const memVar = assertDefined( metaClass.vars[ memVarName ]);
+    const metaClass = assertDefined(  MetaTable[ className ] );
+    const memVar = assertDefined( metaClass.vars[ memVarName ] );
     return memVar.metadata[ metaDataKey ];
 }
 

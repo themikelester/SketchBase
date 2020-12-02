@@ -128,6 +128,6 @@ export class UniformBuffer {
   }
 }
 
-function getUniformSize( uniform: Gfx.BufferLayout[0]): number {
+function getUniformSize( uniform: Gfx.BufferLayout[0] ): number {
   return Gfx.translateTypeToSize( uniform.type ) * defaultValue( uniform.count, 1 );
 }

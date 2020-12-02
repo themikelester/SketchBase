@@ -20,8 +20,8 @@ export interface IGUIController {
 export interface IDebugMenu {
     add( target: unknown, propName:string, min?: number, max?: number, step?: number ): IGUIController;
     add( target: unknown, propName:string, status: boolean ): IGUIController;
-    add( target: unknown, propName:string, items:string[]): IGUIController;
-    add( target: unknown, propName:string, items:number[]): IGUIController;
+    add( target: unknown, propName:string, items:string[] ): IGUIController;
+    add( target: unknown, propName:string, items:number[] ): IGUIController;
     add( target: unknown, propName:string, items:ObjectType ): IGUIController;
     addColor( target: unknown, propName:string ): IGUIController;
 
@@ -49,8 +49,8 @@ export class DebugMenu implements IDebugMenu {
 
     add( target: unknown, propName:string, min?: number, max?: number, step?: number ): IGUIController;
     add( target: unknown, propName:string, status: boolean ): IGUIController;
-    add( target: unknown, propName:string, items:string[]): IGUIController;
-    add( target: unknown, propName:string, items:number[]): IGUIController;
+    add( target: unknown, propName:string, items:string[] ): IGUIController;
+    add( target: unknown, propName:string, items:number[] ): IGUIController;
     add( target: unknown, propName:string, items:unknown ): IGUIController;
     add(): IGUIController {
         const debugAdd: DebugAdd = { args: arguments };
@@ -85,7 +85,7 @@ export class DebugMenu implements IDebugMenu {
         if( this._gui === undefined ) {
             this._guiPromise = import( /* WebpackChunkName: "dat-gui" */ 'dat.gui' );
             const dat = await this._guiPromise;
-            this._gui = new dat.GUI({ load: this._saveObject });
+            this._gui = new dat.GUI( { load: this._saveObject } );
         }
 
         // Respect the global 'closed' save state property, even though we're 'showing' for the first time
@@ -93,20 +93,20 @@ export class DebugMenu implements IDebugMenu {
 
         // Call all buffered shim functions (recursively for folders)
         for( const debugAdd of this._add ) {
-            this._gui.getRoot().remember( debugAdd.args[ 0 ]);
+            this._gui.getRoot().remember( debugAdd.args[ 0 ] );
             const controller = this._gui.add.apply( this._gui, debugAdd.args );
             if( debugAdd.onChange ) {
                 controller.onChange( debugAdd.onChange );
-                debugAdd.onChange( controller.object[ controller.property ]);
+                debugAdd.onChange( controller.object[ controller.property ] );
             }
         }
 
         for( const debugAdd of this._addColor ) {
-            this._gui.getRoot().remember( debugAdd.args[ 0 ]);
+            this._gui.getRoot().remember( debugAdd.args[ 0 ] );
             const controller = this._gui.addColor.apply( this._gui, debugAdd.args );
             if( debugAdd.onChange ) {
                 controller.onChange( debugAdd.onChange );
-                debugAdd.onChange( controller.object[ controller.property ]);
+                debugAdd.onChange( controller.object[ controller.property ] );
             }
         }
 

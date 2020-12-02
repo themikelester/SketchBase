@@ -743,7 +743,7 @@ export class WebGlRenderer implements Gfx.Renderer {
 
     // Create the default RenderPass which draws to the backbuffer
     // @NOTE: The width and height will be set on resize
-    this.defaultRenderPass = this.renderPasses.create({ name: 'Default', width: canvas.width, height: canvas.height });
+    this.defaultRenderPass = this.renderPasses.create( { name: 'Default', width: canvas.width, height: canvas.height } );
     assert( this.defaultRenderPass === Gfx.kDefaultRenderPass );
 
     // Shadow GL state to avoid unnecessary API calls
@@ -753,7 +753,7 @@ export class WebGlRenderer implements Gfx.Renderer {
     gl.clearColor( 0, 0, 0, 1 );
 
     // Create a default texture to use when null is assigned to a resource table
-    const black = new Uint8Array([ 0, 0, 0, 1 ]);
+    const black = new Uint8Array( [ 0, 0, 0, 1 ] );
     const defaultTexDesc = {
       usage: Gfx.Usage.Static,
       type: Gfx.TextureType.Texture2D,
@@ -898,10 +898,10 @@ export class WebGlRenderer implements Gfx.Renderer {
   createDepthStencilState( desc: Gfx.DepthStateDescriptor ): Gfx.Id {
     // @TODO: Support stencil state
     const glCompareFunc = translateCompareFunc( defaultValue( desc.depthCompareFunc, Gfx.CompareFunc.Less ) );
-    return this.depthStencilStates.create({
+    return this.depthStencilStates.create( {
       depthTestEnabled: desc.depthTestEnabled,
       depthWriteEnabled: desc.depthWriteEnabled,
-      depthCompareFunc: glCompareFunc });
+      depthCompareFunc: glCompareFunc } );
   }
 
   createVertexTable( pipelineId: Gfx.Id ): Gfx.Id {
@@ -912,7 +912,7 @@ export class WebGlRenderer implements Gfx.Renderer {
       vao = gl.createVertexArray();
     }
 
-    return this.vertexTables.create({ pipeline, vao, buffers: []});
+    return this.vertexTables.create( { pipeline, vao, buffers: []} );
   }
 
   removeVertexTable( tableId: Gfx.Id ): void {
@@ -925,7 +925,7 @@ export class WebGlRenderer implements Gfx.Renderer {
   }
 
   createResourceTable( layout: Gfx.ResourceLayout ): Gfx.Id {
-    return this.resourceTables.create({ layout, buffers: [], textures: []});
+    return this.resourceTables.create( { layout, buffers: [], textures: []} );
   }
 
   removeResourceTable( tableId: Gfx.Id ): void {
@@ -941,7 +941,7 @@ export class WebGlRenderer implements Gfx.Renderer {
       // Ensure that all necessary vertex buffers are set
       const bufCount = table.pipeline.vertexLayout.buffers.length;
       for( let i = 0; i < bufCount; i++ ) {
-        assert( defined( table.buffers[ i ]), `Shader ${shaderName} expects a vertex buffer bound at slot ${i}` );
+        assert( defined( table.buffers[ i ] ), `Shader ${shaderName} expects a vertex buffer bound at slot ${i}` );
       }
     }
 
@@ -971,7 +971,7 @@ export class WebGlRenderer implements Gfx.Renderer {
 
       // GL Uniform calls are very expensive, but uniforms are saved per shader program.
       const oldVal = this.pipeline.shader.uniformVals[ def.name ];
-      const changed = !value.every( ( valI, i ) => valI === oldVal[ i ]);
+      const changed = !value.every( ( valI, i ) => valI === oldVal[ i ] );
 
       // Only re-set the uniform if the value has changed from the current GL uniform value
       if( changed ) {
@@ -1036,10 +1036,10 @@ export class WebGlRenderer implements Gfx.Renderer {
     table.textures[ index ] = texture;
   }
 
-  setTextures( resourceTableId: Gfx.Id, index: number, textureIds: Gfx.Id[]): void {
+  setTextures( resourceTableId: Gfx.Id, index: number, textureIds: Gfx.Id[] ): void {
     const table = this.resourceTables.get( resourceTableId ) as ResourceTable;
     for( let i = 0; i < textureIds.length; i++ ) {
-      const texture = textureIds[ i ] ? this.textures.get( textureIds[ i ]) : null;
+      const texture = textureIds[ i ] ? this.textures.get( textureIds[ i ] ) : null;
       table.textures[ index + i ] = texture;
     }
   }
@@ -1064,7 +1064,7 @@ export class WebGlRenderer implements Gfx.Renderer {
 
     // For convenience, extract the resource bindings as an array
     const resourceNames = Object.keys( resourceLayout );
-    const resourceList = resourceNames.map( name => resourceLayout[ name ]);
+    const resourceList = resourceNames.map( name => resourceLayout[ name ] );
     const reflection = shader.reflection;
 
     if( this.debugEnabled ) {
@@ -1082,7 +1082,7 @@ export class WebGlRenderer implements Gfx.Renderer {
       // Ensure that all uniforms are defined in the resourceLayout
       for( let i = 0; i < reflection.uniforms.length; i++ ) {
         const uniform = reflection.uniforms[ i ];
-        const binding = resourceList.find( l => !isTextureResourceBinding( l ) && l.layout && l.layout[ uniform.name ]) as Gfx.UniformBufferResourceBinding;
+        const binding = resourceList.find( l => !isTextureResourceBinding( l ) && l.layout && l.layout[ uniform.name ] ) as Gfx.UniformBufferResourceBinding;
         assert( binding !== undefined, `Shader '${shader.name}' expects uniform '${uniform.name}' to be set in a uniform buffer` );
         const type = binding.layout[ uniform.name ].type;
         assert( type === uniform.type, `Shader '${shader.name}' expects uniform '${uniform.name}' to be type ${uniform.type} but the ShaderResourceLayout specifies type ${type}` );
@@ -1106,12 +1106,12 @@ export class WebGlRenderer implements Gfx.Renderer {
       requiredAttrs.forEach( a => {
         const attrBuf = vertexLayout.buffers.find( buffer => buffer && buffer.layout[ a ] !== undefined );
         assert( attrBuf !== undefined, `VertexLayout does not supply attribute ${a} required by Shader '${shader.name}'` );
-      });
+      } );
 
       if( !this.isGfxFeatureSupported( Gfx.Feature.Instancing ) ) {
         vertexLayout.buffers.forEach( buffer => {
           assert( buffer.stepMode !== Gfx.StepMode.Instance, "Instancing is not supported by this WebGL context" )
-        })
+        } )
       }
     }
 
@@ -1119,7 +1119,7 @@ export class WebGlRenderer implements Gfx.Renderer {
     const uniformLayout = {} as UniformLayout;
     for( let i = 0; i < reflection.uniforms.length; i++ ) {
       const uniform = reflection.uniforms[ i ];
-      const binding = resourceList.find( l => !isTextureResourceBinding( l ) && l.layout && l.layout[ uniform.name ]) as Gfx.UniformBufferResourceBinding;
+      const binding = resourceList.find( l => !isTextureResourceBinding( l ) && l.layout && l.layout[ uniform.name ] ) as Gfx.UniformBufferResourceBinding;
       uniformLayout[ uniform.name ] = { offset: binding.layout[ uniform.name ].offset, index: binding.index };
     }
     for( let i = 0; i < reflection.textureArray.length; i++ ) {
@@ -1128,7 +1128,7 @@ export class WebGlRenderer implements Gfx.Renderer {
       uniformLayout[ uniform.name ] = { offset: 0, index: binding.index };
     }
 
-    return this.renderPipelines.create({ shader, renderFormat, vertexLayout, resourceLayout, uniformLayout });
+    return this.renderPipelines.create( { shader, renderFormat, vertexLayout, resourceLayout, uniformLayout } );
   }
 
   removeRenderPipeline( pipelineId: Gfx.Id ): void  {
@@ -1139,7 +1139,7 @@ export class WebGlRenderer implements Gfx.Renderer {
     return this._createShader( desc.name, desc.vertSource, desc.fragSource );
   }
 
-  _createShader( name: string, vsIn: string | string[], fsIn: string | string[]): number {
+  _createShader( name: string, vsIn: string | string[], fsIn: string | string[] ): number {
     // If the sources are arrays, join them with line directives so that error line numbers are still readable
     const vs = vsIn instanceof Array ? vsIn.join( '\n#line 0\n' ) : vsIn;
     const fs = fsIn instanceof Array ? fsIn.join( '\n#line 0\n' ) : fsIn;
@@ -1167,7 +1167,7 @@ export class WebGlRenderer implements Gfx.Renderer {
     // Update our shadow state to ensure that the correct shader gets re-bound
     this.current.shader = undefined;
 
-    return this.shaders.create({ name, glProgram, reflection, uniformVals });
+    return this.shaders.create( { name, glProgram, reflection, uniformVals } );
   }
 
   removeShader( shaderId: Gfx.Id ): void {
@@ -1292,7 +1292,7 @@ export class WebGlRenderer implements Gfx.Renderer {
       }
     }
 
-    return this.buffers.create({ name, type, target, usage, size, glId, cpuBuffer });
+    return this.buffers.create( { name, type, target, usage, size, glId, cpuBuffer } );
   }
 
   removeBuffer( bufferId: Gfx.Id ): void {

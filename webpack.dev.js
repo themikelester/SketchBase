@@ -42,11 +42,11 @@ module.exports = merge( common, {
     ],
   },
   plugins: [
-    new webpack.DefinePlugin({
+    new webpack.DefinePlugin( {
       'process.env.NODE_ENV': JSON.stringify( 'development' ),
-    }),
+    } ),
     // Run ts checker asynchronously
-    new ForkTsCheckerWebpackPlugin({
+    new ForkTsCheckerWebpackPlugin( {
       async: false,
       eslint: {
         files: "./src/**/*.{ts,tsx,js,jsx}"
@@ -57,6 +57,6 @@ module.exports = merge( common, {
           syntactic: true,
         },
       },
-    }),
+    } ),
   ],
-});
+} );

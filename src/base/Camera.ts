@@ -75,9 +75,9 @@ export class Camera {
   viewMatrixUpdated(): void {
     mat4.invert( this.cameraMatrix, this.viewMatrix );
 
-    vec3.set( this.right, this.cameraMatrix[ 0 ], this.cameraMatrix[ 1 ], this.cameraMatrix[ 2 ]);
-    vec3.set( this.up, this.cameraMatrix[ 4 ], this.cameraMatrix[ 5 ], this.cameraMatrix[ 6 ]);
-    vec3.set( this.forward, -this.cameraMatrix[ 8 ], -this.cameraMatrix[ 9 ], -this.cameraMatrix[ 10 ]);
+    vec3.set( this.right, this.cameraMatrix[ 0 ], this.cameraMatrix[ 1 ], this.cameraMatrix[ 2 ] );
+    vec3.set( this.up, this.cameraMatrix[ 4 ], this.cameraMatrix[ 5 ], this.cameraMatrix[ 6 ] );
+    vec3.set( this.forward, -this.cameraMatrix[ 8 ], -this.cameraMatrix[ 9 ], -this.cameraMatrix[ 10 ] );
 
     mat4.multiply( this.viewProjMatrix, this.projectionMatrix, this.viewMatrix );
     mat4.multiply( this.viewProjMatrixInverse, this.cameraMatrix, this.projectionMatrixInverse );
