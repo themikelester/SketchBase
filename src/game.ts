@@ -26,9 +26,9 @@ export class Game {
 
     // Modules. The order here determines the function call order (e.g. Update)
     @module scene: Scene = new Scene();
-    @module compositor: Compositor = new Compositor();
     @module globalUniforms: GlobalUniforms = new GlobalUniforms();
     @module debugGrid: DebugGrid = new DebugGrid();
+    @module compositor: Compositor = new Compositor();
 
     public initialize(): void {
         // DOM creation

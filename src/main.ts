@@ -56,7 +56,7 @@ if( module.hot ) {
     //               new bundle. But if that old bundle contains an error, the program can crash on code that never
     //               should have been loaded (e.g. the "fkl" case above). This could be worked around by using a hotload
     //               shortcut rather than every save.
-    module.hot.accept( [ "./game" ], () => {
+    module.hot.accept( [ "./game", "./base/DebugProfiler" ], () => {
         console.log( "Hotloaded" );
         window.game.hotload();
     } );
