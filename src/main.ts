@@ -1,5 +1,6 @@
 import { Game } from './game';
 import { GITHUB_REVISION_URL, IS_DEVELOPMENT } from './base/Version';
+import { Profile } from './base/DebugProfiler';
 
 // Declare useful objects for easy access.
 declare global {
@@ -41,7 +42,7 @@ function main() {
 }
 
 function Update() {
-    performance.mark( 'FrameStart' );
+    Profile.begin( 'FrameStart' );
     window.game.update();
     window.requestAnimationFrame( Update );
 }

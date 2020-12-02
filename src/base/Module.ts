@@ -11,6 +11,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 /* eslint-disable @typescript-eslint/ban-types */
 
+import { Profile } from './DebugProfiler';
 import { MetaTable, metaVar, setMemVarMetadata } from './Meta';
 import { assert, assertString } from './Util';
 
@@ -99,7 +100,7 @@ export class ModuleBarn {
 
     callFunction( funcName: string, direction: ModuleDirection = ModuleDirection.Forward ): void {
         assert( this.functions.includes( funcName ) );
-        performance.mark( 'callStart' );
+        Profile.begin( 'Module: ' + funcName );
 
         const reverse = direction == ModuleDirection.Reverse;
         const moduleCount = this.modules.length;
@@ -108,12 +109,12 @@ export class ModuleBarn {
             const module = this.modules[ reverse ? moduleCount - 1 - i : i ];
             const funcArgs = module.funcArgs[ funcName ];
             if( funcArgs ) {
-                performance.mark( "moduleCall" );
+                Profile.begin( module.type );
                 ( module.object[ funcName ] as Function )( ...funcArgs );
-                performance.measure( module.type, "moduleCall" );
+                Profile.end( module.type );
             }
         }
 
-        performance.measure( 'Module: ' + funcName, 'callStart' );
+        Profile.end( 'Module: ' + funcName );
     }
 }

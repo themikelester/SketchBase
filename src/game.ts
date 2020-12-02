@@ -12,7 +12,7 @@ import { Scene } from './scene';
 import { GlobalUniforms } from './base/GfxGlobalUniforms';
 
 import { mat4, vec3 } from 'gl-matrix';
-import { DebugProfiler } from './base/DebugProfiler';
+import { DebugProfiler, Profile } from './base/DebugProfiler';
 
 export class Game {
     @metaVar rootElement: HTMLElement;
@@ -87,14 +87,14 @@ export class Game {
     }
 
     public update(): void {
-        performance.mark( 'GameUpdate' );
+        Profile.begin( 'GameUpdate' );
 
         this.debugMenu.update();
 
         this.moduleBarn.callFunction( "update", ModuleDirection.Forward );
         this.moduleBarn.callFunction( "render", ModuleDirection.Forward );
 
-        performance.measure( 'GameUpdate', 'GameUpdate' );
+        Profile.end( 'GameUpdate' );
         this.profiler.update();
     }
 
