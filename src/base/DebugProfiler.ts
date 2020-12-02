@@ -88,6 +88,11 @@ export class ProfileHud {
         performance.clearMeasures();
         performance.clearMarks();
 
+        entries.sort( ( a, b ) => {
+            if( a.startTime == b.startTime ) { return b.duration - a.duration; }
+            else { return a.startTime - b.startTime; }
+        } )
+
         const frameStart = frameStartMark[ 0 ].startTime;
         const frameDuration = this.targetFrameTimeMs;
 
@@ -129,25 +134,29 @@ export class ProfileHud {
         this.ctx.fillRect( 0, 0, this.ctx.canvas.width, this.ctx.canvas.height );
 
         // Draw profile bars
-        let i = 0;
-        for( const [ name, entry ] of this.profiles.entries() ) {
+        for( let i = 0; i < entries.length; i++ ) {
+            const entryName = entries[ i ].name;
+            const entry = assertDefined( this.profiles.get( entryName ) );
+
             const startTime = entry.aveBegin;
             const duration = entry.aveEnd - entry.aveBegin;
             const startX = kPad + startTime / frameDuration * kWidth
-            const startY = kPad + ( i++ ) * ( kPad + kBarHeight );
+            const startY = kPad + i * ( kPad + kBarHeight );
             const barWidth = duration / frameDuration * kWidth;
 
-            this.ctx.fillStyle = stringToColor( name );
+            this.ctx.fillStyle = stringToColor( entryName );
             this.ctx.fillRect( startX, startY, barWidth, kBarHeight );
         }
 
         // Draw profile text on top
-        i = 0;
         this.ctx.fillStyle = 'white';
-        for( const [ name, entry ] of this.profiles.entries() ) {
+        for( let i = 0; i < entries.length; i++ ) {
+            const entryName = entries[ i ].name;
+            const entry = assertDefined( this.profiles.get( entryName ) );
+
             const duration = entry.aveEnd - entry.aveBegin;
-            const startY = kPad + ( i++ ) * ( kPad + kBarHeight );
-            const barText = name + ": " + duration.toFixed( 2 ) + " ms";
+            const startY = kPad + i * ( kPad + kBarHeight );
+            const barText = entryName + ": " + duration.toFixed( 2 ) + " ms";
             this.ctx.fillText( barText, kPad, startY + kBarHeight * 0.5 );
         }
     }
