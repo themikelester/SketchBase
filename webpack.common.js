@@ -33,7 +33,7 @@ module.exports = {
     rules: [
       // The primary ts-loader rule is defined in dev and prod separately
       {
-        test: /\.(png|woff2)$/,
+        test: /\.(png|.svg|woff2)$/,
         loader: 'file-loader',
         options: {
           name: '[name]-[sha1:hash:hex:20].[ext]',
@@ -110,6 +110,7 @@ module.exports = {
       gtagId: GTAG_ID,
       appName: APP_NAME,
       appDesc: APP_DESCRIPTION,
+      favicon: './src/assets/icon.svg'
     } ),
     new SizePlugin(),
     new BundleAnalyzerPlugin( {
