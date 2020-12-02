@@ -4,3 +4,6 @@ data
 .DS_Store
 size-plugin.json
 .vscode
+
+.ghimages/*
+.ghimages
