@@ -100,7 +100,6 @@ export class ModuleBarn {
 
     callFunction( funcName: string, direction: ModuleDirection = ModuleDirection.Forward ): void {
         assert( this.functions.includes( funcName ) );
-        Profile.begin( 'Module: ' + funcName );
 
         const reverse = direction == ModuleDirection.Reverse;
         const moduleCount = this.modules.length;
@@ -109,12 +108,10 @@ export class ModuleBarn {
             const module = this.modules[ reverse ? moduleCount - 1 - i : i ];
             const funcArgs = module.funcArgs[ funcName ];
             if( funcArgs ) {
-                Profile.begin( module.type );
+                Profile.begin( module.type + "." + funcName );
                 ( module.object[ funcName ] as Function )( ...funcArgs );
-                Profile.end( module.type );
+                Profile.end( module.type + "." + funcName );
             }
         }
-
-        Profile.end( 'Module: ' + funcName );
     }
 }

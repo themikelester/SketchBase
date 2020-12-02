@@ -87,14 +87,14 @@ export class Game {
     }
 
     public update(): void {
-        Profile.begin( 'GameUpdate' );
+        Profile.begin( 'Game.update' );
 
         this.debugMenu.update();
 
         this.moduleBarn.callFunction( "update", ModuleDirection.Forward );
         this.moduleBarn.callFunction( "render", ModuleDirection.Forward );
 
-        Profile.end( 'GameUpdate' );
+        Profile.end( 'Game.update' );
         this.profileHud.update();
     }
 
