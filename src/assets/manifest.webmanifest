@@ -4,7 +4,6 @@
     "description": "<%= description %>",
     "display": "fullscreen",
     "orientation": "landscape",
-    "start_url": ".",
     "icons": [
         {
           "src": "./icon512.png",
