@@ -14,12 +14,15 @@ import { GlobalUniforms } from './base/GfxGlobalUniforms';
 import { mat4, vec3 } from 'gl-matrix';
 import { ProfileHud, Profile } from './base/DebugProfiler';
 
+class HotloadData {}
+
 export class Game {
     @metaVar rootElement: HTMLElement;
     @metaVar canvas: HTMLCanvasElement = document.createElement( 'canvas' );
     @metaVar camera: Camera = new Camera();
     @metaVar gfxDevice: Renderer = new WebGlRenderer();
     @metaVar debugMenu: DebugMenu = new DebugMenu();
+    @metaVar hotLoadData?: HotloadData;
 
     profileHud: ProfileHud = new ProfileHud();
     moduleBarn: ModuleBarn = new ModuleBarn();
@@ -82,8 +85,24 @@ export class Game {
         this.moduleBarn.callFunction( "terminate", ModuleDirection.Reverse );
     }
 
-    public hotload(): void {
+    /**
+     * Called just before an ES module is removed for replacement
+     * Any properties added to hotLoadData will be available in the hotLoad() callback
+     */
+    public hotUnload( data: ObjectType ): void {
+        console.log( "HotUnloading" );
+        this.hotLoadData = data;
         this.moduleBarn.callFunction( "hotload", ModuleDirection.Forward );
+    }
+
+    /**
+     * Called after new the new ES module code has executed
+     * The hotLoadData object contains any properties added to it during hotUnload()
+     */
+    public hotLoad(): void {
+        console.log( "HotLoaded" );
+        this.moduleBarn.callFunction( "hotload", ModuleDirection.Forward );
+        this.hotLoadData = undefined;
     }
 
     public update(): void {

@@ -1,22 +1,34 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Notes:  The entry point of the project. Takes care of setting up the rendering loop, hotloading, and any other
+//         boilerplate that is shared between projects.
+//
+// Author: Mike Lester
+// Date C: 2020/11/25
+//----------------------------------------------------------------------------------------------------------------------
 import { Game } from './game';
 import { GITHUB_REVISION_URL, IS_DEVELOPMENT } from './base/Version';
 import { Profile } from './base/DebugProfiler';
 
-// Declare useful objects for easy access.
+//----------------------------------------------------------------------------------------------------------------------
+// Global Types
+//----------------------------------------------------------------------------------------------------------------------
 declare global {
     interface Window {
         game: Game;
     }
 }
 
-/**
- * All accepted URL parameters are documented here.
- * E.g. The URL 'http://myPublishUrl.io?debug' will show the debug menu
- */
+//----------------------------------------------------------------------------------------------------------------------
+// Constants
+//----------------------------------------------------------------------------------------------------------------------
+// @TODO: Move into Game
 const kUrlParameters: Record<string, ( game: Game, value: string ) => void> = {
     'debug': ( game: Game ) => game.debugMenu.show(),
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+// Main function
+//----------------------------------------------------------------------------------------------------------------------
 function main() {
     console.log( `Source for this build available at ${GITHUB_REVISION_URL}` );
 
@@ -41,13 +53,29 @@ function main() {
     window.requestAnimationFrame( Update );
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+// Main Loop
+//----------------------------------------------------------------------------------------------------------------------
 function Update() {
     Profile.begin( 'FrameStart' );
     window.game.update();
     window.requestAnimationFrame( Update );
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+// Hotloading
+//----------------------------------------------------------------------------------------------------------------------
 if( module.hot ) {
+    // Register a callback that will fire when this module is unloaded (just before the new version is executed)
+    module.hot.dispose( data => {
+        window.game.hotUnload( data );
+    } );
+
+    // If we're currently hotloading, all the new modules have been executed, and the status is "apply"
+    if( module.hot.status() === "apply" ) {
+        window.game.hotLoad();
+    }
+
     // @TODO: If a compile time error occurs, no more hot reloads are accepted. Need to investigate further.
     //        To repro, add garbage such as "fkl" to the end of Game.update(), then remove it.
     //        [Edit] I think this is caused by check() function being called too early. It's downloading the old bundle,
@@ -56,10 +84,12 @@ if( module.hot ) {
     //               new bundle. But if that old bundle contains an error, the program can crash on code that never
     //               should have been loaded (e.g. the "fkl" case above). This could be worked around by using a hotload
     //               shortcut rather than every save.
-    module.hot.accept( [ "./game", "./base/DebugProfiler" ], () => {
-        console.log( "Hotloaded" );
-        window.game.hotload();
+    module.hot.accept( error => {
+        console.error( "Hotload failed:", error );
     } );
 }
 
-main();
+// Only call main if we're not hotloading
+if( !module.hot || module.hot.status() !== "apply" ) {
+    main();
+}
