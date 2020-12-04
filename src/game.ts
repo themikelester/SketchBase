@@ -1,3 +1,9 @@
+//----------------------------------------------------------------------------------------------------------------------
+// Notes:  One class to rule them all. Intended to be rewritten / heavily modified for each game project.
+//
+// Author: Mike Lester
+// Date C: 2020/11/25
+//----------------------------------------------------------------------------------------------------------------------
 import { Camera } from './base/Camera';
 import { DebugGrid } from './base/DebugGrid';
 import { IS_DEVELOPMENT } from './base/Version';
@@ -14,8 +20,21 @@ import { GlobalUniforms } from './base/GfxGlobalUniforms';
 import { mat4, vec3 } from 'gl-matrix';
 import { ProfileHud, Profile } from './base/DebugProfiler';
 
+//----------------------------------------------------------------------------------------------------------------------
+// Types
+//----------------------------------------------------------------------------------------------------------------------
 class HotloadData {}
 
+//----------------------------------------------------------------------------------------------------------------------
+// Constants
+//----------------------------------------------------------------------------------------------------------------------
+const kUrlParameters: Record<string, ( game: Game, value: string ) => void> = {
+    'debug': ( game: Game ) => game.debugMenu.show(),
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// Game
+//----------------------------------------------------------------------------------------------------------------------
 export class Game {
     @metaVar rootElement: HTMLElement;
     @metaVar canvas: HTMLCanvasElement = document.createElement( 'canvas' );
@@ -33,7 +52,7 @@ export class Game {
     @module debugGrid: DebugGrid = new DebugGrid();
     @module compositor: Compositor = new Compositor();
 
-    public initialize(): void {
+    public initialize( urlParams: URLSearchParams ): void {
         // DOM creation
         this.rootElement = document.createElement( 'div' );
         document.body.appendChild( this.rootElement );
@@ -42,6 +61,9 @@ export class Game {
         // Debug initialization
         // @TODO: Only in Dev builds
         this.profileHud.initialize( this.rootElement, this.debugMenu );
+        if( IS_DEVELOPMENT ) {
+            this.debugMenu.show();
+        }
 
         // Graphics initialization
         this.gfxDevice.setDebugEnabled( IS_DEVELOPMENT );
@@ -56,11 +78,6 @@ export class Game {
         window.onclick = this.onClick.bind( this );
         document.onvisibilitychange = this.onVisibility.bind( this );
 
-        // Show debug menu by default on development builds
-        if( IS_DEVELOPMENT ) {
-            this.debugMenu.show();
-        }
-
         // Initialize the module barn
         const kModuleFunctions = [
             "initialize",
@@ -73,6 +90,12 @@ export class Game {
 
         // Call "Initialize()" for all modules
         this.moduleBarn.callFunction( "initialize", ModuleDirection.Forward );
+
+        // Apply any URL parameter options
+        urlParams.forEach( ( value: string, key: string ) => {
+            const func = kUrlParameters[ key ];
+            if( func ) { func( this, value ); }
+        } );
 
         // @HACK:
         mat4.lookAt( this.camera.viewMatrix, vec3.fromValues( 0, 100, 500 ),
