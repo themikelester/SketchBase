@@ -53,31 +53,38 @@ function Update() {
 //----------------------------------------------------------------------------------------------------------------------
 // Hotloading
 //----------------------------------------------------------------------------------------------------------------------
-if( module.hot ) {
-    // Register a callback that will fire when this module is unloaded (just before the new version is executed)
-    module.hot.dispose( data => {
-        window.game.hotUnload( data );
-    } );
+if( IS_DEVELOPMENT ) {
+    if( module.hot ) {
+        // Register a callback that will fire when this module is unloaded (just before the new version is executed)
+        module.hot.dispose( data => {
+            window.game.hotUnload( data );
+        } );
 
-    // If we're currently hotloading, all the new modules have been executed, and the status is "apply"
-    if( module.hot.status() === "apply" ) {
-        window.game.hotLoad();
+        // If we're currently hotloading, all the new modules have been executed, and the status is "apply"
+        if( module.hot.status() === "apply" ) {
+            window.game.hotLoad();
+        }
+
+        // @TODO: If a compile time error occurs, no more hot reloads are accepted. Need to investigate further.
+        //        To repro, add garbage such as "fkl" to the end of Game.update(), then remove it.
+        //
+        //        I think this is caused by check() function being called too early. It's downloading the old bundle,
+        //        before the new one has finished compiling. If noEmitOnErrors is true, it will fail with a 404. If
+        //        false, it will first load the old bundle, then call check() again, which finally loads the correct
+        //        new bundle. But if that old bundle contains an error, the program can crash on code that never
+        //        should have been loaded (e.g. the "fkl" case above). This could be worked around by using a hotload
+        //        shortcut rather than every save.
+        module.hot.accept( error => {
+            console.error( "Hotload failed:", error );
+        } );
     }
 
-    // @TODO: If a compile time error occurs, no more hot reloads are accepted. Need to investigate further.
-    //        To repro, add garbage such as "fkl" to the end of Game.update(), then remove it.
-    //        [Edit] I think this is caused by check() function being called too early. It's downloading the old bundle,
-    //               before the new one has finished compiling. If noEmitOnErrors is true, it will fail with a 404. If
-    //               false, it will first load the old bundle, then call check() again, which finally loads the correct
-    //               new bundle. But if that old bundle contains an error, the program can crash on code that never
-    //               should have been loaded (e.g. the "fkl" case above). This could be worked around by using a hotload
-    //               shortcut rather than every save.
-    module.hot.accept( error => {
-        console.error( "Hotload failed:", error );
-    } );
+    // Only call main if we're not hotloading
+    if( !module.hot || module.hot.status() !== "apply" ) {
+        main();
+    }
 }
 
-// Only call main if we're not hotloading
-if( !module.hot || module.hot.status() !== "apply" ) {
+if( !IS_DEVELOPMENT ) {
     main();
 }
