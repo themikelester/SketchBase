@@ -4,21 +4,23 @@
 // Author: Mike Lester
 // Date C: 2020/11/25
 //----------------------------------------------------------------------------------------------------------------------
-import { Camera } from './base/Camera';
-import { DebugGrid } from './base/DebugGrid';
 import { IS_DEVELOPMENT } from './base/Version';
-import { DebugMenu } from './base/DebugMenu';
 import { metaVar } from './base/Meta';
-import { WebGlRenderer } from './base/GfxApiWebGl';
 import { module, ModuleBarn, ModuleDirection } from './base/Module';
-import { Renderer } from './base/GfxApiTypes';
-
-import { Compositor } from './base/GfxCompositor';
-import { Scene } from './scene';
-import { GlobalUniforms } from './base/GfxGlobalUniforms';
-
 import { mat4, vec3 } from 'gl-matrix';
+
+// Development
 import { ProfileHud, Profile } from './base/DebugProfiler';
+import { DebugMenu } from './base/DebugMenu';
+
+// Modules
+import { Camera } from './base/Camera';
+import { Compositor } from './base/GfxCompositor';
+import { DebugGrid } from './base/DebugGrid';
+import { GlobalUniforms } from './base/GfxGlobalUniforms';
+import { Renderer } from './base/GfxApiTypes';
+import { Scene } from './scene';
+import { WebGlRenderer } from './base/GfxApiWebGl';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Types
