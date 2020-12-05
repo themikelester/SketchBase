@@ -1,0 +1,13 @@
+{
+  "name": "Base Sketch",
+  "short_name": "Base",
+  "description": "Sketch boilerplate",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "icon512-3c8eefd5f454ba3f10d9.png",
+      "sizes": "512x512"
+    }
+  ]
+}
