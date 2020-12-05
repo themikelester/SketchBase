@@ -111,7 +111,9 @@ module.exports = {
       appDesc: APP_DESCRIPTION,
       favicon: './src/assets/icon.svg'
     } ),
-    new SizePlugin(),
+    new SizePlugin( {
+      stripHash: file => file.replace( /^(\w+)(\.\w+)(\.\w+)/, ( _, name, hash, ext ) => [ name, ext ].join( '' ) )
+    } ),
     new BundleAnalyzerPlugin( {
       analyzerMode: 'static',
       openAnalyzer: false,
