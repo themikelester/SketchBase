@@ -28,6 +28,7 @@ module.exports = {
   resolve: {
     extensions: [ '.ts', '.js' ],
   },
+  stats: 'minimal',
   module: {
     rules: [
       // The primary ts-loader rule is defined in dev and prod separately
@@ -79,7 +80,6 @@ module.exports = {
       },
     ],
   },
-  stats: 'minimal',
   plugins: [
     new webpack.DefinePlugin( {
       '__COMMIT_HASH': JSON.stringify( COMMIT_HASH ),
