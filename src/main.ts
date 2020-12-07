@@ -6,7 +6,7 @@
 // Date C: 2020/11/25
 //----------------------------------------------------------------------------------------------------------------------
 import { Game } from './game';
-import { BUILD_DATE, BUILD_HASH, GITHUB_REVISION_URL, IS_DEVELOPMENT } from './base/Version';
+import { BUILD_DATE, BUILD_HASH, GITHUB_REVISION_URL, IS_DEVELOPMENT, IS_DEBUG_MODE } from './base/Version';
 import { Profile } from './base/DebugProfiler';
 
 //----------------------------------------------------------------------------------------------------------------------

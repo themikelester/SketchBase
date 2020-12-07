@@ -4,7 +4,7 @@
 // Author: Mike Lester
 // Date C: 2020/11/25
 //----------------------------------------------------------------------------------------------------------------------
-import { IS_DEVELOPMENT } from './base/Version';
+import { IS_DEBUG_MODE } from './base/Version';
 import { metaVar } from './base/Meta';
 import { devModule, module, ModuleBarn, ModuleDirection } from './base/Module';
 import { mat4, vec3 } from 'gl-matrix';
@@ -31,7 +31,7 @@ class HotloadData {}
 // Constants
 //----------------------------------------------------------------------------------------------------------------------
 const kUrlParameters: Record<string, ( game: Game, value: string ) => void> = {
-    'debug': ( game: Game ) => game.debugMenu.show(),
+    // Add any URL parameters you'd like to parse
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ export class Game {
 
     moduleBarn: ModuleBarn = new ModuleBarn();
 
-    // DevModules. Only loaded and executed in development mode (not production)
+    // DevModules. Only loaded and executed in debug mode (false by default in production)
     @devModule debugMenu: DebugMenu;
     @devModule profileHud: ProfileHud;
 
@@ -63,7 +63,7 @@ export class Game {
         this.rootElement.appendChild( this.canvas );
 
         // Graphics initialization
-        this.gfxDevice.setDebugEnabled( IS_DEVELOPMENT );
+        this.gfxDevice.setDebugEnabled( IS_DEBUG_MODE );
         const success = this.gfxDevice.initialize( this.canvas );
         if( success ) { this.gfxDevice.resize( this.canvas.width, this.canvas.height ); }
         else { return; } // @TODO: FatalError function. Displays a fullscreen error message a la Ayvri
@@ -83,12 +83,10 @@ export class Game {
             "update",
             "render",
         ];
-        this.moduleBarn.initialize( this, kModuleFunctions, IS_DEVELOPMENT );
+        this.moduleBarn.initialize( this, kModuleFunctions, IS_DEBUG_MODE );
 
         // Call "Initialize()" for all modules
         this.moduleBarn.callFunction( "initialize", ModuleDirection.Forward );
-
-        this.debugMenu.show();
 
         // Apply any URL parameter options
         urlParams.forEach( ( value: string, key: string ) => {
@@ -134,7 +132,7 @@ export class Game {
         this.moduleBarn.callFunction( "render", ModuleDirection.Forward );
 
         Profile.end( 'Game.update' );
-        if( IS_DEVELOPMENT ) { this.profileHud.update(); }
+        if( this.profileHud ) { this.profileHud.update(); }
     }
 
     /**

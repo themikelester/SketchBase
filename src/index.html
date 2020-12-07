@@ -24,6 +24,11 @@
         // Set build-time variables that cannot be directly included in the JS bundle (since it would modify the hash)
         const __BUILD_HASH = '<%= webpack.hash %>';
         const __BUILD_DATE = '<%= new Date() %>';
+
+        // Debug mode is enabled by default in dev builds, or by setting "debug=1" via URL parameters in prod builds
+        const urlParams = new URLSearchParams( window.location.search );
+        const isDev = '<%= process.env.NODE_ENV %>' == "development";
+        const __DEBUG_MODE = urlParams.has( "debug" ) ? urlParams.get( "debug" ) == true : isDev;
     </script>
     <link rel="manifest" href="<%= require('./assets/manifest.webmanifest') %>" />
 </head>
