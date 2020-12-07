@@ -88,10 +88,12 @@ export class DebugGrid {
         this.primitive.indexType = Gfx.Type.Ushort;
         this.primitive.elementCount = 6;
 
-        const menu = debugMenu.addFolder( 'DebugGrid' );
-        menu.add( this, 'enabled' );
-        menu.add( this, 'gridUnit', 1, 100, 10 );
-        menu.add( this, 'gridRadius' );
+        if( debugMenu ) {
+            const menu = debugMenu.addFolder( 'DebugGrid' );
+            menu.add( this, 'enabled' );
+            menu.add( this, 'gridUnit', 1, 100, 10 );
+            menu.add( this, 'gridRadius' );
+        }
     }
 
     @metaFunc render( gfxDevice: Gfx.Renderer, scene: Scene ): void {

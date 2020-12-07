@@ -20,9 +20,10 @@ export class Compositor {
     public resolutionScale = 1.0;
 
     @metaFunc initialize( debugMenu: DebugMenu ): void {
-        // Debug
-        const folder = debugMenu.addFolder( 'Compositor' );
-        folder.add( this, 'resolutionScale', 1, 16, 1 );
+        if( debugMenu ) {
+            const folder = debugMenu.addFolder( 'Compositor' );
+            folder.add( this, 'resolutionScale', 1, 16, 1 );
+        }
     }
 
     @metaFunc render( canvas: HTMLCanvasElement, gfxDevice: Gfx.Renderer, scene: Scene ): void {
