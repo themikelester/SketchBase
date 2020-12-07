@@ -6,6 +6,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 import { vec3 } from "gl-matrix";
 import { CameraNode, CameraState } from "./CameraSystem";
+import { Clock } from "./Clock";
 import { AxisY, saturate } from "./Math";
 import { assertDefined } from "./Util";
 
@@ -30,9 +31,7 @@ export class BlendCamera extends CameraNode {
     private outTicker = 0.0;
     private target: CameraNode;
 
-    private hackTime = 0.0;
-
-    constructor( public fadeInDuration = 1000.0, public fadeOutDuration = 1000.0 ) {
+    constructor( private clock: Clock, public fadeInDuration = 1000.0, public fadeOutDuration = 1000.0 ) {
         super();
     }
 
@@ -46,14 +45,8 @@ export class BlendCamera extends CameraNode {
         const child = assertDefined( this.prev );
         const grandChild = assertDefined( child.prev );
 
-        // @TODO: Use game dt
-        if( this.hackTime == 0.0 ) { this.hackTime = performance.now(); }
-        const time =  performance.now();
-        const dt = ( performance.now() - this.hackTime );
-        this.hackTime = time;
-
-        if( !this.fadeOut ) { this.inTicker += dt }
-        else { this.outTicker += dt; }
+        if( !this.fadeOut ) { this.inTicker += this.clock.gameDt }
+        else { this.outTicker += this.clock.gameDt; }
 
         let inT = this.fadeInDuration > 0.0 ? saturate( this.inTicker / this.fadeInDuration ) : 1.0;
         inT = -Math.cos( inT * Math.PI ) * 0.5 + 0.5;

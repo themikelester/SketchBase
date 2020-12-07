@@ -23,6 +23,7 @@ import { Scene } from './scene';
 import { WebGlRenderer } from './base/GfxApiWebGl';
 import { CameraSystem } from './base/CameraSystem';
 import { BlendCamera, FixedCamera } from './base/CameraTypes';
+import { Clock } from './base/Clock';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Types
@@ -53,6 +54,7 @@ export class Game {
     @devModule profileHud: ProfileHud;
 
     // Modules. The order here determines the function call order (e.g. Update)
+    @module clock: Clock;
     @module cameraSystem: CameraSystem;
     @module scene: Scene;
     @module globalUniforms: GlobalUniforms;
@@ -99,8 +101,8 @@ export class Game {
 
         // @HACK:
         this.cameraSystem.pushCamera( new FixedCamera( vec3.fromValues( 0, 100, 500 ), vec3.fromValues( 0, 0, 0 ) ) );
-        this.cameraSystem.pushCamera( new FixedCamera( vec3.fromValues( 0, 100, -500 ), vec3.fromValues( 0, 0, 0 ) ) );
-        this.cameraSystem.pushCamera( new BlendCamera( 1000.0, 1000.0 ) );
+        this.cameraSystem.pushCamera( new FixedCamera( vec3.fromValues( 500, 100, 0 ), vec3.fromValues( 0, 0, 0 ) ) );
+        this.cameraSystem.pushCamera( new BlendCamera( this.clock, 10000.0, 1000.0 ) );
     }
 
     public terminate(): void {
