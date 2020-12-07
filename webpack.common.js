@@ -29,11 +29,9 @@ module.exports = {
     extensions: [ '.ts', '.js' ],
   },
   stats: {
-    // Copied from 'minimal'
     all: false,
     errors: true,
     warnings: true,
-    // Our additional options
     builtAt: true,
     hash: true,
   },
