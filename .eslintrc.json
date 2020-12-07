@@ -11,6 +11,7 @@
     "rules": {
         // Default overrides
         "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-inferrable-types": "off",
 
         // Style rules
         "array-bracket-spacing": ["warn", "always", { "arraysInArrays": false, "objectsInArrays": false }],
