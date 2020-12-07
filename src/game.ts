@@ -6,7 +6,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 import { IS_DEVELOPMENT } from './base/Version';
 import { metaVar } from './base/Meta';
-import { module, ModuleBarn, ModuleDirection } from './base/Module';
+import { devModule, module, ModuleBarn, ModuleDirection } from './base/Module';
 import { mat4, vec3 } from 'gl-matrix';
 
 // Development
@@ -42,11 +42,13 @@ export class Game {
     @metaVar canvas: HTMLCanvasElement = document.createElement( 'canvas' );
     @metaVar camera: Camera = new Camera();
     @metaVar gfxDevice: Renderer = new WebGlRenderer();
-    @metaVar debugMenu: DebugMenu = new DebugMenu();
     @metaVar hotLoadData?: HotloadData;
 
-    profileHud: ProfileHud = new ProfileHud();
     moduleBarn: ModuleBarn = new ModuleBarn();
+
+    // DevModules. Only loaded and executed in development mode (not production)
+    @devModule debugMenu: DebugMenu = new DebugMenu();
+    @devModule profileHud: ProfileHud = new ProfileHud();
 
     // Modules. The order here determines the function call order (e.g. Update)
     @module scene: Scene = new Scene();
@@ -59,13 +61,6 @@ export class Game {
         this.rootElement = document.createElement( 'div' );
         document.body.appendChild( this.rootElement );
         this.rootElement.appendChild( this.canvas );
-
-        // Debug initialization
-        // @TODO: Only in Dev builds
-        this.profileHud.initialize( this.rootElement, this.debugMenu );
-        if( IS_DEVELOPMENT ) {
-            this.debugMenu.show();
-        }
 
         // Graphics initialization
         this.gfxDevice.setDebugEnabled( IS_DEVELOPMENT );
@@ -88,10 +83,12 @@ export class Game {
             "update",
             "render",
         ];
-        this.moduleBarn.initialize( this, kModuleFunctions );
+        this.moduleBarn.initialize( this, kModuleFunctions, IS_DEVELOPMENT );
 
         // Call "Initialize()" for all modules
         this.moduleBarn.callFunction( "initialize", ModuleDirection.Forward );
+
+        this.debugMenu.show();
 
         // Apply any URL parameter options
         urlParams.forEach( ( value: string, key: string ) => {
@@ -133,13 +130,11 @@ export class Game {
     public update(): void {
         Profile.begin( 'Game.update' );
 
-        this.debugMenu.update();
-
         this.moduleBarn.callFunction( "update", ModuleDirection.Forward );
         this.moduleBarn.callFunction( "render", ModuleDirection.Forward );
 
         Profile.end( 'Game.update' );
-        this.profileHud.update();
+        if( IS_DEVELOPMENT ) { this.profileHud.update(); }
     }
 
     /**

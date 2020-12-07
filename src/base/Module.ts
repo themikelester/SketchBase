@@ -16,6 +16,7 @@ import { MetaTable, metaVar, setMemVarMetadata } from './Meta';
 import { assert, assertString } from './Util';
 
 const kMetadataIdModuleGroup = "ModuleGroup";
+const kMetadataIdModuleIsDev = "IsDev";
 
 export enum ModuleDirection {
     Forward,
@@ -31,6 +32,18 @@ export const module: PropertyDecorator = ( target, propertyKey: string | symbol 
 
     const memVarName = assertString( propertyKey );
     setMemVarMetadata( target.constructor.name, memVarName, kMetadataIdModuleGroup, "All" )
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+// DevModule Decorator. These modules will only be created and executed in development, not in production
+//----------------------------------------------------------------------------------------------------------------------
+export const devModule: PropertyDecorator = ( target, propertyKey: string | symbol ) => {
+    // Automatically meta register this member variable
+    metaVar( target, propertyKey );
+
+    const memVarName = assertString( propertyKey );
+    setMemVarMetadata( target.constructor.name, memVarName, kMetadataIdModuleGroup, "All" )
+    setMemVarMetadata( target.constructor.name, memVarName, kMetadataIdModuleIsDev, "true" )
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -69,14 +82,15 @@ export class ModuleBarn {
     private functions: string[];
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
-    initialize( game: any, functionList: string[] ): void {
+    initialize( game: any, functionList: string[], enableDevModules: boolean ): void {
         this.functions = functionList;
 
         // Find all meta-registered modules on the Game object
         const memVars = MetaTable[ game.constructor.name ].vars;
         for( const name of Object.keys( memVars ) ) {
             const moduleGroup = memVars[ name ].metadata[ kMetadataIdModuleGroup ];
-            if( moduleGroup ) {
+            const isDevModule = memVars[ name ].metadata[ kMetadataIdModuleIsDev ];
+            if( moduleGroup && ( !isDevModule || enableDevModules ) ) {
                 this.modules.push( {
                     type: memVars[ name ].type,
                     group: moduleGroup,

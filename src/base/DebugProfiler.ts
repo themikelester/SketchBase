@@ -6,7 +6,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 import { lerp } from "../Math";
 import { DebugMenu } from "./DebugMenu";
-import { metaClass } from "./Meta";
+import { metaClass, metaFunc } from "./Meta";
 import { assertDefined, hashString32 } from "./Util";
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ export class ProfileHud {
     enabled = false;
     targetFrameTimeMs = 2;
 
-    initialize( parentElement: HTMLElement, debugMenu: DebugMenu ): void {
+    @metaFunc initialize( parentElement: HTMLElement, debugMenu: DebugMenu ): void {
         this.parent = parentElement;
         this.dom = document.createElement( 'div' );
         this.dom.style.cssText = 'opacity:0.75;position:absolute;z-index:10000;pointer-events:none;margin:8px';
