@@ -21,6 +21,7 @@ import { GlobalUniforms } from './base/GfxGlobalUniforms';
 import { Renderer } from './base/GfxApiTypes';
 import { Scene } from './scene';
 import { WebGlRenderer } from './base/GfxApiWebGl';
+import { CameraSystem } from './base/CameraSystem';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Types
@@ -51,6 +52,7 @@ export class Game {
     @devModule profileHud: ProfileHud;
 
     // Modules. The order here determines the function call order (e.g. Update)
+    @module cameraSystem: CameraSystem;
     @module scene: Scene;
     @module globalUniforms: GlobalUniforms;
     @module debugGrid: DebugGrid;
