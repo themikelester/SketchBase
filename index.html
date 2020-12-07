@@ -15,13 +15,18 @@
     </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=<Some Google Analytics ID>"></script>
     <script>
+        // Google Analytics
         window.dataLayer = window.dataLayer || [];
         window.gtag = function(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', '<Some Google Analytics ID>');
+
+        // Set build-time variables that cannot be directly included in the JS bundle (since it would modify the hash)
+        const __BUILD_HASH = 'f24b86b0f1ad7c04a7fc';
+        const __BUILD_DATE = 'Mon Dec 07 2020 13:31:45 GMT+1100 (Australian Eastern Daylight Time)';
     </script>
     <link rel="manifest" href="manifest.webmanifest" />
 <link rel="shortcut icon" href="icon.svg"></head>
 <body>
-<script type="text/javascript" src="main.710f3d64ee2da4424e02.js"></script></body>
+<script type="text/javascript" src="main.b23b838ee9bc2137cf41.js"></script></body>
 </html>
