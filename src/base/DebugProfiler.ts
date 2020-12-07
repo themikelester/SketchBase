@@ -4,7 +4,7 @@
 // Author: Mike Lester
 // Date C: 2020/12/01
 //----------------------------------------------------------------------------------------------------------------------
-import { lerp } from "../Math";
+import { lerp } from "./Math";
 import { DebugMenu } from "./DebugMenu";
 import { metaClass, metaFunc } from "./Meta";
 import { assertDefined, hashString32 } from "./Util";

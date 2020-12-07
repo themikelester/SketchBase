@@ -18,6 +18,9 @@ export const enum MathConstants {
 }
 export const IdentityMat4 = mat4.create();
 export const ZeroVec3 = vec3.create();
+export const AxisX = vec3.fromValues( 1, 0, 0 );
+export const AxisY = vec3.fromValues( 0, 1, 0 );
+export const AxisZ = vec3.fromValues( 0, 0, 1 );
 
 //----------------------------------------------------------------------------------------------------------------------
 // Functions
