@@ -69,8 +69,12 @@ export class CameraState {
 // CameraNode
 //----------------------------------------------------------------------------------------------------------------------
 export abstract class CameraNode {
-    active: boolean;
-    state: CameraState;
+    active = true;
+    priority = 0;
+    state: CameraState = new CameraState();
+
+    next: Nullable<CameraNode>;
+    prev: Nullable<CameraNode>;
 
     initialize(): void {}
     update(): void {}
@@ -80,8 +84,8 @@ export abstract class CameraNode {
 // CameraSystem
 //----------------------------------------------------------------------------------------------------------------------
 export class CameraSystem {
-    camera: Camera;
-    stack: CameraNode[];
+    private camera: Camera;
+    private stack: CameraNode[] = [];
 
     @metaFunc initialize( camera: Camera ): void {
         this.camera = camera;
@@ -89,17 +93,44 @@ export class CameraSystem {
 
     @metaFunc update( globalUniforms: GlobalUniforms ): void {
         // Remove inactive cameras
+        this.stack = this.stack.filter( cam => cam.active );
 
         // Update remaining cameras
+        for( let i = 0; i < this.stack.length; i++ ) {
+            const cam = this.stack[ i ];
+            cam.prev = i - 1 >= 0 ? this.stack[ i - 1 ] : null;
+            cam.next = i + 1 < this.stack.length ? this.stack[ i + 1 ] : null;
+            cam.update();
+        }
 
-        // Compute final camera for this frame
-        this.flush( globalUniforms );
-    }
-
-    flush( globalUniforms: GlobalUniforms ): void {
         // Compute final camera matrices for rendering
+        const finalState = this.stack[ this.stack.length - 1 ].state;
+        this.camera.fov = finalState.fov;
+        this.camera.cameraMatrix = finalState.mtx;
+        this.camera.viewMatrix = mat4.invert( this.camera.viewMatrix, this.camera.cameraMatrix );
+        this.camera.projMatrix = mat4.perspective( this.camera.projMatrix, this.camera.fov,
+            this.camera.aspect, this.camera.near, this.camera.far );
+        this.camera.viewProjMatrix = mat4.multiply( this.camera.viewProjMatrix,
+            this.camera.projMatrix, this.camera.viewMatrix );
 
         // Update uniform buffers with final camera data
         globalUniforms.buffer.setMat4( "g_viewProj", this.camera.viewProjMatrix );
+    }
+
+    pushCamera< T extends CameraNode>( cam: T ): T {
+        cam.initialize();
+
+        // Insert after the last camera with the same priority
+        for( let i = 0; i < this.stack.length; i++ ) {
+            if( this.stack[ i ].priority > cam.priority ) {
+                this.stack.splice( i, 0, cam );
+                return cam;
+            }
+        }
+
+        // If no camera with a higher priority was found, we're now the master
+        this.stack.push( cam );
+
+        return cam;
     }
 }

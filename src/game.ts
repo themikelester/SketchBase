@@ -7,7 +7,7 @@
 import { IS_DEBUG_MODE } from './base/Version';
 import { metaVar } from './base/Meta';
 import { devModule, module, ModuleBarn, ModuleDirection } from './base/Module';
-import { mat4, vec3 } from 'gl-matrix';
+import { vec3 } from 'gl-matrix';
 
 // Development
 import { ProfileHud, Profile } from './base/DebugProfiler';
@@ -21,12 +21,19 @@ import { GlobalUniforms } from './base/GfxGlobalUniforms';
 import { Renderer } from './base/GfxApiTypes';
 import { Scene } from './scene';
 import { WebGlRenderer } from './base/GfxApiWebGl';
-import { CameraSystem } from './base/CameraSystem';
+import { CameraNode, CameraSystem } from './base/CameraSystem';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Types
 //----------------------------------------------------------------------------------------------------------------------
 class HotloadData {}
+
+class BasicCamera extends CameraNode {
+    initialize() {
+        this.state.lookAtWithPos( vec3.fromValues( 0, 100, 500 ),
+            vec3.fromValues( 0, 0, 0 ), vec3.fromValues( 0, 1, 0 ) );
+    }
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 // Constants
@@ -97,10 +104,7 @@ export class Game {
         } );
 
         // @HACK:
-        mat4.lookAt( this.camera.viewMatrix, vec3.fromValues( 0, 100, 500 ),
-            vec3.fromValues( 0, 0, 0 ), vec3.fromValues( 0, 1, 0 ) );
-        this.camera.viewMatrixUpdated();
-        this.globalUniforms.buffer.setMat4( "g_viewProj", this.camera.viewProjMatrix );
+        this.cameraSystem.pushCamera( new BasicCamera() );
     }
 
     public terminate(): void {
@@ -154,7 +158,7 @@ export class Game {
         this.canvas.style.height = `${window.innerHeight}px`;
         this.canvas.style.position = 'absolute';
 
-        this.camera.setPerspective( 60.0 / 180 * Math.PI, this.canvas.width / this.canvas.height, 1.0, 10000.0 );
+        this.camera.aspect = this.canvas.width / this.canvas.height;
     }
 
     /**
