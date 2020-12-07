@@ -15,10 +15,15 @@
     </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=<%= htmlWebpackPlugin.options.gtagId %>"></script>
     <script>
+        // Google Analytics
         window.dataLayer = window.dataLayer || [];
         window.gtag = function(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', '<%= htmlWebpackPlugin.options.gtagId %>');
+
+        // Set build-time variables that cannot be directly included in the JS bundle (since it would modify the hash)
+        const __BUILD_HASH = '<%= webpack.hash %>';
+        const __BUILD_DATE = '<%= new Date() %>';
     </script>
     <link rel="manifest" href="<%= require('./assets/manifest.webmanifest') %>" />
 </head>

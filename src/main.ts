@@ -6,7 +6,7 @@
 // Date C: 2020/11/25
 //----------------------------------------------------------------------------------------------------------------------
 import { Game } from './game';
-import { GITHUB_REVISION_URL, IS_DEVELOPMENT } from './base/Version';
+import { BUILD_DATE, BUILD_HASH, GITHUB_REVISION_URL, IS_DEVELOPMENT } from './base/Version';
 import { Profile } from './base/DebugProfiler';
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -23,6 +23,7 @@ declare global {
 //----------------------------------------------------------------------------------------------------------------------
 function main() {
     console.log( `Source for this build available at ${GITHUB_REVISION_URL}` );
+    console.log( `[Build Info] Hash: ${BUILD_HASH}, Date: ${BUILD_DATE}` );
 
     // Parse and apply URL parameters
     // See kUrlParameters for potential values
