@@ -10,12 +10,12 @@
     ],
     "rules": {
         // Default overrides
-        "no-empty-function": "off",
+        "@typescript-eslint/no-empty-function": "off",
 
         // Style rules
         "array-bracket-spacing": ["warn", "always", { "arraysInArrays": false, "objectsInArrays": false }],
         "block-spacing": ["warn", "always"],
-        "capitalized-comments": ["warn", "always", { "ignoreConsecutiveComments": true }],
+        "capitalized-comments": "off", // Ideally this would be on, but the "comment line" shortcut causes trouble
         "comma-dangle": "off",
         "computed-property-spacing": ["warn", "always"],
         "func-call-spacing": ["warn", "never"],
