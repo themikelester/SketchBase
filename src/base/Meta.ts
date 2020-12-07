@@ -23,8 +23,8 @@ import { assert, assertDefined, assertString } from './Util';
 type ReflectType = any;
 type TypeName = string;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type Constructor = Function;
+// eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any
+type Constructor = new ( ...args: any[] ) => Object;
 
 //----------------------------------------------------------------------------------------------------------------------
 // Exported Types
@@ -56,7 +56,7 @@ export const MetaTable: Record<string, Class> = {};
 export const metaClass: ClassDecorator = target => {
     if( !MetaTable[ target.name ] ) {
         MetaTable[ target.name ] = new Class();
-        MetaTable[ target.name ].cons = target;
+        MetaTable[ target.name ].cons = target as unknown as Constructor;
     }
     else {
         // In the event of a Hotload, the new constructor will have the updated prototype. Exisiting objects still use

@@ -91,6 +91,9 @@ export class ModuleBarn {
             const moduleGroup = memVars[ name ].metadata[ kMetadataIdModuleGroup ];
             const isDevModule = memVars[ name ].metadata[ kMetadataIdModuleIsDev ];
             if( moduleGroup && ( !isDevModule || enableDevModules ) ) {
+                const Cons = MetaTable[ memVars[ name ].type ].cons;
+                game[ name ] = new Cons();
+
                 this.modules.push( {
                     type: memVars[ name ].type,
                     group: moduleGroup,

@@ -47,14 +47,14 @@ export class Game {
     moduleBarn: ModuleBarn = new ModuleBarn();
 
     // DevModules. Only loaded and executed in development mode (not production)
-    @devModule debugMenu: DebugMenu = new DebugMenu();
-    @devModule profileHud: ProfileHud = new ProfileHud();
+    @devModule debugMenu: DebugMenu;
+    @devModule profileHud: ProfileHud;
 
     // Modules. The order here determines the function call order (e.g. Update)
-    @module scene: Scene = new Scene();
-    @module globalUniforms: GlobalUniforms = new GlobalUniforms();
-    @module debugGrid: DebugGrid = new DebugGrid();
-    @module compositor: Compositor = new Compositor();
+    @module scene: Scene;
+    @module globalUniforms: GlobalUniforms;
+    @module debugGrid: DebugGrid;
+    @module compositor: Compositor;
 
     public initialize( urlParams: URLSearchParams ): void {
         // DOM creation
