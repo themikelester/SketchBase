@@ -28,7 +28,15 @@ module.exports = {
   resolve: {
     extensions: [ '.ts', '.js' ],
   },
-  stats: 'minimal',
+  stats: {
+    // Copied from 'minimal'
+    all: false,
+    errors: true,
+    warnings: true,
+    // Our additional options
+    builtAt: true,
+    hash: true,
+  },
   module: {
     rules: [
       // The primary ts-loader rule is defined in dev and prod separately
