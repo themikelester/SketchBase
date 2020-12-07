@@ -48,7 +48,7 @@ export class CameraState {
     up( dst: vec3 ): vec3 { return vec3.set( dst, this.mtx[ 4 ], this.mtx[ 5 ], this.mtx[ 6 ] ); }
     forward( dst: vec3 ): vec3 { return vec3.set( dst, this.mtx[ 8 ], this.mtx[ 9 ], this.mtx[ 10 ] ); }
 
-    lerp( dst: CameraState, a: CameraState, b: CameraState, t: number, forceUp: boolean ): CameraState {
+    static lerp( dst: CameraState, a: CameraState, b: CameraState, t: number, forceUp: boolean ): CameraState {
         dst.fov = lerp( a.fov, b.fov, t );
 
         const rotA = quat.fromMat3( kScratchQuatA, mat3.fromMat4( kScratchMat3, a.mtx ) );
@@ -57,8 +57,8 @@ export class CameraState {
         const rotNew = mat3.fromQuat( kScratchMat3, quat.slerp( kScratchQuatA, rotA, rotB, t ) );
 
         const posNew = vec3.lerp( kScratchVec3A, a.pos( kScratchVec3A ), b.pos( kScratchVec3B ), t );
-        const z = vec3.set( kScratchVec3B, rotNew[ 6 ], this.mtx[ 7 ], this.mtx[ 8 ] );
-        const y = vec3.set( kScratchVec3C, rotNew[ 3 ], this.mtx[ 4 ], this.mtx[ 5 ] );
+        const z = vec3.set( kScratchVec3B, rotNew[ 6 ], rotNew[ 7 ], rotNew[ 8 ] );
+        const y = vec3.set( kScratchVec3C, rotNew[ 3 ], rotNew[ 4 ], rotNew[ 5 ] );
 
         dst.lookAtWithPos( posNew, vec3.subtract( kScratchVec3D, posNew, z ), forceUp ? AxisY : y );
         return dst;
@@ -69,15 +69,20 @@ export class CameraState {
 // CameraNode
 //----------------------------------------------------------------------------------------------------------------------
 export abstract class CameraNode {
-    active = true;
-    priority = 0;
-    state: CameraState = new CameraState();
-
-    next: Nullable<CameraNode>;
-    prev: Nullable<CameraNode>;
-
     initialize(): void {}
     update(): void {}
+
+	isActive(): boolean { return this.active; }
+    deactivate(): void { this.active = false; }
+    activate(): void { this.active = true; }
+
+    public state: CameraState = new CameraState();
+
+    public priority = 0;
+    public next: Nullable<CameraNode>;
+    public prev: Nullable<CameraNode>;
+
+    private active = true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -93,7 +98,7 @@ export class CameraSystem {
 
     @metaFunc update( globalUniforms: GlobalUniforms ): void {
         // Remove inactive cameras
-        this.stack = this.stack.filter( cam => cam.active );
+        this.stack = this.stack.filter( cam => cam.isActive() );
 
         // Update remaining cameras
         for( let i = 0; i < this.stack.length; i++ ) {
@@ -118,18 +123,19 @@ export class CameraSystem {
     }
 
     pushCamera< T extends CameraNode>( cam: T ): T {
-        cam.initialize();
-
-        // Insert after the last camera with the same priority
+        // Insert after the last camera with the same priority (or at the end)
+        let index = this.stack.length;
         for( let i = 0; i < this.stack.length; i++ ) {
             if( this.stack[ i ].priority > cam.priority ) {
-                this.stack.splice( i, 0, cam );
-                return cam;
+                index = i;
             }
         }
 
-        // If no camera with a higher priority was found, we're now the master
-        this.stack.push( cam );
+        this.stack.splice( index, 0, cam );
+        cam.prev = index - 1 >= 0 ? this.stack[ index - 1 ] : null;
+        cam.next = index + 1 < this.stack.length ? this.stack[ index + 1 ] : null;
+        cam.initialize();
+        cam.activate();
 
         return cam;
     }

@@ -21,19 +21,13 @@ import { GlobalUniforms } from './base/GfxGlobalUniforms';
 import { Renderer } from './base/GfxApiTypes';
 import { Scene } from './scene';
 import { WebGlRenderer } from './base/GfxApiWebGl';
-import { CameraNode, CameraSystem } from './base/CameraSystem';
+import { CameraSystem } from './base/CameraSystem';
+import { BlendCamera, FixedCamera } from './base/CameraTypes';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Types
 //----------------------------------------------------------------------------------------------------------------------
 class HotloadData {}
-
-class BasicCamera extends CameraNode {
-    initialize() {
-        this.state.lookAtWithPos( vec3.fromValues( 0, 100, 500 ),
-            vec3.fromValues( 0, 0, 0 ), vec3.fromValues( 0, 1, 0 ) );
-    }
-}
 
 //----------------------------------------------------------------------------------------------------------------------
 // Constants
@@ -104,7 +98,9 @@ export class Game {
         } );
 
         // @HACK:
-        this.cameraSystem.pushCamera( new BasicCamera() );
+        this.cameraSystem.pushCamera( new FixedCamera( vec3.fromValues( 0, 100, 500 ), vec3.fromValues( 0, 0, 0 ) ) );
+        this.cameraSystem.pushCamera( new FixedCamera( vec3.fromValues( 0, 100, -500 ), vec3.fromValues( 0, 0, 0 ) ) );
+        this.cameraSystem.pushCamera( new BlendCamera( 1000.0, 1000.0 ) );
     }
 
     public terminate(): void {
