@@ -323,12 +323,6 @@ export class Mouse extends EventDispatcher {
      * @function
      * @name Mouse#isPressed
      * @description Returns true if the mouse button is currently pressed.
-     * @param {number} button - The mouse button to test. Can be:
-     *
-     * * {@link MOUSEBUTTON_LEFT}
-     * * {@link MOUSEBUTTON_MIDDLE}
-     * * {@link MOUSEBUTTON_RIGHT}
-     *
      * @returns {boolean} True if the mouse button is current pressed.
      */
     isPressed( button: MouseButtons ): boolean {
@@ -339,12 +333,6 @@ export class Mouse extends EventDispatcher {
      * @function
      * @name Mouse#wasPressed
      * @description Returns true if the mouse button was pressed this frame (since the last call to update).
-     * @param {number} button - The mouse button to test. Can be:
-     *
-     * * {@link MOUSEBUTTON_LEFT}
-     * * {@link MOUSEBUTTON_MIDDLE}
-     * * {@link MOUSEBUTTON_RIGHT}
-     *
      * @returns {boolean} True if the mouse button was pressed since the last update.
      */
     wasPressed( button: MouseButtons ): boolean {
@@ -355,12 +343,6 @@ export class Mouse extends EventDispatcher {
      * @function
      * @name Mouse#wasReleased
      * @description Returns true if the mouse button was released this frame (since the last call to update).
-     * @param {number} button - The mouse button to test. Can be:
-     *
-     * * {@link MOUSEBUTTON_LEFT}
-     * * {@link MOUSEBUTTON_MIDDLE}
-     * * {@link MOUSEBUTTON_RIGHT}
-     *
      * @returns {boolean} True if the mouse button was released since the last update.
      */
     wasReleased( button: MouseButtons ): boolean {
