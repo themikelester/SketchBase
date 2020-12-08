@@ -24,6 +24,7 @@ import { WebGlRenderer } from './base/GfxApiWebGl';
 import { CameraSystem } from './base/CameraSystem';
 import { BlendCamera, FixedCamera } from './base/CameraTypes';
 import { Clock } from './base/Clock';
+import { InputManager } from './base/Input';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Types
@@ -56,6 +57,7 @@ export class Game {
     // Modules. The order here determines the function call order (e.g. Update)
     @module clock: Clock;
     @module cameraSystem: CameraSystem;
+    @module input: InputManager;
     @module scene: Scene;
     @module globalUniforms: GlobalUniforms;
     @module debugGrid: DebugGrid;
@@ -77,7 +79,6 @@ export class Game {
         // Register for Events
         window.onresize = this.onResize.bind( this );
         window.onbeforeunload = this.onUnload.bind( this );
-        window.onclick = this.onClick.bind( this );
         document.onvisibilitychange = this.onVisibility.bind( this );
 
         // Initialize the module barn
@@ -85,8 +86,10 @@ export class Game {
             "initialize",
             "terminate",
             "hotload",
+
             "update",
             "render",
+            "endFrame",
         ];
         this.moduleBarn.initialize( this, kModuleFunctions, IS_DEBUG_MODE );
 
@@ -134,16 +137,10 @@ export class Game {
 
         this.moduleBarn.callFunction( "update", ModuleDirection.Forward );
         this.moduleBarn.callFunction( "render", ModuleDirection.Forward );
+        this.moduleBarn.callFunction( "endFrame", ModuleDirection.Forward );
 
         Profile.end( 'Game.update' );
         if( this.profileHud ) { this.profileHud.update(); }
-    }
-
-    /**
-     * Fires when the mouse is clicked within the window (duh)
-     */
-    private onClick( e: MouseEvent ) {
-        console.log( "Mouse clicked at (" + e.x + ", " + e.y + ")" );
     }
 
     /**
