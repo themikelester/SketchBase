@@ -12,7 +12,7 @@ import { Clock } from "./Clock";
 import { DebugMenu } from "./DebugMenu";
 import { InputManager } from "./Input";
 import { MouseButtons, MouseEventWrapper } from "./InputMouse";
-import { AxisY, clamp } from "./Math";
+import { AxisY, clamp, fadeOut, lerp } from "./Math";
 import { metaFunc } from "./Meta";
 import { assertDefined } from "./Util";
 
@@ -21,6 +21,7 @@ import { assertDefined } from "./Util";
 //----------------------------------------------------------------------------------------------------------------------
 const kFadeInTimeMs = 1000.0;
 const kFadeOutTimeMs = 1000.0;
+const kInertiaDecay = 0.2;
 
 //----------------------------------------------------------------------------------------------------------------------
 // DebugCameraNode
@@ -60,6 +61,15 @@ export class DebugCamera {
 
     private enabled: boolean = true;
 
+    private touchActive: boolean = false;
+    private touchX: number = 0.0;
+    private touchY: number = 0.0;
+    private touchPrevX: number = 0.0;
+    private touchPrevY: number = 0.0;
+
+    private camVelX: number = 0.0;
+    private camVelY: number = 0.0;
+
     @metaFunc initialize( cameraSystem: CameraSystem, clock: Clock, debugMenu: DebugMenu, input: InputManager ): void {
         this.cameraSystem = cameraSystem;
         this.clock = clock;
@@ -79,21 +89,59 @@ export class DebugCamera {
             }
         } );
 
-        this.input.mouse.on( 'mousemove', ( event: MouseEventWrapper ) => {
-            if( this.camNode && event.buttons[ MouseButtons.Left ] ) {
-                this.camNode.azimuth += event.dx * Math.PI / 500;
-                this.camNode.pitch += event.dy * Math.PI / 500;
+        this.input.mouse.on( 'mousedown', ( event: MouseEventWrapper ) => {
+            if( event.buttons[ MouseButtons.Left ] ) {
+                this.touchActive = true;
+                this.touchX = event.x;
+                this.touchY = event.y;
+                this.touchPrevX = event.x;
+                this.touchPrevY = event.y;
+            }
+        } );
 
-                this.camNode.azimuth = this.camNode.azimuth % ( Math.PI * 2.0 )
-                this.camNode.pitch = clamp( this.camNode.pitch, 0.01, Math.PI * 0.49 )
+        this.input.mouse.on( 'mouseup', ( event: MouseEventWrapper ) => {
+            if( !event.buttons[ MouseButtons.Left ] )
+            {
+                this.touchActive = false;
+                this.touchX = 0;
+                this.touchY = 0;
+                this.touchPrevX = 0;
+                this.touchPrevY = 0;
+            }
+        } );
+
+        this.input.mouse.on( 'mousemove', ( event: MouseEventWrapper ) => {
+            if( event.buttons[ MouseButtons.Left ] ) {
+                this.touchX = event.x;
+                this.touchY = event.y;
             }
         } );
     }
 
-    @metaFunc update(): void {
-        if( !this.enabled ) { return; }
+    @metaFunc update( clock: Clock ): void {
+        if( !this.camNode ) { return; }
 
+        const touchDx = this.touchX - this.touchPrevX;
+        const touchDy = this.touchY - this.touchPrevY;
+        this.touchPrevX = this.touchX;
+        this.touchPrevY = this.touchY;
 
+        if( this.touchActive ) {
+            const newVelX = touchDx * Math.PI / 500;
+            const newVelY = touchDy * Math.PI / 500;
+
+            this.camVelX = lerp( this.camVelX, newVelX, 0.5 );
+            this.camVelY = lerp( this.camVelY, newVelY, 0.5 );
+        } else {
+            this.camVelX = fadeOut( clock.realDt, kInertiaDecay, this.camVelX );
+            this.camVelY = fadeOut( clock.realDt, kInertiaDecay, this.camVelY );
+        }
+
+        this.camNode.azimuth += this.camVelX;
+        this.camNode.pitch += this.camVelY;
+
+        this.camNode.azimuth = this.camNode.azimuth % ( Math.PI * 2.0 );
+        this.camNode.pitch = clamp( this.camNode.pitch, 0.01, Math.PI * 0.49 );
     }
 
     enable(): void {
