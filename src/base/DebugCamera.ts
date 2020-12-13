@@ -6,6 +6,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 import { vec3 } from "gl-matrix";
+import { Camera } from "./Camera";
 import { CameraNode, CameraSystem } from "./CameraSystem";
 import { BlendCamera } from "./CameraTypes";
 import { Clock } from "./Clock";
@@ -66,9 +67,11 @@ export class DebugCamera {
     private touchY: number = 0.0;
     private touchPrevX: number = 0.0;
     private touchPrevY: number = 0.0;
+    private wheelDir: number = 0.0;
 
     private camVelX: number = 0.0;
     private camVelY: number = 0.0;
+    private camVelD: number = 0.0;
 
     @metaFunc initialize( cameraSystem: CameraSystem, clock: Clock, debugMenu: DebugMenu, input: InputManager ): void {
         this.cameraSystem = cameraSystem;
@@ -83,10 +86,7 @@ export class DebugCamera {
         if( this.enabled ) { this.enable(); }
 
         this.input.mouse.on( 'mousewheel', ( event: MouseEventWrapper ) => {
-            const zoomDir = assertDefined( event.wheelDelta );
-            if( this.camNode ) {
-                this.camNode.dist += zoomDir * 10.0;
-            }
+            this.wheelDir = assertDefined( event.wheelDelta );
         } );
 
         this.input.mouse.on( 'mousedown', ( event: MouseEventWrapper ) => {
@@ -118,13 +118,22 @@ export class DebugCamera {
         } );
     }
 
-    @metaFunc update( clock: Clock ): void {
+    @metaFunc update( clock: Clock, camera: Camera ): void {
         if( !this.camNode ) { return; }
 
         const touchDx = this.touchX - this.touchPrevX;
         const touchDy = this.touchY - this.touchPrevY;
+        const wheelDelta = this.wheelDir;
         this.touchPrevX = this.touchX;
         this.touchPrevY = this.touchY;
+        this.wheelDir = 0;
+
+        if( wheelDelta != 0 ) {
+            const camVelD = wheelDelta * ( this.camNode.dist * 0.1 );
+            this.camVelD = lerp( this.camVelD, camVelD, 0.5 );
+        } else {
+            this.camVelD = fadeOut( clock.realDt, kInertiaDecay, this.camVelD );
+        }
 
         if( this.touchActive ) {
             const newVelX = touchDx * Math.PI / 500;
@@ -139,9 +148,11 @@ export class DebugCamera {
 
         this.camNode.azimuth += this.camVelX;
         this.camNode.pitch += this.camVelY;
+        this.camNode.dist += this.camVelD;
 
         this.camNode.azimuth = this.camNode.azimuth % ( Math.PI * 2.0 );
         this.camNode.pitch = clamp( this.camNode.pitch, 0.01, Math.PI * 0.49 );
+        this.camNode.dist = clamp( this.camNode.dist, camera.near, camera.far );
     }
 
     enable(): void {
