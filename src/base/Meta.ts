@@ -59,7 +59,7 @@ export const metaClass: ClassDecorator = target => {
         MetaTable[ target.name ].cons = target as unknown as Constructor;
     }
     else {
-        // In the event of a Hotload, the new constructor will have the updated prototype. Exisiting objects still use
+        // In the event of a Hotload, the new constructor will have the updated prototype. Existing objects still use
         // the old prototype. Copy all the properties to the new prototype, which essentially updates all functions.
         const currentPrototype = MetaTable[ target.name ].cons.prototype;
         const newPrototype = target.prototype;
@@ -67,7 +67,7 @@ export const metaClass: ClassDecorator = target => {
             updateObjectMembers( currentPrototype, newPrototype );
         }
     }
-}
+};
 
 export const metaVar: PropertyDecorator = ( target, propertyKey: string | symbol ) => {
     const className = target.constructor.name;

@@ -53,7 +53,7 @@ export class CameraState {
 
         const rotA = quat.fromMat3( kScratchQuatA, mat3.fromMat4( kScratchMat3, a.mtx ) );
         const rotB = quat.fromMat3( kScratchQuatB, mat3.fromMat4( kScratchMat3, b.mtx ) );
-        if( quat.dot( rotA, rotB ) < 0.0 ) { quat.invert( rotA, rotA ); }
+        if( quat.dot( rotA, rotB ) < 0.0 ) { quat.scale( rotA, rotA, -1.0 ); }
         const rotNew = mat3.fromQuat( kScratchMat3, quat.slerp( kScratchQuatA, rotA, rotB, t ) );
 
         const posNew = vec3.lerp( kScratchVec3A, a.pos( kScratchVec3A ), b.pos( kScratchVec3B ), t );
