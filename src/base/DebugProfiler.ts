@@ -71,7 +71,7 @@ export class ProfileHud {
     @metaFunc initialize( parentElement: HTMLElement, debugMenu: DebugMenu ): void {
         this.parent = parentElement;
         this.dom = document.createElement( 'div' );
-        this.dom.style.cssText = 'opacity:0.75;position:absolute;z-index:10000;pointer-events:none;margin:8px';
+        this.dom.style.cssText = 'opacity:0.75;position:absolute;top:0;pointer-events:none;margin:8px';
 
         const canvas = document.createElement( 'canvas' );
         this.ctx = assertDefined( canvas.getContext( '2d' ) );
@@ -99,7 +99,7 @@ export class ProfileHud {
         entries.sort( ( a, b ) => {
             if( a.startTime == b.startTime ) { return b.duration - a.duration; }
             else { return a.startTime - b.startTime; }
-        } )
+        } );
 
         const frameStart = frameStartMark[ 0 ].startTime;
         const frameDuration = this.targetFrameTimeMs;
@@ -151,7 +151,7 @@ export class ProfileHud {
 
             const startTime = entry.aveBegin;
             const duration = entry.aveEnd - entry.aveBegin;
-            const startX = kPad + startTime / frameDuration * kWidth
+            const startX = kPad + startTime / frameDuration * kWidth;
             const startY = kPad + i * ( kPad + kBarHeight );
             const barWidth = duration / frameDuration * kWidth;
 
