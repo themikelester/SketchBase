@@ -84,6 +84,35 @@ export function equalsEpsilon( a: number, b: number, epsilon = MathConstants.EPS
   return Math.abs( a - b ) < epsilon;
 }
 
+/**
+ * Moves a value towards zero by a fixed percentage. If called every frame, converges via exponential decay which is
+ * has a nice smooth tail. Dt is considered so that frame rate does not affect the rate of convergence.
+ * @param dtMs delta time, in milliseconds
+ * @param snappiness from 0-1, higher numbers converge faster. A value of 0.5 means the half life is 1 frame
+ * @param val the value to fade out
+ */
+export function fadeOut( dtMs: number, snappiness: number, val: number ): number
+{
+    const frameDelta = dtMs * kTargetFPMS; // How many fixed frames have passed?
+    const t = Math.pow( saturate( 1 - snappiness ), frameDelta ); // Simulate this function running that many times
+    return val * t;
+}
+
+/**
+ * Move one value towards another by a fixed percentage. If called every frame, converges via exponential decay which is
+ * has a nice smooth tail. Dt is considered so that frame rate does not affect the rate of convergence.
+ * @param dtSec delta time, in milliseconds
+ * @param snappiness [0 - 1], higher numbers converge faster. A value of 0.5 means the half life is 1 frame
+ * @param val the value to move towards the target
+ * @param target the value towards which val will converge
+ */
+export function fadeTo( dtMs: number, snappiness: number, val: number, target: number ): number
+{
+    const frameDelta = dtMs * kTargetFPMS; // How many fixed frames have passed?
+    const t = Math.pow( saturate( 1 - snappiness ), frameDelta ); // Simulate this function running that many times
+    return lerp( val, target, t );
+}
+
 /** Returns the signed numerical distance from a to b, wrapping at domainMax.
  *  @param domainMax - Wrap the domain at this value. Defaults to 2*PI to support angular distance.
  *  @example
@@ -256,7 +285,7 @@ export function angleXZ( a: vec3, b: vec3 ): number {
  */
 export function rotateXZ( result: vec3, a: vec3, rad: number ): vec3 {
   const sinRad = Math.sin( rad );
-  const cosRad = Math.cos( rad )
+  const cosRad = Math.cos( rad );
   result[ 0 ] = a[ 2 ] * sinRad + a[ 0 ] * cosRad;
   result[ 1 ] = a[ 1 ];
   result[ 2 ] = a[ 2 ] * cosRad - a[ 0 ] * sinRad; // Translate to correct position
@@ -289,3 +318,13 @@ export function getPointHermite( p0: number, p1: number, s0: number, s1: number,
   const cf3 = ( p0 *  1 ) + ( p1 *  0 ) + ( s0 *  0 ) +  ( s1 *  0 );
   return getPointCubic( cf0, cf1, cf2, cf3, t );
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Internal Constants
+//----------------------------------------------------------------------------------------------------------------------
+
+// @NOTE: Used only internally by math functions. Doesn't actually need to be related to the real target frame rate.
+//        This determines the rate of convergence for functions called every frame (like fadeOut). Having it set to a
+//        reasonable number makes it easier to reason about timings.
+const kTargetFPS = 60.0;
+const kTargetFPMS = kTargetFPS / 1000.0;

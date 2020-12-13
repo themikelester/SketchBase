@@ -48,7 +48,7 @@ export class BlendCamera extends CameraNode {
         const child = assertDefined( this.prev );
         const grandChild = assertDefined( child.prev );
 
-        if( !this.fadeOut ) { this.inTicker += this.clock.gameDt }
+        if( !this.fadeOut ) { this.inTicker += this.clock.gameDt; }
         else { this.outTicker += this.clock.gameDt; }
 
         let inT = this.fadeInDuration > 0.0 ? saturate( this.inTicker / this.fadeInDuration ) : 1.0;
