@@ -153,7 +153,6 @@ export class Game {
 
         this.canvas.style.width = `${window.innerWidth}px`;
         this.canvas.style.height = `${window.innerHeight}px`;
-        this.canvas.style.position = 'absolute';
 
         this.camera.aspect = this.canvas.width / this.canvas.height;
     }
