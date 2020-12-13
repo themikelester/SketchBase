@@ -25,6 +25,7 @@ import { CameraSystem } from './base/CameraSystem';
 import { BlendCamera, FixedCamera } from './base/CameraTypes';
 import { Clock } from './base/Clock';
 import { InputManager } from './base/Input';
+import { ResourceManager } from './base/ResourceManager';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Types
@@ -62,6 +63,7 @@ export class Game {
     @module globalUniforms: GlobalUniforms;
     @module debugGrid: DebugGrid;
     @module compositor: Compositor;
+    @module resources: ResourceManager;
 
     public initialize( urlParams: URLSearchParams ): void {
         // DOM creation
