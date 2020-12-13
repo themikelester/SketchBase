@@ -25,10 +25,10 @@ import { Renderer } from "./GfxApiTypes";
 // ResourceManager
 //----------------------------------------------------------------------------------------------------------------------
 export class ResourceManager {
-    worker: Worker;
-    context: ResourceLoadingContext;
-    messages: MessageEvent[] = [];
-    resources: Record< string, Resource> = {}; // @TODO: Use a combined array / Record type
+    private worker: Worker;
+    private context: ResourceLoadingContext;
+    private messages: MessageEvent[] = [];
+    private resources: Record< string, Resource> = {};
 
     @metaFunc initialize( gfxDevice: Renderer ): void {
         this.worker = new Worker();

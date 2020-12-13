@@ -67,22 +67,22 @@ const kListenerOptions: AddEventListenerOptions = {
  * @property {MouseEvent} event The original browser event.
  */
 export class MouseEventWrapper {
-    x: number;
-    y: number;
-    dx: number;
-    dy: number;
+    public x: number;
+    public y: number;
+    public dx: number;
+    public dy: number;
 
-    ctrlKey: boolean;
-    shiftKey: boolean;
-    altKey: boolean;
-    metaKey: boolean;
-    buttons: boolean[];
+    public ctrlKey: boolean;
+    public shiftKey: boolean;
+    public altKey: boolean;
+    public metaKey: boolean;
+    public buttons: boolean[];
 
-    element: EventTarget | null;
-    event: MouseEvent;
+    public element: EventTarget | null;
+    public event: MouseEvent;
 
-    button?: number;
-    wheelDelta?: number;
+    public button?: number;
+    public wheelDelta?: number;
 
     constructor( mouse: Mouse, event: MouseEvent | WheelEvent ) {
         assertDefined( event );
@@ -149,11 +149,11 @@ export class MouseEventWrapper {
  * @param {Element} [element] - The Element that the mouse events are attached to.
  */
 export class Mouse extends EventDispatcher {
-    _buttons: boolean[];
+    public _buttons: boolean[];
 
-    _lastX: number;
-    _lastY: number;
-    _lastButtons: boolean[];
+    public _lastX: number;
+    public _lastY: number;
+    public _lastButtons: boolean[];
 
     private target: Nullable<Element>;
     private attached = false;

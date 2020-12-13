@@ -41,21 +41,21 @@ export interface MemFunc
     paramTypes: TypeName[];
 }
 
-export class Class
+export class MetaClass
 {
-    cons: Constructor;
-    vars: Record< string, MemVar > = {};
-    funcs: Record< string, MemFunc > = {};
+    public cons: Constructor;
+    public vars: Record< string, MemVar > = {};
+    public funcs: Record< string, MemFunc > = {};
 }
 
-export const MetaTable: Record<string, Class> = {};
+export const MetaTable: Record<string, MetaClass> = {};
 
 //----------------------------------------------------------------------------------------------------------------------
 // Decorators. Use these to meta-register methods and member variables.
 //----------------------------------------------------------------------------------------------------------------------
 export const metaClass: ClassDecorator = target => {
     if( !MetaTable[ target.name ] ) {
-        MetaTable[ target.name ] = new Class();
+        MetaTable[ target.name ] = new MetaClass();
         MetaTable[ target.name ].cons = target as unknown as Constructor;
     }
     else {

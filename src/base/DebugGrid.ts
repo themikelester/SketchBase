@@ -31,18 +31,18 @@ class GridShader implements Gfx.ShaderDescriptor {
         uniforms: { index: 1, type: Gfx.BindingType.UniformBuffer, layout: GridShader.UniformLayout }
     };
 
-    name = 'GridShader';
-    vertSource = GridShader.vert.sourceCode;
-    fragSource = GridShader.frag.sourceCode;
-    id: Gfx.Id;
+    public readonly name = 'GridShader';
+    public readonly vertSource = GridShader.vert.sourceCode;
+    public readonly fragSource = GridShader.frag.sourceCode;
+    public id: Gfx.Id;
 }
 
 export class DebugGrid {
-    baseColor = vec4.fromValues( 0.3, 0.3, 0.3, 1.0 );
-    lineColor = vec4.fromValues( 1.0, 1.0, 1.0, 1.0 );
-    gridUnit = 100.0;
-    gridRadius = 5000.0;
-    enabled = true;
+    private baseColor = vec4.fromValues( 0.3, 0.3, 0.3, 1.0 );
+    private lineColor = vec4.fromValues( 1.0, 1.0, 1.0, 1.0 );
+    private gridUnit = 100.0;
+    private gridRadius = 5000.0;
+    private enabled = true;
 
     private primitive: RenderPrimitive;
     private uniforms: UniformBuffer;

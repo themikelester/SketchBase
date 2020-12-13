@@ -26,8 +26,8 @@ const kScratchQuatB = quat.create();
 // CameraState
 //----------------------------------------------------------------------------------------------------------------------
 export class CameraState {
-    fov: number = 60 * MathConstants.DEG_TO_RAD;
-    mtx: mat4 = mat4.create();
+    public fov: number = 60 * MathConstants.DEG_TO_RAD;
+    public mtx: mat4 = mat4.create();
 
     setPos( pos: vec3 ): void {
         this.mtx[ 12 ] = pos[ 0 ];

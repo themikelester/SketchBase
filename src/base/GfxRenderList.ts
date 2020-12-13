@@ -10,8 +10,8 @@ import { RenderPrimitive } from './GfxRenderPrimitive';
 import { Id, CullMode, DepthStateDescriptor, RenderFormat } from './GfxApiTypes';
 
 export class RenderList {
-    primitives: RenderPrimitive[] = [];
-    defaultDepthStateId: Id;
+    public primitives: RenderPrimitive[] = [];
+    public defaultDepthStateId: Id;
 
     constructor(
         public defaultCullMode: CullMode,

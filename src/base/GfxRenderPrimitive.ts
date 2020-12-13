@@ -9,19 +9,19 @@
 import { Id, BufferView, PrimitiveType, Type, CullMode } from './GfxApiTypes';
 
 export class RenderPrimitive {
-    resourceTable: Id;
-    vertexTable: Id;
-    renderPipeline: Id;
-    elementCount: number;
-    type: PrimitiveType;
+    public resourceTable: Id;
+    public vertexTable: Id;
+    public renderPipeline: Id;
+    public elementCount: number;
+    public type: PrimitiveType;
 
-    indexBuffer?: BufferView;
-    indexType?: Type
+    public indexBuffer?: BufferView;
+    public indexType?: Type
 
-    depthMode?: Id;
-    cullMode?: CullMode;
+    public depthMode?: Id;
+    public cullMode?: CullMode;
 
-    instanceCount?: number;
+    public instanceCount?: number;
 
     constructor( renderPipeline: Id, vertexTable: Id, resourceTable: Id ) {
         this.resourceTable = resourceTable;

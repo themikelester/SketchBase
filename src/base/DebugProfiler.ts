@@ -60,13 +60,13 @@ export abstract class Profile {
 //----------------------------------------------------------------------------------------------------------------------
 @metaClass
 export class ProfileHud {
-    parent: HTMLElement;
-    dom: HTMLElement;
-    ctx: CanvasRenderingContext2D;
-    profiles: Map<string, ProfileEntry> = new Map();
+    private parent: HTMLElement;
+    private dom: HTMLElement;
+    private ctx: CanvasRenderingContext2D;
+    private profiles: Map<string, ProfileEntry> = new Map();
 
-    enabled = false;
-    targetFrameTimeMs = 2;
+    private enabled = false;
+    private targetFrameTimeMs = 2;
 
     @metaFunc initialize( parentElement: HTMLElement, debugMenu: DebugMenu ): void {
         this.parent = parentElement;

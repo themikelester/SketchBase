@@ -43,27 +43,27 @@ const kUrlParameters: Record<string, ( game: Game, value: string ) => void> = {
 // Game
 //----------------------------------------------------------------------------------------------------------------------
 export class Game {
-    @metaVar rootElement: HTMLElement;
-    @metaVar canvas: HTMLCanvasElement = document.createElement( 'canvas' );
-    @metaVar camera: Camera = new Camera();
-    @metaVar gfxDevice: Renderer = new WebGlRenderer();
-    @metaVar hotLoadData?: HotloadData;
-
-    moduleBarn: ModuleBarn = new ModuleBarn();
+    @metaVar public rootElement: HTMLElement;
+    @metaVar public canvas: HTMLCanvasElement = document.createElement( 'canvas' );
+    @metaVar public camera: Camera = new Camera();
+    @metaVar public gfxDevice: Renderer = new WebGlRenderer();
+    @metaVar public hotLoadData?: HotloadData;
 
     // DevModules. Only loaded and executed in debug mode (false by default in production)
-    @devModule debugMenu: DebugMenu;
-    @devModule profileHud: ProfileHud;
+    @devModule public debugMenu: DebugMenu;
+    @devModule public profileHud: ProfileHud;
 
     // Modules. The order here determines the function call order (e.g. Update)
-    @module clock: Clock;
-    @module cameraSystem: CameraSystem;
-    @module input: InputManager;
-    @module scene: Scene;
-    @module globalUniforms: GlobalUniforms;
-    @module debugGrid: DebugGrid;
-    @module compositor: Compositor;
-    @module resources: ResourceManager;
+    @module public clock: Clock;
+    @module public cameraSystem: CameraSystem;
+    @module public input: InputManager;
+    @module public scene: Scene;
+    @module public globalUniforms: GlobalUniforms;
+    @module public debugGrid: DebugGrid;
+    @module public compositor: Compositor;
+    @module public resources: ResourceManager;
+
+    private moduleBarn: ModuleBarn = new ModuleBarn();
 
     public initialize( urlParams: URLSearchParams ): void {
         // DOM creation
@@ -159,7 +159,9 @@ export class Game {
     }
 
     /**
-     * Fires when the window becomes hidden (minimized or obscured by another window), or visible again
+     * Fires when the window becomes hidden (minimized or obscured by another window), or visible again.
+     * This is the only API that will fire reliably at the end of a mobile session.
+     * See https://www.igvita.com/2015/11/20/dont-lose-user-and-app-state-use-page-visibility/
      */
     private onVisibility() {
         const hidden = document.hidden;

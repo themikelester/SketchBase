@@ -24,8 +24,8 @@ const kTickIntervalMs: number = 33; // Send messages at most every 33ms
 // AsyncResourceManager
 //----------------------------------------------------------------------------------------------------------------------
 class AsyncResourceManager {
-    transferList: Transferable[] = [];
-    processed: Resource[] = [];
+    private transferList: Transferable[] = [];
+    private processed: Resource[] = [];
 
     constructor() {
         setInterval( () => this.update(), kTickIntervalMs );

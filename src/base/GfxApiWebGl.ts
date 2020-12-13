@@ -665,9 +665,9 @@ function isTextureResourceBinding( binding: Gfx.ResourceBinding ): binding is Gf
 // Pool
 // -------------------------------------------------------------------------------*/
 class Pool<ObjectType> {
-  objects: ObjectType[] = [];
-  freeList: Gfx.Id[] = [];
-  count = 0;
+  private objects: ObjectType[] = [];
+  private freeList: Gfx.Id[] = [];
+  private count = 0;
 
   get( id: Gfx.Id ): ObjectType {
     const obj = this.objects[ id ];
@@ -698,27 +698,27 @@ class Pool<ObjectType> {
 // WebGL Renderer
 // -------------------------------------------------------------------------------*/
 export class WebGlRenderer implements Gfx.Renderer {
-  debugEnabled = false;
+  private debugEnabled = false;
 
-  buffers: Pool<Buffer> = new Pool();
-  textures: Pool<Texture> = new Pool();
-  shaders: Pool<Shader> = new Pool();
-  renderPipelines: Pool<RenderPipeline> = new Pool();
-  resourceTables: Pool<ResourceTable> = new Pool();
-  vertexTables: Pool<VertexTable> = new Pool();
-  renderPasses: Pool<RenderPass> = new Pool();
-  depthStencilStates: Pool<DepthStencilState> = new Pool();
+  private buffers: Pool<Buffer> = new Pool();
+  private textures: Pool<Texture> = new Pool();
+  private shaders: Pool<Shader> = new Pool();
+  private renderPipelines: Pool<RenderPipeline> = new Pool();
+  private resourceTables: Pool<ResourceTable> = new Pool();
+  private vertexTables: Pool<VertexTable> = new Pool();
+  private renderPasses: Pool<RenderPass> = new Pool();
+  private depthStencilStates: Pool<DepthStencilState> = new Pool();
 
-  defaultRenderPass: Gfx.Id;
-  defaultTexture: Texture;
+  private defaultRenderPass: Gfx.Id;
+  private defaultTexture: Texture;
 
-  webGlVersion: number;
-  featureFlags: number;
+  private webGlVersion: number;
+  private featureFlags: number;
 
-  maxAnisotropy: number;
+  private maxAnisotropy: number;
 
-  pipeline: RenderPipeline;
-  current: {
+  private pipeline: RenderPipeline;
+  private current: {
     shader?: Shader,
     cullMode?: GLInt,
     blending?: boolean,
@@ -984,8 +984,7 @@ export class WebGlRenderer implements Gfx.Renderer {
           case Gfx.Type.Float4: gl.uniform4fv( def.location, value ); break;
           case Gfx.Type.Float3x3: gl.uniformMatrix3fv( def.location, false, value ); break;
           case Gfx.Type.Float4x4: gl.uniformMatrix4fv( def.location, false, value ); break;
-          default: error( 'Unknown shader uniform type' ); break;
-        }
+          default: error( 'Unknown shader uniform type' );        }
       }
     }
 

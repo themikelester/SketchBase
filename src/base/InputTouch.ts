@@ -42,23 +42,23 @@ export class TouchWrapper {
     /**
      * The identifier of the touch.
     */
-    id: number;
+    public id: number;
     /**
      * The x co-ordinate relative to the element that the TouchDevice is attached to.
     */
-    x: number;
+    public x: number;
     /**
      * The y co-ordinate relative to the element that the TouchDevice is attached to.
     */
-    y: number;
+    public y: number;
     /**
      * The target element of the touch event.
     */
-    target: Element;
+    public target: Element;
     /**
      * The original browser Touch object.
     */
-    touch: Touch;
+    public touch: Touch;
 
     constructor( touch: Touch ) {
         const coords = this.getTouchTargetCoords( touch );
@@ -113,19 +113,19 @@ export class TouchEventWrapper {
     /**
      * The original browser TouchEvent.
     */
-    event: TouchEvent;
+    public event: TouchEvent;
     /**
      * The target Element that the event was fired from.
     */
-    element: Element;
+    public element: Element;
     /**
      * A list of all touches currently in contact with the device.
     */
-    touches: TouchWrapper[];
+    public touches: TouchWrapper[];
     /**
      * A list of touches that have changed since the last event.
     */
-    changedTouches: TouchWrapper[];
+    public changedTouches: TouchWrapper[];
 
     constructor( device: TouchDevice, event: TouchEvent ) {
         this.element = event.target as Element;
