@@ -18,6 +18,9 @@ export class FixedCamera extends CameraNode {
         super();
         this.state.lookAtWithPos( pos, target, up );
     }
+
+    initialize(): void {}
+    update(): void {}
 }
 
 /**

@@ -69,8 +69,8 @@ export class CameraState {
 // CameraNode
 //----------------------------------------------------------------------------------------------------------------------
 export abstract class CameraNode {
-    initialize(): void {}
-    update(): void {}
+    abstract initialize(): void;
+    abstract update(): void;
 
 	isActive(): boolean { return this.active; }
     deactivate(): void { this.active = false; }
@@ -122,12 +122,15 @@ export class CameraSystem {
         globalUniforms.buffer.setMat4( "g_viewProj", this.camera.viewProjMatrix );
     }
 
-    pushCamera< T extends CameraNode>( cam: T ): T {
+    pushCamera< T extends CameraNode>( cam: T, priority: number = 0 ): T {
+        cam.priority = priority;
+
         // Insert after the last camera with the same priority (or at the end)
         let index = this.stack.length;
         for( let i = 0; i < this.stack.length; i++ ) {
             if( this.stack[ i ].priority > cam.priority ) {
                 index = i;
+                break;
             }
         }
 
