@@ -26,6 +26,7 @@ import { BlendCamera, FixedCamera } from './base/CameraTypes';
 import { Clock } from './base/Clock';
 import { InputManager } from './base/Input';
 import { ResourceManager } from './base/ResourceManager';
+import { DebugCamera } from './base/DebugCamera';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Types
@@ -57,6 +58,7 @@ export class Game {
     @module public clock: Clock;
     @module public cameraSystem: CameraSystem;
     @module public input: InputManager;
+    @module public debugCamera: DebugCamera;
     @module public scene: Scene;
     @module public globalUniforms: GlobalUniforms;
     @module public debugGrid: DebugGrid;
