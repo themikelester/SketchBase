@@ -28,7 +28,7 @@ const kInertiaDecay = 0.2;
 // DebugCameraNode
 //----------------------------------------------------------------------------------------------------------------------
 class DebugCameraNode extends CameraNode {
-    public dist: number = 100;
+    public dist: number = 1000;
     public azimuth: number = 0;
     public pitch: number = Math.PI * 0.3;
 
@@ -78,10 +78,12 @@ export class DebugCamera {
         this.clock = clock;
         this.input = input;
 
-        const menu = debugMenu.addFolder( 'DebugMenu' );
-        menu.add( this, 'enabled' ).onChange( enabled => {
-            if( enabled ) { this.enable(); } else { this.disable(); }
-        } );
+        if( debugMenu ) {
+            const menu = debugMenu.addFolder( 'DebugMenu' );
+            menu.add( this, 'enabled' ).onChange( enabled => {
+                if( enabled ) { this.enable(); } else { this.disable(); }
+            } );
+        }
 
         if( this.enabled ) { this.enable(); }
 
