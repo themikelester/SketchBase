@@ -12,8 +12,10 @@ import { RenderPrimitive } from './GfxRenderPrimitive';
 import { computePackedBufferLayout, UniformBuffer } from './GfxUniformBuffer';
 import { DebugMenu } from './DebugMenu';
 import { vec4 } from 'gl-matrix';
-import { metaFunc } from './Meta';
+import { metaClass, MetaClass, metaFunc } from './Meta';
 import { Scene } from '../scene';
+import { BaseProcess, ProcessStatus } from './Process';
+import { Game } from '../game';
 
 class GridShader implements Gfx.ShaderDescriptor {
     private static vert = vertShaderSource;
@@ -37,7 +39,8 @@ class GridShader implements Gfx.ShaderDescriptor {
     public id: Gfx.Id;
 }
 
-export class DebugGrid {
+@metaClass
+export class DebugGrid extends BaseProcess {
     private baseColor = vec4.fromValues( 0.3, 0.3, 0.3, 1.0 );
     private lineColor = vec4.fromValues( 1.0, 1.0, 1.0, 1.0 );
     private gridUnit = 100.0;
@@ -47,13 +50,17 @@ export class DebugGrid {
     private primitive: RenderPrimitive;
     private uniforms: UniformBuffer;
 
-    @metaFunc initialize( gfxDevice: Gfx.Renderer, globalUniforms: GlobalUniforms, debugMenu: DebugMenu ): void {
+    initialize( game: Game ): ProcessStatus {
+        const gfxDevice = game.gfxDevice;
+        const globalUniforms = game.globalUniforms;
+        const debugMenu = game.debugMenu;
+
         // Safari does not support WebGL2, so no version 300 GLSL which we use for derivatives
         // This could be written as a 100 shader with an extension, but its just a debug feature
         if( !gfxDevice.isGfxFeatureSupported( Gfx.Feature.ShaderGlsl300 ) ) {
             console.warn( 'GLSL version 300 not supported, disabling DebugGrid' );
             this.enabled = false;
-            return;
+            return ProcessStatus.Error;
         }
 
         const shader = gfxDevice.createShader( new GridShader() );
@@ -66,7 +73,7 @@ export class DebugGrid {
                     a_pos: { type: Gfx.Type.Char2, offset: 0 }
                 }
             }]
-        }
+        };
 
         const pipeline = gfxDevice.createRenderPipeline( shader, renderFormat, vertexLayout, resourceLayout );
 
@@ -94,17 +101,19 @@ export class DebugGrid {
             menu.add( this, 'gridUnit', 1, 100, 10 );
             menu.add( this, 'gridRadius' );
         }
+
+        return ProcessStatus.Complete;
     }
 
-    @metaFunc render( gfxDevice: Gfx.Renderer, scene: Scene ): void {
+    update( game: Game ): void {
         if( this.enabled ) {
             this.uniforms.setVec4( 'u_baseColor', this.baseColor );
             this.uniforms.setVec4( 'u_lineColor', this.lineColor );
             this.uniforms.setFloat( 'u_gridUnit', this.gridUnit );
             this.uniforms.setFloat( 'u_gridRadius', this.gridRadius );
-            this.uniforms.write( gfxDevice );
+            this.uniforms.write( game.gfxDevice );
 
-            scene.getRenderList( "opaque" ).push( this.primitive );
+            game.scene.getRenderList( "opaque" ).push( this.primitive );
         }
     }
 }

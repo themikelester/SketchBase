@@ -27,6 +27,8 @@ import { Clock } from './base/Clock';
 import { InputManager } from './base/Input';
 import { ResourceManager } from './base/ResourceManager';
 import { DebugCamera } from './base/DebugCamera';
+import { ProcessBarn } from './base/Process';
+import { assert } from './base/Util';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Types
@@ -58,12 +60,13 @@ export class Game {
     @module public clock: Clock;
     @module public cameraSystem: CameraSystem;
     @module public input: InputManager;
-    @module public debugCamera: DebugCamera;
     @module public scene: Scene;
     @module public globalUniforms: GlobalUniforms;
-    @module public debugGrid: DebugGrid;
     @module public compositor: Compositor;
     @module public resources: ResourceManager;
+    @module public processes: ProcessBarn;
+
+    @module public debugCamera: DebugCamera;
 
     private moduleBarn: ModuleBarn = new ModuleBarn();
 
@@ -97,6 +100,8 @@ export class Game {
         ];
         this.moduleBarn.initialize( this, kModuleFunctions, IS_DEBUG_MODE );
 
+        this.processes.setGame( this );
+
         // Call "Initialize()" for all modules
         this.moduleBarn.callFunction( "initialize", ModuleDirection.Forward );
 
@@ -110,6 +115,7 @@ export class Game {
         this.cameraSystem.pushCamera( new FixedCamera( vec3.fromValues( 0, 100, 500 ), vec3.fromValues( 0, 0, 0 ) ) );
         this.cameraSystem.pushCamera( new FixedCamera( vec3.fromValues( 500, 100, 0 ), vec3.fromValues( 0, 0, 0 ) ) );
         this.cameraSystem.pushCamera( new BlendCamera( this.clock, 10000.0, 1000.0 ) );
+        const added = this.processes.createProcess( 0, DebugGrid.name );
     }
 
     public terminate(): void {
