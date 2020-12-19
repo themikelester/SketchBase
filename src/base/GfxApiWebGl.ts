@@ -6,7 +6,7 @@
 // Author: Mike Lester
 // Date C: 03-23-2019
 // --------------------------------------------------------------------------------
-import * as Gfx from './GfxApiTypes'
+import * as Gfx from './GfxApiTypes';
 import { assertDefined } from './Util';
 
 // --------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ function translatePrimitiveType( primType: Gfx.PrimitiveType ) {
     case Gfx.PrimitiveType.LineStrip: return gl.LINE_STRIP;
     case Gfx.PrimitiveType.Triangles: return gl.TRIANGLES;
     case Gfx.PrimitiveType.TriangleStrip: return gl.TRIANGLE_STRIP;
-    case Gfx.PrimitiveType.TriangleFan: return gl.TRIANGLE_FAN
+    case Gfx.PrimitiveType.TriangleFan: return gl.TRIANGLE_FAN;
     default: return error( `Unsupported primitive type: ${primType}` );
   }
 }
@@ -488,7 +488,7 @@ function reflectShader( program: GLInt ): ShaderReflection {
       components: translateTypeToComponentCount( type ),
       glType: translateTypeToBaseGlType( type ),
       type,
-    }
+    };
   }
 
   // Discover uniforms and textures
@@ -725,7 +725,7 @@ export class WebGlRenderer implements Gfx.Renderer {
     srcBlendFactor?: Gfx.BlendFactor,
     dstBlendFactor?: Gfx.BlendFactor,
     depthStencil?: DepthStencilState,
-  }
+  };
 
   initialize( canvas: HTMLCanvasElement ): boolean {
     const canvasOptions = { alpha: false, antialias: false, preserveDrawingBuffer: false };
@@ -760,7 +760,7 @@ export class WebGlRenderer implements Gfx.Renderer {
       format: Gfx.TexelFormat.U8x4,
       width: 1,
       height: 1,
-    }
+    };
     const defaultTextureId = this.createTexture( 'DefaultTexture', defaultTexDesc, black );
     this.defaultTexture = this.textures.get( defaultTextureId );
 
@@ -1109,8 +1109,8 @@ export class WebGlRenderer implements Gfx.Renderer {
 
       if( !this.isGfxFeatureSupported( Gfx.Feature.Instancing ) ) {
         vertexLayout.buffers.forEach( buffer => {
-          assert( buffer.stepMode !== Gfx.StepMode.Instance, "Instancing is not supported by this WebGL context" )
-        } )
+          assert( buffer.stepMode !== Gfx.StepMode.Instance, "Instancing is not supported by this WebGL context" );
+        } );
       }
     }
 
@@ -1193,7 +1193,7 @@ export class WebGlRenderer implements Gfx.Renderer {
       wrapS: translateGfxTextureWrap( ( desc.defaultWrapS !== undefined ) ? desc.defaultWrapS : Gfx.TextureWrap.Repeat ),
       wrapT: translateGfxTextureWrap( ( desc.defaultWrapT !== undefined ) ? desc.defaultWrapT : Gfx.TextureWrap.Repeat ),
       glId: gl.createTexture(),
-    }
+    };
 
     gl.bindTexture( tex.target, tex.glId );
     gl.texParameteri( tex.target, gl.TEXTURE_MIN_FILTER, tex.minFilter );

@@ -31,7 +31,7 @@ export const module: PropertyDecorator = ( target, propertyKey: string | symbol 
     metaVar( target, propertyKey );
 
     const memVarName = assertString( propertyKey );
-    setMemVarMetadata( target.constructor.name, memVarName, kMetadataIdModuleGroup, "All" )
+    setMemVarMetadata( target.constructor.name, memVarName, kMetadataIdModuleGroup, "All" );
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -42,8 +42,8 @@ export const devModule: PropertyDecorator = ( target, propertyKey: string | symb
     metaVar( target, propertyKey );
 
     const memVarName = assertString( propertyKey );
-    setMemVarMetadata( target.constructor.name, memVarName, kMetadataIdModuleGroup, "All" )
-    setMemVarMetadata( target.constructor.name, memVarName, kMetadataIdModuleIsDev, "true" )
+    setMemVarMetadata( target.constructor.name, memVarName, kMetadataIdModuleGroup, "All" );
+    setMemVarMetadata( target.constructor.name, memVarName, kMetadataIdModuleIsDev, "true" );
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ export class ModuleBarn {
                     group: moduleGroup,
                     object: game[ name ] as ObjectType,
                     funcArgs: {}
-                } )
+                } );
             }
         }
 

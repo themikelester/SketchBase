@@ -179,7 +179,7 @@ export class Mouse extends EventDispatcher {
         this.onDown = this.handleDown.bind( this );
         this.onMove = this.handleMove.bind( this );
         this.onWheel = this.handleWheel.bind( this );
-        this.onContextMenu = ( e: Event ) => { e.preventDefault(); }
+        this.onContextMenu = ( e: Event ) => { e.preventDefault(); };
 
         this.attach( element );
     }

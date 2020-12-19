@@ -7,7 +7,7 @@
 // objects' functions are rebound to the dat.gui functions.
 // --------------------------------------------------------------------------------------------------------------------
 
-import dat from "dat.gui"
+import dat from "dat.gui";
 import { metaFunc } from "./Meta";
 import { assertDefined } from "./Util";
 

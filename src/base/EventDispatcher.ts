@@ -64,7 +64,7 @@ export class EventDispatcher {
         const callbackAndRemove = ( ...args: unknown[] ) => {
             callback( ...args );
             this.off( name, callbackAndRemove );
-        }
+        };
 
         this.on( name, callbackAndRemove );
         return this;

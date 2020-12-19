@@ -5,7 +5,7 @@ import { metaFunc } from './base/Meta';
 
 // @TODO: Better outline
 type RenderPassDescriptor = number;
-type RenderOutline = Array<RenderList | RenderPassDescriptor>
+type RenderOutline = Array<RenderList | RenderPassDescriptor>;
 
 const blendingOff = { blendingEnabled: false };
 const blendingOn = { blendingEnabled: true };
@@ -13,7 +13,7 @@ const blendingOn = { blendingEnabled: true };
 const renderLists: Record<string, RenderList> = {
     opaque: new RenderList( CullMode.Back, { depthWriteEnabled: true, depthTestEnabled: true }, blendingOff ),
     ui: new RenderList( CullMode.None, { depthWriteEnabled: false, depthTestEnabled: false }, blendingOn ),
-}
+};
 
 const renderOutline: RenderOutline = [
     renderLists.opaque,

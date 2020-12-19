@@ -8,7 +8,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 import * as Gfx from './GfxApiTypes';
 import { computePackedBufferLayout, UniformBuffer } from './GfxUniformBuffer';
-import { metaFunc } from './Meta'
+import { metaFunc } from './Meta';
 
 // --------------------------------------------------------------------------------
 //

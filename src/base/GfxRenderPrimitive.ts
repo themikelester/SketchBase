@@ -16,7 +16,7 @@ export class RenderPrimitive {
     public type: PrimitiveType;
 
     public indexBuffer?: BufferView;
-    public indexType?: Type
+    public indexType?: Type;
 
     public depthMode?: Id;
     public cullMode?: CullMode;

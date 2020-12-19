@@ -77,6 +77,6 @@ class AsyncResourceManager {
 //----------------------------------------------------------------------------------------------------------------------
 // MainThread Interface
 //----------------------------------------------------------------------------------------------------------------------
-onmessage = async ( msg ) => { manager.onMessage( msg ) }
+onmessage = async ( msg ) => { manager.onMessage( msg ); };
 
 const manager = new AsyncResourceManager();

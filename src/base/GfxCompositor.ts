@@ -70,7 +70,7 @@ function executeRenderList( gfxDevice: Gfx.Renderer, list: RenderList ) {
             const indexOffset = defaultValue( prim.indexBuffer.byteOffset, 0 ) / indexSize;
             if( defined( prim.instanceCount ) ) {
                 gfxDevice.drawInstanced( prim.type, prim.indexBuffer.buffer, assertDefined( prim.indexType ),
-                    indexOffset, prim.elementCount, prim.instanceCount )
+                    indexOffset, prim.elementCount, prim.instanceCount );
             } else {
                 gfxDevice.draw( prim.type, prim.indexBuffer.buffer, assertDefined( prim.indexType ),
                     indexOffset, prim.elementCount );
