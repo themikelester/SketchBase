@@ -4,17 +4,15 @@
 // Author: Mike Lester
 // Date C: 2020/11/27
 //----------------------------------------------------------------------------------------------------------------------
-import * as Gfx from './GfxApiTypes';
-import vertShaderSource from './shaders/grid.vert';
-import fragShaderSource from './shaders/grid.frag';
-import { GlobalUniforms } from './GfxGlobalUniforms';
-import { RenderPrimitive } from './GfxRenderPrimitive';
-import { computePackedBufferLayout, UniformBuffer } from './GfxUniformBuffer';
-import { DebugMenu } from './DebugMenu';
+import * as Gfx from '../base/GfxApiTypes';
+import vertShaderSource from '../base/shaders/grid.vert';
+import fragShaderSource from '../base/shaders/grid.frag';
+import { GlobalUniforms } from '../base/GfxGlobalUniforms';
+import { RenderPrimitive } from '../base/GfxRenderPrimitive';
+import { computePackedBufferLayout, UniformBuffer } from '../base/GfxUniformBuffer';
 import { vec4 } from 'gl-matrix';
-import { metaClass, MetaClass, metaFunc } from './Meta';
-import { Scene } from '../scene';
-import { BaseProcess, ProcessStatus } from './Process';
+import { metaClass } from '../base/Meta';
+import { BaseProcess, ProcessStatus } from '../base/Process';
 import { Game } from '../game';
 
 class GridShader implements Gfx.ShaderDescriptor {

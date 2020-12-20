@@ -1,0 +1,15 @@
+{
+	"levelInfo": {
+		"near": 10,
+		"far": 20000
+	},
+	"actors": [
+		{
+			"type": "DebugGrid",
+			"parameters": 0,
+			"pos": [ 0, 0, 0 ],
+			"rot": [ 0, 0, 0 ],
+			"scale": 1.0
+		}
+	]
+}

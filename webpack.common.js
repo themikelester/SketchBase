@@ -8,6 +8,7 @@ const CopyPlugin = require( 'copy-webpack-plugin' );
 const SizePlugin = require( 'size-plugin' );
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin;
 const path = require( 'path' );
+const glob = require( 'glob' );
 const webpack = require( 'webpack' );
 
 // @NOTE: These need to be updated per-project
@@ -20,7 +21,7 @@ const APP_DESCRIPTION = 'Sketch boilerplate';
 
 module.exports = {
   entry: {
-    main: './src/main.ts',
+    main: [ './src/main.ts' ].concat( glob.sync( './src/actors/*.ts' ) )
   },
   output: {
     path: path.resolve( __dirname, 'dist' ),

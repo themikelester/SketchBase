@@ -16,7 +16,6 @@ import { DebugMenu } from './base/DebugMenu';
 // Modules
 import { Camera } from './base/Camera';
 import { Compositor } from './base/GfxCompositor';
-import { DebugGrid } from './base/DebugGrid';
 import { GlobalUniforms } from './base/GfxGlobalUniforms';
 import { Renderer } from './base/GfxApiTypes';
 import { Scene } from './scene';
@@ -28,7 +27,8 @@ import { InputManager } from './base/Input';
 import { ResourceManager } from './base/ResourceManager';
 import { DebugCamera } from './base/DebugCamera';
 import { ProcessBarn } from './base/Process';
-import { assert } from './base/Util';
+import { assert, assertDefined } from './base/Util';
+import { DownloadBarn, DownloadStatus } from './base/Download';
 
 //----------------------------------------------------------------------------------------------------------------------
 // Types
@@ -65,10 +65,12 @@ export class Game {
     @module public compositor: Compositor;
     @module public resources: ResourceManager;
     @module public processes: ProcessBarn;
+    @module public downloads: DownloadBarn;
 
     @module public debugCamera: DebugCamera;
 
     private moduleBarn: ModuleBarn = new ModuleBarn();
+    private queuedLevel: Nullable< string > = null;
 
     public initialize( urlParams: URLSearchParams ): void {
         // DOM creation
@@ -115,7 +117,7 @@ export class Game {
         this.cameraSystem.pushCamera( new FixedCamera( vec3.fromValues( 0, 100, 500 ), vec3.fromValues( 0, 0, 0 ) ) );
         this.cameraSystem.pushCamera( new FixedCamera( vec3.fromValues( 500, 100, 0 ), vec3.fromValues( 0, 0, 0 ) ) );
         this.cameraSystem.pushCamera( new BlendCamera( this.clock, 10000.0, 1000.0 ) );
-        const added = this.processes.createProcess( 0, DebugGrid.name );
+        this.queueLevel( 'Basic.level' );
     }
 
     public terminate(): void {
@@ -145,12 +147,49 @@ export class Game {
     public update(): void {
         Profile.begin( 'Game.update' );
 
+        if( this.queuedLevel ) {
+            const levelName = this.queuedLevel;
+            const data = assertDefined( this.downloads.get( 'data/Levels/' + levelName ) );
+
+            if( data.status == DownloadStatus.Error ) {
+                console.warn( 'Level load failed due to failed download' );
+                this.queuedLevel = null;
+            }
+
+            if( data.status == DownloadStatus.Complete ) {
+                const levelData = data.json as LevelData;
+                this.onLevelLoad( levelName, levelData );
+                this.queuedLevel = null;
+            }
+        }
+
         this.moduleBarn.callFunction( "update", ModuleDirection.Forward );
         this.moduleBarn.callFunction( "render", ModuleDirection.Forward );
         this.moduleBarn.callFunction( "endFrame", ModuleDirection.Forward );
 
         Profile.end( 'Game.update' );
         if( this.profileHud ) { this.profileHud.update(); }
+    }
+
+    public queueLevel( name: string ): void {
+        this.queuedLevel = name;
+        this.downloads.loadJson( 'data/Levels/' + this.queuedLevel );
+        console.log( `Queued level for load: ${ name }` );
+    }
+
+    private onLevelLoad( name: string, data: LevelData ): void {
+        const info = assertDefined( data.levelInfo );
+        this.camera.near = info.near;
+        this.camera.far = info.far;
+
+        if( data.actors ) {
+            for( let i = 0; i < data.actors.length; i++ ) {
+                const actor = data.actors[ i ];
+                this.processes.createProcess( 0, actor.type );
+            }
+        }
+
+        console.log( `Loaded level: ${ name }` );
     }
 
     /**

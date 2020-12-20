@@ -3,7 +3,7 @@
 //         Its main responsibilities are to fetch necessary files, and call `loadAsync` for each resource.
 //
 // Author: Mike Lester
-// Date C: 2020/13/27
+// Date C: 2020/12/08
 //----------------------------------------------------------------------------------------------------------------------
 import { loaders, Resource, ResourceStatus } from './ResourceTypes';
 
